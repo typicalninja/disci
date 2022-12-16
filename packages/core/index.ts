@@ -1,0 +1,1 @@
+export { InteractionClient } from './src/InteractionClient';

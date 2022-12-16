@@ -1,0 +1,12 @@
+{
+    "index": {
+      "title": "Interaction server",
+      "theme": {
+        "typesetting": "article",
+        "sidebar": false,
+        "toc": false,
+        "breadcrumb": false
+      }
+    }
+  }
+  
