@@ -4,18 +4,17 @@ import {
   InteractionResponseType,
   InteractionType,
 } from "discord-api-types/v10";
-import type { FastifyReply, FastifyRequest } from "fastify";
 import {
-  ClientEvents,
   ClientOptions,
   defaultOptions,
   DiscordVerificationHeaders,
-  RequestEvents,
 } from "./utils/constants";
 import nacl from "tweetnacl";
 // to add typings to events
 import { TypedEmitter } from "tiny-typed-emitter";
 import BaseInteractionContext from "./structures/context/BaseInteractionContext";
+import { ClientEvents, RequestEvents } from "./utils/events";
+import { CommonHttpRequest, HandlerResponse, RequestTransformer, ResponseTransformer } from "./utils/transformers";
 
 export type replyFunction = (
   data: APIInteractionResponse,
@@ -28,16 +27,22 @@ export class InteractionHandler extends TypedEmitter<ClientEvents> {
   constructor(options: ClientOptions) {
     super();
     this.options = Object.assign({}, defaultOptions, options);
+
+    if(!this.options.publicKey || typeof this.options.publicKey !== 'string') {
+      console.warn(`VerifyOff (no publicKey): Booting in debug mode, Requests will not be verified of thier origin (Disable This mode by passing your "publicKey" to options)`)
+    }
   }
   /**
    * Handles a Request and returns a ResponseTransformer
-   * @returns A Object containing [APIInteractionResponse](https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-response-object)
+   * @returns A Object containing Response Object
    */
-  handleRequest(
-    req: FastifyRequest,
-    res: FastifyReply
-  ): Promise<APIInteractionResponse> {
-    if(!this.options.publicKey) throw new Error(`Public Key is missing`)
+  handleRequest<Request extends CommonHttpRequest, Response>(
+    _req: Request,
+    _res: Response
+  ): Promise<HandlerResponse> {
+    // create our custom response/request transformers
+    const req = new RequestTransformer<Request>(_req);
+    const res = new ResponseTransformer<Response>(_res);
     return new Promise((resolve) => {
       // verify if its a valid request
       this.verifyRequest(req).then((verified) => {
@@ -47,23 +52,17 @@ export class InteractionHandler extends TypedEmitter<ClientEvents> {
           { request: req, reply: res },
           verified
         );
-        // helper function
-        const reply = (data: APIInteractionResponse, code: number = 200) => {
-          if (code) res.statusCode = code;
-          return resolve(data);
-        };
         // this request is unauthorized, reply to it accordingly
-        if (!verified) return reply({ type: 0 }, 401);
-        // Body will be a APIInteraction
-        const body = req.body as APIInteraction;
+        if (!verified) return resolve(res.reply('Invalid Authorization', 401));
         this.emit(
           RequestEvents.rawInteractionCreate,
           { request: req, reply: res },
-          body
         );
+        // Body will be a APIInteraction
+        const body = JSON.parse(req.rawBody) as APIInteraction;
         // a ping request
         if (body.type === InteractionType.Ping)
-          return reply({ type: InteractionResponseType.Pong });
+          return resolve(res.reply({ type: InteractionResponseType.Pong }))
         else if (body.type === InteractionType.ApplicationCommand) {
           this.emit(
             RequestEvents.interactionCreate,
@@ -77,17 +76,21 @@ export class InteractionHandler extends TypedEmitter<ClientEvents> {
    * Verfies a request to see if it originated from discord
    * https://discord.com/developers/docs/interactions/receiving-and-responding#security-and-authorization
    */
-  private verifyRequest(req: FastifyRequest): Promise<boolean> {
+  private verifyRequest(req: RequestTransformer<any>): Promise<boolean> {
     return new Promise((resolve) => {
       // no public key yet (maybe not correctly attached)
-      if (!this.options.publicKey) return resolve(false);
+      if (!this.options.publicKey) {
+        console.warn(`VerifyOff (no publicKey): Automatic debug mode is running, this request is not validated and maybe malicious`)
+        // debug mode
+        return resolve(true)
+      }
       const timestamp = req.headers[
         DiscordVerificationHeaders.TimeStamp
       ] as string;
       const signature = req.headers[
         DiscordVerificationHeaders.Signature
       ] as string;
-      const body = this.getBody(req);
+      const { body } = req
       // all of them should be present
       if (!timestamp || !signature || !body) return resolve(false);
       try {
@@ -102,15 +105,5 @@ export class InteractionHandler extends TypedEmitter<ClientEvents> {
         return resolve(false);
       }
     });
-  }
-  /**
-   * Retreive the body from a request (converts to string if anything else)
-   * @param req 
-   * @returns Buffer of the body
-   */
-  private getBody(req: FastifyRequest) {
-    return typeof req.body === "string"
-            ? Buffer.from(req.body, "utf-8")
-              : Buffer.from(JSON.stringify(req.body), "utf-8");
   }
 }

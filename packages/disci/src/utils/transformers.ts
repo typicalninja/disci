@@ -2,7 +2,7 @@
 
 import type { APIInteractionResponse } from "discord-api-types/v10"
 
-type CommonHttpRequest = { 
+export type CommonHttpRequest = { 
     headers?: Record<string, string>,
 
     // body related
@@ -13,9 +13,11 @@ type CommonHttpRequest = {
 
 export class RequestTransformer<RequestType extends CommonHttpRequest> {
     body: Buffer
-    headers: Record<string, string>
+    headers: Record<string, string>;
+    rawBody: string
     constructor(public req: RequestType) {
       this.body = this.resolveBody(req.body ?? req.rawBody)
+      this.rawBody = req.rawBody ? (typeof req.rawBody === 'string' ? req.rawBody : JSON.stringify(req.rawBody)) : (typeof req.body == 'string' ? req.body : JSON.stringify(req.body || '{}'))
       this.headers = req.headers ?? {}
     }
     resolveBody(body: string | Record<string, any> | Buffer | undefined): Buffer {
@@ -26,6 +28,10 @@ export class RequestTransformer<RequestType extends CommonHttpRequest> {
     }
 }
 
+export interface HandlerResponse {
+   status: number,
+   data: APIInteractionResponse | string
+}
 export class ResponseTransformer<ResponseType> {
     /**
      * Status code of the response
@@ -37,22 +43,25 @@ export class ResponseTransformer<ResponseType> {
      responseData?: APIInteractionResponse | string
      constructor(public res: ResponseType) {
         this.statusCode = 200;
+
      }
      setStatus(code: number) {
         this.statusCode = code;
         return this;
      }
-     reply(data: APIInteractionResponse | string) {
+     setData(data: APIInteractionResponse | string) {
         this.responseData = data;
         return this;
+     }
+     reply(data: string | APIInteractionResponse, code: number = 200): HandlerResponse {
+         this.setData(data);
+         this.setStatus(code);
+         return this.toRaw();
      }
      /**
       * Convert class Data to a object
       */
-     toRaw(): {
-        status: number,
-        data: APIInteractionResponse | string
-     } {
+     toRaw(): HandlerResponse {
         return {
             status: this.statusCode,
             data: this.responseData || 'Unknown'
