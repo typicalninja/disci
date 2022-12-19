@@ -28,7 +28,7 @@ export default class BaseInteractionContext {
      * Wether this Interaction has Already been replied to
      */
     replied: boolean;
-    constructor(apiData: APIInteraction) {
+    constructor(apiData: APIInteraction, ) {
         this.type = apiData.type;
         this.token = apiData.token;
         this.replied = false;

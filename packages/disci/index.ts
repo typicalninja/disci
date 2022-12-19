@@ -1,0 +1,1 @@
+export { InteractionHandler } from './src/InteractioHandler';

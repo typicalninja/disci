@@ -15,7 +15,6 @@ import {
 import nacl from "tweetnacl";
 // to add typings to events
 import { TypedEmitter } from "tiny-typed-emitter";
-//import { BaseCommandContext } from "./structures/context/BaseCommandContext";
 import BaseInteractionContext from "./structures/context/BaseInteractionContext";
 
 export type replyFunction = (
@@ -24,14 +23,14 @@ export type replyFunction = (
 ) => void;
 
 
-export class InteractionClient extends TypedEmitter<ClientEvents> {
+export class InteractionHandler extends TypedEmitter<ClientEvents> {
   options: ClientOptions;
   constructor(options: ClientOptions) {
     super();
     this.options = Object.assign({}, defaultOptions, options);
   }
   /**
-   * Handles a Request to the specified path
+   * Handles a Request and returns a ResponseTransformer
    * @returns A Object containing [APIInteractionResponse](https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-response-object)
    */
   handleRequest(
