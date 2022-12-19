@@ -25,7 +25,6 @@ export type replyFunction = (
 
 
 export class InteractionClient extends TypedEmitter<ClientEvents> {
-  attached: boolean = false;
   options: ClientOptions;
   constructor(options: ClientOptions) {
     super();

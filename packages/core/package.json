@@ -1,8 +1,8 @@
 {
   "name": "disci",
   "version": "1.0.0",
-  "description": "A Http Server for handling Interactions from discord",
-  "main": "index.js",
+  "description": "A Http handler for discord interactions",
+  "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
