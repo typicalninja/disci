@@ -5,7 +5,6 @@ import { nanoid } from "nanoid";
 
 export type CommonHttpRequest = { 
     headers?: Record<string, string>,
-
     // body related
     body?: string | Record<string, any> | Buffer,
     rawBody?: string
@@ -17,7 +16,7 @@ export class RequestTransformer<RequestType extends CommonHttpRequest> {
     headers: Record<string, string>;
     rawBody: string
     constructor(public req: RequestType) {
-      this.body = this.resolveBody(req.body ?? req.rawBody)
+      this.body = this.resolveBody(req.body || req.rawBody)
       this.rawBody = req.rawBody ? (typeof req.rawBody === 'string' ? req.rawBody : JSON.stringify(req.rawBody)) : (typeof req.body == 'string' ? req.body : JSON.stringify(req.body || '{}'))
       this.headers = req.headers ?? {}
     }
@@ -37,6 +36,8 @@ export interface HandlerResponse {
     */
    responseHeaders: Record<string, string>
 }
+
+
 export class ResponseTransformer<ResponseType> {
     /**
      * Status code of the response

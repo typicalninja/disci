@@ -8,7 +8,7 @@ import {
   HandlerOptions,
   defaultOptions,
   DiscordVerificationHeaders,
-  InteractionCtx,
+  InteractionContext,
 } from "./utils/constants";
 import nacl from "tweetnacl";
 // to add typings to events
@@ -17,7 +17,7 @@ import { ClientEvents, getResponseEvent, InternalReplyEvent, RequestEvents, Wait
 import { CommonHttpRequest, HandlerResponse, RequestTransformer, ResponseTransformer } from "./utils/transformers";
 
 import { match } from "ts-pattern";
-import { BaseCommandContext } from "./structures/context/BaseCommandContext";
+import { BaseCommandContext } from "./structures/context/ChatInputApplicationCommandContext";
 
 export type replyFunction = (
   data: APIInteractionResponse,
@@ -64,7 +64,7 @@ export class InteractionHandler extends TypedEmitter<ClientEvents> {
         const rawInteraction = JSON.parse(req.rawBody) as APIInteraction;
         // a ping request (handle it first)
         if (rawInteraction.type === InteractionType.Ping) return resolve(res.reply({ type: InteractionResponseType.Pong }))
-        let interaction: null | InteractionCtx = null;
+        let interaction: null | InteractionContext = null;
         // finally wait for it to finish
         WaitForEvent<InternalReplyEvent>(this, getResponseEvent(res.responseId), 2300).then(({ data }) => {
           console.log('data;  ', data)
@@ -86,8 +86,7 @@ export class InteractionHandler extends TypedEmitter<ClientEvents> {
           // if auto defer is enabled
           match(this.options.autoDefer)
             .with(true, { enabled: true } , defer)
-            .with(false, { enabled: false}, () => null)
-            .exhaustive()
+            .run()
         })
 
         if (rawInteraction.type === InteractionType.ApplicationCommand) {

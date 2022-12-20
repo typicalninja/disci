@@ -1,6 +1,6 @@
 import type { APIInteractionResponse } from "discord-api-types/v10";
 import type { EventEmitter } from "events";
-import type { InteractionCtx } from "./constants";
+import type { InteractionContext } from "./constants";
 import type { RequestTransformer, ResponseTransformer } from "./transformers";
 
 export enum RequestEvents {
@@ -25,15 +25,13 @@ export interface ClientEvents {
     'rawInteractionCreate': (
       requestData: { request: RequestTransformer<any>; reply: ResponseTransformer<any> },
     ) => void;
-    'interactionCreate': (InteractionContext: InteractionCtx) => void;
+    'interactionCreate': (InteractionContext: InteractionContext) => void;
 }
 
 export const getResponseEvent = (eventId: string) => `reply_${eventId}`;
-
 export type InternalReplyEvent = { type: 'timeout' | 'done'  ; data: APIInteractionResponse | null }
 
 export function WaitForEvent<ReturnType extends InternalReplyEvent>(emitter: EventEmitter, eventName: string, timeout: number = 6000): Promise<ReturnType> {
-    console.log('watching for;', eventName)
     return new Promise((resolve, reject) => {
         // a variable, so we can clear timeout if it does not timeout
         let time: NodeJS.Timeout | undefined;

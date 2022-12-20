@@ -19,11 +19,14 @@ export default class BaseInteractionContext {
     /**
      * Type of this interaction
      */
-    type?: InteractionType
+    type: InteractionType = -1
     /**
      * Guild id of where it originated 
      */
     guildId?: Snowflake
+    /**
+     * Channel id of the interaction
+     */
     channelId?: Snowflake
     // non discord data (own data)
     /**
@@ -48,7 +51,6 @@ export default class BaseInteractionContext {
             writable: false,
             enumerable: true,
         });
-
         return true;
     }
 }

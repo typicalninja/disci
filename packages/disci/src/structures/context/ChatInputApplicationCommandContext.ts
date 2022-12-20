@@ -1,17 +1,17 @@
-import { APIInteraction, InteractionResponseType, InteractionType } from "discord-api-types/v10";
+import { APIApplicationCommandInteractionData, APIInteraction, ApplicationCommandType, InteractionResponseType, InteractionType } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractioHandler";
 import { getResponseEvent } from "../../utils/events";
-import BaseInteractionContext from "./BaseInteractionContext";
+import BaseApplicationCommandContext from "./BaseApplicationCommandContext";
 
-export class BaseComponentContext extends BaseInteractionContext {
-    override type: InteractionType.MessageComponent = InteractionType.MessageComponent;
+
+export class BaseCommandContext extends BaseApplicationCommandContext {
     constructor(apiData: APIInteraction, public override InteractionHandler: InteractionHandler, public resId: string) {
         super(apiData, InteractionHandler);
+        this.commandType = ApplicationCommandType.ChatInput;
     }
-    reply() {
+    reply(type: InteractionType, data: APIApplicationCommandInteractionData) {
         if(this.replied) throw new Error(`Interaction already replied`)
         // emit the event to mark as replied
-        console.log('resp:', getResponseEvent(this.resId))
         this.InteractionHandler.emit(getResponseEvent(this.resId) as any, {
             type: 'done',
             data: {

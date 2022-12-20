@@ -1,4 +1,4 @@
-import type { BaseCommandContext } from "../structures/context/BaseCommandContext";
+import type { BaseCommandContext } from "../structures/context/ChatInputApplicationCommandContext";
 import type { BaseComponentContext } from "../structures/context/BaseComponentContext";
 
 
@@ -8,7 +8,8 @@ export enum DiscordVerificationHeaders {
   TimeStamp = "x-signature-timestamp"
 }
 
-export type InteractionCtx = BaseCommandContext | BaseComponentContext ;
+// Common type for interactions
+export type InteractionContext = BaseCommandContext | BaseComponentContext ;
 
 export interface HandlerOptions {
   autoDefer: boolean | { enabled: boolean; timeout: number };
