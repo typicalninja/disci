@@ -1,6 +1,7 @@
 import {
   APIInteraction,
   APIInteractionResponse,
+  ApplicationCommandType,
   InteractionResponseType,
   InteractionType,
 } from "discord-api-types/v10";
@@ -17,7 +18,8 @@ import { ClientEvents, getResponseEvent, InternalReplyEvent, RequestEvents, Wait
 import { CommonHttpRequest, HandlerResponse, RequestTransformer, ResponseTransformer } from "./utils/transformers";
 
 import { match } from "ts-pattern";
-import { BaseCommandContext } from "./structures/context/ChatInputApplicationCommandContext";
+import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
+
 
 export type replyFunction = (
   data: APIInteractionResponse,
@@ -65,32 +67,39 @@ export class InteractionHandler extends TypedEmitter<ClientEvents> {
         // a ping request (handle it first)
         if (rawInteraction.type === InteractionType.Ping) return resolve(res.reply({ type: InteractionResponseType.Pong }))
         let interaction: null | InteractionContext = null;
+        const responseEvent = getResponseEvent(res.responseId)
         // finally wait for it to finish
-        WaitForEvent<InternalReplyEvent>(this, getResponseEvent(res.responseId), 2300).then(({ data }) => {
+        WaitForEvent<InternalReplyEvent>(this, responseEvent, 2300).then(({ data }) => {
           console.log('data;  ', data)
           // set to replied state
           if(interaction) interaction.setReplied();
           // reply received
           if(data) return resolve(res.reply(data))
         }).catch(() => {
-          console.log('timed out')
           // if responseEvent did not fire (no reply())
           // function to call if defering
           const defer = ()  => {
             console.debug(`Automatic defer`)
             if(interaction) interaction.setReplied()
             // remove all listners
-            this.removeAllListeners(getResponseEvent(res.responseId) as any)
+            this.removeAllListeners(responseEvent as any)
             return resolve(res.reply({ type: InteractionResponseType.DeferredChannelMessageWithSource }))
           }
           // if auto defer is enabled
-          match(this.options.autoDefer)
+          try {
+            match(this.options.autoDefer)
             .with(true, { enabled: true } , defer)
-            .run()
+            .otherwise(() => void this.removeAllListeners(responseEvent as any));
+          }
+          catch {
+            this.removeAllListeners(responseEvent as any)
+          }
         })
 
         if (rawInteraction.type === InteractionType.ApplicationCommand) {
-          interaction = new BaseCommandContext(rawInteraction, this, res.responseId)
+          if(rawInteraction.data.type == ApplicationCommandType.ChatInput) {
+            interaction = new ChatInputCommandContext(rawInteraction, this, res.responseId)
+          }
         }
 
         if(interaction) {

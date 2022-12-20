@@ -5,7 +5,7 @@ import BaseInteractionContext from "./BaseInteractionContext";
 type ApplicationCommandDataTypes = APIChatInputApplicationCommandInteractionData | APIUserApplicationCommandInteractionData | APIMessageApplicationCommandInteractionData
 
 
-export default class BaseApplicationCommandContext extends BaseInteractionContext {
+export default class BaseCommandContext extends BaseInteractionContext {
     /**
      * The type of the ApplicationCommand 
      */
@@ -27,6 +27,7 @@ export default class BaseApplicationCommandContext extends BaseInteractionContex
         super(apiData, InteractionHandler);
         const Data = apiData.data as ApplicationCommandDataTypes;
         this.type = InteractionType.ApplicationCommand;
+        // add ApplicationCommandData
         this.commandName = Data.name;
         this.commandId = Data.id;
     }
