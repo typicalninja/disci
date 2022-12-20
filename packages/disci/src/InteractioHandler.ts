@@ -8,15 +8,16 @@ import {
   HandlerOptions,
   defaultOptions,
   DiscordVerificationHeaders,
+  InteractionCtx,
 } from "./utils/constants";
 import nacl from "tweetnacl";
 // to add typings to events
 import { TypedEmitter } from "tiny-typed-emitter";
-//import BaseInteractionContext from "./structures/context/BaseInteractionContext";
-import { ClientEvents, getRepliedEvent, getResponseEvent, RequestEvents, WaitForEvent } from "./utils/events";
+import { ClientEvents, getResponseEvent, InternalReplyEvent, RequestEvents, WaitForEvent } from "./utils/events";
 import { CommonHttpRequest, HandlerResponse, RequestTransformer, ResponseTransformer } from "./utils/transformers";
 
 import { match } from "ts-pattern";
+import { BaseCommandContext } from "./structures/context/BaseCommandContext";
 
 export type replyFunction = (
   data: APIInteractionResponse,
@@ -63,31 +64,38 @@ export class InteractionHandler extends TypedEmitter<ClientEvents> {
         const rawInteraction = JSON.parse(req.rawBody) as APIInteraction;
         // a ping request (handle it first)
         if (rawInteraction.type === InteractionType.Ping) return resolve(res.reply({ type: InteractionResponseType.Pong }))
-
+        let interaction: null | InteractionCtx = null;
         // finally wait for it to finish
-        WaitForEvent(this, getResponseEvent(res.responseId), 2500).then((data: APIInteractionResponse) => {
+        WaitForEvent<InternalReplyEvent>(this, getResponseEvent(res.responseId), 2300).then(({ data }) => {
+          console.log('data;  ', data)
+          // set to replied state
+          if(interaction) interaction.setReplied();
           // reply received
-          return resolve(res.reply(data))
+          if(data) return resolve(res.reply(data))
         }).catch(() => {
+          console.log('timed out')
+          // if responseEvent did not fire (no reply())
+          // function to call if defering
           const defer = ()  => {
-            // emit this to makesure any attached handlers mark interaction as replied
-            this.emit(getRepliedEvent(res.responseId) as any)
+            console.debug(`Automatic defer`)
+            if(interaction) interaction.setReplied()
+            // remove all listners
+            this.removeAllListeners(getResponseEvent(res.responseId) as any)
             return resolve(res.reply({ type: InteractionResponseType.DeferredChannelMessageWithSource }))
           }
-          // if auto defer is disabled
+          // if auto defer is enabled
           match(this.options.autoDefer)
-            .with(true, { enabled: true }, defer)
-        
-          console.debug(`Automatic defer`)
+            .with(true, { enabled: true } , defer)
+            .with(false, { enabled: false}, () => null)
+            .exhaustive()
         })
 
-        let interaction;
         if (rawInteraction.type === InteractionType.ApplicationCommand) {
-        
+          interaction = new BaseCommandContext(rawInteraction, this, res.responseId)
         }
 
         if(interaction) {
-
+          this.emit(RequestEvents.interactionCreate, interaction)
         }
       });
     });

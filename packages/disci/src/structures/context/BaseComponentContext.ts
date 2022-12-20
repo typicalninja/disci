@@ -3,8 +3,8 @@ import type { InteractionHandler } from "../../InteractioHandler";
 import { getResponseEvent } from "../../utils/events";
 import BaseInteractionContext from "./BaseInteractionContext";
 
-export class BaseCommandContext extends BaseInteractionContext {
-    override type: InteractionType.ApplicationCommand = InteractionType.ApplicationCommand;
+export class BaseComponentContext extends BaseInteractionContext {
+    override type: InteractionType.MessageComponent = InteractionType.MessageComponent;
     constructor(apiData: APIInteraction, public override InteractionHandler: InteractionHandler, public resId: string) {
         super(apiData, InteractionHandler);
     }

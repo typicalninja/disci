@@ -1,6 +1,6 @@
-import { APIInteraction, InteractionResponseType, InteractionType, Snowflake } from "discord-api-types/v10";
+import type { APIInteraction, InteractionType, Snowflake } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractioHandler";
-import { getRepliedEvent, getResponseEvent } from "../../utils/events";
+
 
 
 /**
@@ -19,7 +19,7 @@ export default class BaseInteractionContext {
     /**
      * Type of this interaction
      */
-    type: InteractionType
+    type?: InteractionType
     /**
      * Guild id of where it originated 
      */
@@ -30,8 +30,7 @@ export default class BaseInteractionContext {
      * Wether this Interaction has Already been replied to
      */
     replied: boolean;
-    constructor(apiData: APIInteraction, public InteractionHandler: InteractionHandler, private resId: string) {
-        this.type = apiData.type;
+    constructor(apiData: APIInteraction, public InteractionHandler: InteractionHandler) {
         this.token = apiData.token;
         this.replied = false;
         // if interaction from guild
@@ -42,26 +41,15 @@ export default class BaseInteractionContext {
         if(apiData.channel_id) {
             this.channelId = apiData.channel_id
         }
-
-        // marks this interaction a replied, when emitted
-        InteractionHandler.once(getRepliedEvent(resId) as any, () => {
-            console.log('replied', this.replied)
-            this.replied = true;
-        });
     }
-    reply() {
-        if(this.replied) throw new Error(`Interaction already replied`)
-        // emit the event to mark as replied
-        console.log('resp:', getResponseEvent(this.resId))
-        this.InteractionHandler.emit(getResponseEvent(this.resId) as any, {
-            type: InteractionResponseType.ChannelMessageWithSource,
-            data: {
-                content: 'test'
-            }
+    setReplied() {
+        Object.defineProperty(this, 'replied', {
+            value: true,
+            writable: false,
+            enumerable: true,
         });
-        this.InteractionHandler.emit(getRepliedEvent(this.resId) as any);
 
-        return this;
+        return true;
     }
 }
 
