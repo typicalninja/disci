@@ -1,5 +1,5 @@
-import type { APIInteraction } from "discord-api-types/v10";
 import type { EventEmitter } from "events";
+
 import type BaseInteractionContext from "../structures/context/BaseInteractionContext";
 import type { RequestTransformer, ResponseTransformer } from "./transformers";
 
@@ -15,7 +15,7 @@ export enum RequestEvents {
     /**
      * When a request is succefully identified as a Interaction and context is created
      */
-    interactionCreate ='interactionCreate'
+    interactionCreate ='interactionCreate',
 }
 export interface ClientEvents {
     'requestCreate': (
@@ -28,9 +28,25 @@ export interface ClientEvents {
     'interactionCreate': (InteractionContext: BaseInteractionContext) => void;
 }
 
-export function AfterEvent(emitter: EventEmitter, eventName: string, timeout:number = 6000) {
+export const getResponseEvent = (eventId: string) => `reply_${eventId}`;
+export const getRepliedEvent = (eventId: string) => `replied_${eventId}`;
+
+export function WaitForEvent(emitter: EventEmitter, eventName: string, timeout:number = 6000): Promise<any> {
+    console.log('watching for;', eventName)
     return new Promise((resolve, reject) => {
-        emitter.once(eventName, resolve)
-       if(timeout) setTimeout(reject, timeout)
+        // a variable, so we can clear timeout if it does not timeout
+        let time: NodeJS.Timeout | undefined;
+
+        // if timeout is specified
+        if(timeout) time = setTimeout(() => {
+            return reject(`Wait for event: ${eventName} timed out`)
+         }, timeout)
+
+
+        function done(args: any) {
+            if(time) clearTimeout(time)
+            return resolve(args);
+        }
+        emitter.once(eventName, done)
     });
 }

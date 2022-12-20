@@ -1,4 +1,6 @@
-import type { APIInteraction, InteractionType, Snowflake } from "discord-api-types/v10";
+import { APIInteraction, InteractionResponseType, InteractionType, Snowflake } from "discord-api-types/v10";
+import type { InteractionHandler } from "../../InteractioHandler";
+import { getRepliedEvent, getResponseEvent } from "../../utils/events";
 
 
 /**
@@ -28,12 +30,10 @@ export default class BaseInteractionContext {
      * Wether this Interaction has Already been replied to
      */
     replied: boolean;
-    constructor(apiData: APIInteraction, ) {
+    constructor(apiData: APIInteraction, public InteractionHandler: InteractionHandler, private resId: string) {
         this.type = apiData.type;
         this.token = apiData.token;
         this.replied = false;
-        // dynamic data
-        console.log(apiData)
         // if interaction from guild
         if(apiData.guild_id) {
             this.guildId = apiData.guild_id
@@ -42,6 +42,26 @@ export default class BaseInteractionContext {
         if(apiData.channel_id) {
             this.channelId = apiData.channel_id
         }
+
+        // marks this interaction a replied, when emitted
+        InteractionHandler.once(getRepliedEvent(resId) as any, () => {
+            console.log('replied', this.replied)
+            this.replied = true;
+        });
+    }
+    reply() {
+        if(this.replied) throw new Error(`Interaction already replied`)
+        // emit the event to mark as replied
+        console.log('resp:', getResponseEvent(this.resId))
+        this.InteractionHandler.emit(getResponseEvent(this.resId) as any, {
+            type: InteractionResponseType.ChannelMessageWithSource,
+            data: {
+                content: 'test'
+            }
+        });
+        this.InteractionHandler.emit(getRepliedEvent(this.resId) as any);
+
+        return this;
     }
 }
 

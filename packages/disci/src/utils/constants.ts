@@ -3,13 +3,14 @@ export enum DiscordVerificationHeaders {
   TimeStamp = "x-signature-timestamp"
 }
 
-export interface ClientOptions {
-  autoDefer?: boolean;
-  autoDeferTimeout?: number;
+export interface HandlerOptions {
+  autoDefer: boolean | { enabled: boolean; timeout: number };
   publicKey?: string, 
 }
 
-export const defaultOptions: ClientOptions = {
-  autoDefer: true, 
-  autoDeferTimeout: 2000,
+export const defaultOptions: HandlerOptions = {
+  autoDefer: {
+    enabled: true,
+    timeout: 2000
+  }, 
 }

@@ -1,6 +1,7 @@
 // utilities to extract common fields from requests
 
 import type { APIInteractionResponse } from "discord-api-types/v10"
+import { nanoid } from "nanoid";
 
 export type CommonHttpRequest = { 
     headers?: Record<string, string>,
@@ -29,29 +30,48 @@ export class RequestTransformer<RequestType extends CommonHttpRequest> {
 }
 
 export interface HandlerResponse {
-   status: number,
-   data: APIInteractionResponse | string
+   status: number;
+   data: APIInteractionResponse | string;
+   /**
+    * Response headers set according to the data 
+    */
+   responseHeaders: Record<string, string>
 }
 export class ResponseTransformer<ResponseType> {
     /**
      * Status code of the response
      */
-     statusCode: number
+     statusCode: number;
      /**
       * Data that should be sent back as a response / error
       */
-     responseData?: APIInteractionResponse | string
+     responseData?: APIInteractionResponse | string;
+     /**
+      * Random id, used internally to respond to this request
+      */
+     responseId: string;
+     /**
+      * Headers used in a response
+      */
+     responseHeaders: Record<string, string>;
      constructor(public res: ResponseType) {
         this.statusCode = 200;
-
+        this.responseId = nanoid(9);
+        this.responseHeaders = {};
      }
      setStatus(code: number) {
         this.statusCode = code;
         return this;
      }
      setData(data: APIInteractionResponse | string) {
+        if(typeof data === 'string') this.setHeader('content-type', 'text/plain')
+        else this.setHeader('content-type', 'application/json')
+
         this.responseData = data;
         return this;
+     }
+     setHeader(headerName: string, value: string) {
+        return Object.defineProperty(this.responseHeaders, headerName, { value, enumerable: true, writable: true })
      }
      reply(data: string | APIInteractionResponse, code: number = 200): HandlerResponse {
          this.setData(data);
@@ -64,7 +84,8 @@ export class ResponseTransformer<ResponseType> {
      toRaw(): HandlerResponse {
         return {
             status: this.statusCode,
-            data: this.responseData || 'Unknown'
+            data: this.responseData || 'Unknown',
+            responseHeaders: this.responseHeaders
          }
      }
 }

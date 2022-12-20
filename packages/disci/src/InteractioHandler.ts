@@ -5,16 +5,18 @@ import {
   InteractionType,
 } from "discord-api-types/v10";
 import {
-  ClientOptions,
+  HandlerOptions,
   defaultOptions,
   DiscordVerificationHeaders,
 } from "./utils/constants";
 import nacl from "tweetnacl";
 // to add typings to events
 import { TypedEmitter } from "tiny-typed-emitter";
-import BaseInteractionContext from "./structures/context/BaseInteractionContext";
-import { ClientEvents, RequestEvents } from "./utils/events";
+//import BaseInteractionContext from "./structures/context/BaseInteractionContext";
+import { ClientEvents, getRepliedEvent, getResponseEvent, RequestEvents, WaitForEvent } from "./utils/events";
 import { CommonHttpRequest, HandlerResponse, RequestTransformer, ResponseTransformer } from "./utils/transformers";
+
+import { match } from "ts-pattern";
 
 export type replyFunction = (
   data: APIInteractionResponse,
@@ -23,13 +25,12 @@ export type replyFunction = (
 
 
 export class InteractionHandler extends TypedEmitter<ClientEvents> {
-  options: ClientOptions;
-  constructor(options: ClientOptions) {
+  options: HandlerOptions;
+  constructor(options: Partial<HandlerOptions>) {
     super();
     this.options = Object.assign({}, defaultOptions, options);
-
     if(!this.options.publicKey || typeof this.options.publicKey !== 'string') {
-      console.warn(`VerifyOff (no publicKey): Booting in debug mode, Requests will not be verified of thier origin (Disable This mode by passing your "publicKey" to options)`)
+      console.warn(`VerifyOff (no publicKey): Running in debug mode, Requests will not be verified of thier origin (Disable This mode by passing your "publicKey" to options)`)
     }
   }
   /**
@@ -59,15 +60,34 @@ export class InteractionHandler extends TypedEmitter<ClientEvents> {
           { request: req, reply: res },
         );
         // Body will be a APIInteraction
-        const body = JSON.parse(req.rawBody) as APIInteraction;
-        // a ping request
-        if (body.type === InteractionType.Ping)
-          return resolve(res.reply({ type: InteractionResponseType.Pong }))
-        else if (body.type === InteractionType.ApplicationCommand) {
-          this.emit(
-            RequestEvents.interactionCreate,
-            new BaseInteractionContext(body)
-          );
+        const rawInteraction = JSON.parse(req.rawBody) as APIInteraction;
+        // a ping request (handle it first)
+        if (rawInteraction.type === InteractionType.Ping) return resolve(res.reply({ type: InteractionResponseType.Pong }))
+
+        // finally wait for it to finish
+        WaitForEvent(this, getResponseEvent(res.responseId), 2500).then((data: APIInteractionResponse) => {
+          // reply received
+          return resolve(res.reply(data))
+        }).catch(() => {
+          const defer = ()  => {
+            // emit this to makesure any attached handlers mark interaction as replied
+            this.emit(getRepliedEvent(res.responseId) as any)
+            return resolve(res.reply({ type: InteractionResponseType.DeferredChannelMessageWithSource }))
+          }
+          // if auto defer is disabled
+          match(this.options.autoDefer)
+            .with(true, { enabled: true }, defer)
+        
+          console.debug(`Automatic defer`)
+        })
+
+        let interaction;
+        if (rawInteraction.type === InteractionType.ApplicationCommand) {
+        
+        }
+
+        if(interaction) {
+
         }
       });
     });

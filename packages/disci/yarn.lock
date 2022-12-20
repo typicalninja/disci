@@ -265,7 +265,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:^4.0.0, debug@npm:^4.3.4":
+"debug@npm:^4.0.0":
   version: 4.3.4
   resolution: "debug@npm:4.3.4"
   dependencies:
@@ -290,12 +290,13 @@ __metadata:
   dependencies:
     "@types/debug": ^4.1.7
     "@types/node": ^18.11.15
-    debug: ^4.3.4
     discord-api-types: ^0.37.22
     fastify: ^4.10.2
+    nanoid: 3.3.4
     node-dev: ^7.4.3
     tiny-typed-emitter: ^2.1.0
     ts-node: ^10.9.1
+    ts-pattern: ^4.0.6
     tslib: ^2.4.1
     tweetnacl: ^1.0.3
     typescript: ^4.9.4
@@ -565,6 +566,15 @@ __metadata:
   version: 2.1.2
   resolution: "ms@npm:2.1.2"
   checksum: 673cdb2c3133eb050c745908d8ce632ed2c02d85640e2edb3ace856a2266a813b30c613569bf3354fdf4ea7d1a1494add3bfa95e2713baa27d0c2c71fc44f58f
+  languageName: node
+  linkType: hard
+
+"nanoid@npm:3.3.4":
+  version: 3.3.4
+  resolution: "nanoid@npm:3.3.4"
+  bin:
+    nanoid: bin/nanoid.cjs
+  checksum: 2fddd6dee994b7676f008d3ffa4ab16035a754f4bb586c61df5a22cf8c8c94017aadd360368f47d653829e0569a92b129979152ff97af23a558331e47e37cd9c
   languageName: node
   linkType: hard
 
@@ -892,6 +902,13 @@ __metadata:
     ts-node-transpile-only: dist/bin-transpile.js
     ts-script: dist/bin-script-deprecated.js
   checksum: 090adff1302ab20bd3486e6b4799e90f97726ed39e02b39e566f8ab674fd5bd5f727f43615debbfc580d33c6d9d1c6b1b3ce7d8e3cca3e20530a145ffa232c35
+  languageName: node
+  linkType: hard
+
+"ts-pattern@npm:^4.0.6":
+  version: 4.0.6
+  resolution: "ts-pattern@npm:4.0.6"
+  checksum: d65d715f5269d6264253e11e89a6f2ff576382e7efecc080747540454cda489d302ffe0c8f096fac72efe0b106ee1d6bfd662d1a5d77dbc831801ec490bef95c
   languageName: node
   linkType: hard
 
