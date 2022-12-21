@@ -38,11 +38,15 @@ export class InteractionHandler extends TypedEmitter<ClientEvents> {
   }
   /**
    * Handles a Request and returns a ResponseTransformer
+   * @param Request the request from the server to handle
+   * @param Response the object used to get information on the response
+   * @param verifyRequest a function that takes a {@link RequestTransformer}
    * @returns A Object containing Response Object
    */
   handleRequest<Request extends CommonHttpRequest, Response>(
     _req: Request,
-    _res: Response
+    _res: Response,
+    verifyRequest?: (req: RequestTransformer<Request>) => Promise<boolean>
   ): Promise<HandlerResponse> {
     // create our custom response/request transformers
     const req = new RequestTransformer<Request>(_req);

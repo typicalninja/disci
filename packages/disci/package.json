@@ -1,7 +1,7 @@
 {
   "name": "disci",
   "version": "1.0.0",
-  "description": "A Http handler for discord interactions",
+  "description": "A Http Request handler for discord interactions",
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "discord-api-types": "^0.37.22",
-    "fastify": "^4.10.2",
     "nanoid": "3.3.4",
     "tiny-typed-emitter": "^2.1.0",
     "ts-pattern": "^4.0.6",

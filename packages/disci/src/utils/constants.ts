@@ -11,8 +11,19 @@ export enum DiscordVerificationHeaders {
 export type InteractionContext = ChatInputCommandContext ;
 
 export interface HandlerOptions {
+  /**
+   * Automaticlly defer a interaction if time out
+   */
   autoDefer: boolean | { enabled: boolean; timeout: number };
+  /**
+   * PublicKey for authorization (keeping this field empty will boot the server to debug mode)
+   * Allowing any request to get through
+   */
   publicKey?: string, 
+  /**
+   * For rest Module
+   */
+  token?: string,
 }
 
 export interface BaseReplyOptions {

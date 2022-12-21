@@ -31,7 +31,8 @@ export class ChatInputCommandContext extends BaseCommandContext {
         return this;
     }
     /**
-     * Defer The reply (cannot defer if already replied)
+     * Defer The reply 
+     * cannot defer if already replied
      * @returns 
      */
     deferReply() {

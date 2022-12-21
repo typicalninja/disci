@@ -8,12 +8,14 @@
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
+    "docs:build": "typedoc --out apps/typedoc --mode file packages/disci",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
     "eslint-config-custom": "*",
     "prettier": "latest",
-    "turbo": "latest"
+    "turbo": "latest",
+    "typedoc": "^0.23.23"
   },
   "engines": {
     "node": ">=14.0.0"
