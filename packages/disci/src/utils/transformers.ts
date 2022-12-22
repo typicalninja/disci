@@ -10,17 +10,36 @@ export type CommonHttpRequest = {
     rawBody?: string
 }
 
-
+/**
+ * Create a Common Request type from given type
+ * @private
+ */
 export class RequestTransformer<RequestType extends CommonHttpRequest> {
+   /**
+    * Body of the request as a buffer
+    * @readonly
+    */
     body: Buffer
+    /**
+     * Headers from the request, for internal use
+     * @readonly
+     */
     headers: Record<string, string>;
+    /**
+     * Raw body of the request as it was received, as string
+     * @readonly
+     */
     rawBody: string
     constructor(public req: RequestType) {
       this.body = this.resolveBody(req.body || req.rawBody)
-      this.rawBody = req.rawBody ? (typeof req.rawBody === 'string' ? req.rawBody : JSON.stringify(req.rawBody)) : (typeof req.body == 'string' ? req.body : JSON.stringify(req.body || '{}'))
-      this.headers = req.headers ?? {}
+      this.rawBody =  req.rawBody ? (typeof req.rawBody === 'string' ? req.rawBody : JSON.stringify(req.rawBody)) : (typeof req.body == 'string' ? req.body : JSON.stringify(req.body || '{}'))
+      this.headers = Object.freeze(req.headers ?? {})
     }
-    resolveBody(body: string | Record<string, any> | Buffer | undefined): Buffer {
+     /**
+     * Resolve a body of various types
+     * @private
+     */
+    private resolveBody(body: string | Record<string, any> | Buffer | undefined): Buffer {
         if(!body) throw new Error(`Expected a String/buffer/Object as body, received ${typeof body}`)
         return typeof body == 'string' ? Buffer.from(body, "utf-8") : 
                     Buffer.isBuffer(body) ? body 
@@ -29,7 +48,13 @@ export class RequestTransformer<RequestType extends CommonHttpRequest> {
 }
 
 export interface HandlerResponse {
+   /**
+    * Status code for this response
+    */
    status: number;
+   /**
+    * Response to the request
+    */
    data: APIInteractionResponse | string;
    /**
     * Response headers set according to the data 
@@ -37,7 +62,10 @@ export interface HandlerResponse {
    responseHeaders: Record<string, string>
 }
 
-
+/**
+ * Create a Common Response type from given type
+ * @private
+ */
 export class ResponseTransformer<ResponseType> {
     /**
      * Status code of the response

@@ -17,8 +17,9 @@ import { TypedEmitter } from "tiny-typed-emitter";
 import { ClientEvents, getResponseEvent, InternalReplyEvent, RequestEvents, WaitForEvent } from "./utils/events";
 import { CommonHttpRequest, HandlerResponse, RequestTransformer, ResponseTransformer } from "./utils/transformers";
 
-import { match } from "ts-pattern";
 import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
+import { DisciParseError, DisciValidationError, match, tryAndValue } from "./utils/helpers";
+
 
 
 export type replyFunction = (
@@ -27,7 +28,7 @@ export type replyFunction = (
 ) => void;
 
 
-export class InteractionHandler extends TypedEmitter<ClientEvents> {
+export class InteractionHandler<Request extends CommonHttpRequest, Response> extends TypedEmitter<ClientEvents> {
   options: HandlerOptions;
   constructor(options: Partial<HandlerOptions>) {
     super();
@@ -40,10 +41,10 @@ export class InteractionHandler extends TypedEmitter<ClientEvents> {
    * Handles a Request and returns a ResponseTransformer
    * @param Request the request from the server to handle
    * @param Response the object used to get information on the response
-   * @param verifyRequest a function that takes a {@link RequestTransformer}
+   * @param [verifyRequest = null]  a function that takes a {@link RequestTransformer} and returns a boolean on whether the request is a authorized request
    * @returns A Object containing Response Object
    */
-  handleRequest<Request extends CommonHttpRequest, Response>(
+  handleRequest(
     _req: Request,
     _res: Response,
     verifyRequest?: (req: RequestTransformer<Request>) => Promise<boolean>
@@ -53,7 +54,7 @@ export class InteractionHandler extends TypedEmitter<ClientEvents> {
     const res = new ResponseTransformer<Response>(_res);
     return new Promise((resolve) => {
       // verify if its a valid request
-      this.verifyRequest(req).then((verified) => {
+      (verifyRequest || this.verifyRequest)(req).then((verified) => {
         // fire requestCreate event
         this.emit(
           RequestEvents.requestCreate,
@@ -91,9 +92,8 @@ export class InteractionHandler extends TypedEmitter<ClientEvents> {
           }
           // if auto defer is enabled
           try {
-            match(this.options.autoDefer)
-            .with(true, { enabled: true } , defer)
-            .otherwise(() => void this.removeAllListeners(responseEvent as any));
+            if(match(this.options.autoDefer, true, { enabled: true })) defer();
+            else void this.removeAllListeners(responseEvent as any);
           }
           catch {
             this.removeAllListeners(responseEvent as any)
@@ -113,10 +113,33 @@ export class InteractionHandler extends TypedEmitter<ClientEvents> {
     });
   }
   /**
-   * Verfies a request to see if it originated from discord
+   * Process a request and return a response according to the request
+   * this does not verify if request is valid or not
+   * @param req 
+   * @param res 
+   */
+  processRequest(req: RequestTransformer<Request>, res: ResponseTransformer<Response>): Promise<HandlerResponse> {
+    return new Promise((resolve, reject) => {
+        // this does not verify if request is valid or not
+        const rawInteraction = tryAndValue<APIInteraction>(() => JSON.parse(req.rawBody));
+        if(!rawInteraction) return reject(new DisciParseError(`Failed to parse rawBody into a valid ApiInteraction`));
+        if(!this.verifyInteractionProperties(rawInteraction)) return reject(new DisciValidationError(`Expected Properties was not found on Request.body expected InteractionBody`))
+    })
+  }
+  /**
+   * Verifies if the interaction received has All the Valid Properties
+   * @param body 
+   * @returns 
+   */
+  verifyInteractionProperties(body?: APIInteraction): Boolean {
+    if(!body) return false;
+    return Boolean(body.type && body.token && body.id)
+  }
+  /**
+   * Verfies a request to validate if it originated from discord
    * https://discord.com/developers/docs/interactions/receiving-and-responding#security-and-authorization
    */
-  private verifyRequest(req: RequestTransformer<any>): Promise<boolean> {
+  verifyRequest(req: RequestTransformer<any>): Promise<boolean> {
     return new Promise((resolve) => {
       // no public key yet (maybe not correctly attached)
       if (!this.options.publicKey) {

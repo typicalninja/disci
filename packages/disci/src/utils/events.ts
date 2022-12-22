@@ -3,6 +3,9 @@ import type { EventEmitter } from "events";
 import type { InteractionContext } from "./constants";
 import type { RequestTransformer, ResponseTransformer } from "./transformers";
 
+/**
+ * Names of {@link ClientEvents}
+ */
 export enum RequestEvents {
     /**
      * Fired when a new Request comes through (unverified)
