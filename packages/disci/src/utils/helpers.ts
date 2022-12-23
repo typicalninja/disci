@@ -13,7 +13,8 @@ export function tryAndValue<ReturnType> (fn: () => ReturnType) {
     }
 }
 
-export function createError(errorName: string) {
+// utility to create custom errorClasses
+function createError(errorName: string) {
     return class CustomError extends Error {
         constructor(message: string) {
             // Need to pass `options` as the second parameter to install the "cause" property.
@@ -26,3 +27,4 @@ export function createError(errorName: string) {
 
 export const DisciParseError = createError("ParseError");
 export const DisciValidationError = createError("ValidationError");
+export const DisciInteractionError = createError("InteractionError");

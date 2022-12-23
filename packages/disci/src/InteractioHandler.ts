@@ -14,7 +14,7 @@ import {
 import nacl from "tweetnacl";
 // to add typings to events
 import { TypedEmitter } from "tiny-typed-emitter";
-import { ClientEvents, getResponseEvent, InternalReplyEvent, RequestEvents, WaitForEvent } from "./utils/events";
+import { ClientEvents, RequestEvents } from "./utils/events";
 import { CommonHttpRequest, HandlerResponse, RequestTransformer, ResponseTransformer } from "./utils/transformers";
 
 import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
@@ -27,6 +27,14 @@ export type replyFunction = (
   code?: number
 ) => void;
 
+export type callBackFunction = (data: HandlerResponse) => void;
+const getRespondCallback = (resolve: Function, timeout: number, timeoutFunc: Function): callBackFunction => {
+  const timer = setTimeout(() => timeoutFunc(resolve), timeout)
+  return (data: HandlerResponse) => {
+    clearTimeout(timer);
+    return void resolve(data);
+  }
+}
 
 export class InteractionHandler<Request extends CommonHttpRequest, Response> extends TypedEmitter<ClientEvents> {
   options: HandlerOptions;
@@ -54,61 +62,9 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
     const res = new ResponseTransformer<Response>(_res);
     return new Promise((resolve) => {
       // verify if its a valid request
-      (verifyRequest || this.verifyRequest)(req).then((verified) => {
-        // fire requestCreate event
-        this.emit(
-          RequestEvents.requestCreate,
-          { request: req, reply: res },
-          verified
-        );
-        // this request is unauthorized, reply to it accordingly
-        if (!verified) return resolve(res.reply('Invalid Authorization', 401));
-        this.emit(
-          RequestEvents.rawInteractionCreate,
-          { request: req, reply: res },
-        );
-        // Body will be a APIInteraction
-        const rawInteraction = JSON.parse(req.rawBody) as APIInteraction;
-        // a ping request (handle it first)
-        if (rawInteraction.type === InteractionType.Ping) return resolve(res.reply({ type: InteractionResponseType.Pong }))
-        let interaction: null | InteractionContext = null;
-        const responseEvent = getResponseEvent(res.responseId)
-        // finally wait for it to finish
-        WaitForEvent<InternalReplyEvent>(this, responseEvent, 2300).then(({ data }) => {
-          console.log('data;  ', data)
-          // set to replied state
-          if(interaction) interaction.setReplied();
-          // reply received
-          if(data) return resolve(res.reply(data))
-        }).catch(() => {
-          // if responseEvent did not fire (no reply())
-          // function to call if defering
-          const defer = ()  => {
-            console.debug(`Automatic defer`)
-            if(interaction) interaction.setReplied()
-            // remove all listners
-            this.removeAllListeners(responseEvent as any)
-            return resolve(res.reply({ type: InteractionResponseType.DeferredChannelMessageWithSource }))
-          }
-          // if auto defer is enabled
-          try {
-            if(match(this.options.autoDefer, true, { enabled: true })) defer();
-            else void this.removeAllListeners(responseEvent as any);
-          }
-          catch {
-            this.removeAllListeners(responseEvent as any)
-          }
-        })
-
-        if (rawInteraction.type === InteractionType.ApplicationCommand) {
-          if(rawInteraction.data.type == ApplicationCommandType.ChatInput) {
-            interaction = new ChatInputCommandContext(rawInteraction, this, res.responseId)
-          }
-        }
-
-        if(interaction) {
-          this.emit(RequestEvents.interactionCreate, interaction)
-        }
+      return (verifyRequest || this.verifyRequest.bind(this))(req).then((verified) => {
+         if(verified) return this.processRequest(req, res).then(resolve)
+         else return resolve(res.reply('Authorization invalid', 400))
       });
     });
   }
@@ -124,7 +80,45 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
         const rawInteraction = tryAndValue<APIInteraction>(() => JSON.parse(req.rawBody));
         if(!rawInteraction) return reject(new DisciParseError(`Failed to parse rawBody into a valid ApiInteraction`));
         if(!this.verifyInteractionProperties(rawInteraction)) return reject(new DisciValidationError(`Expected Properties was not found on Request.body expected InteractionBody`))
-    })
+        
+        let interaction: null | InteractionContext = null;
+        const callback = getRespondCallback(resolve, 2900, () => {
+          // timed out
+          if(!interaction) return /* Unsupported Type */ resolve(res.reply(`Type ${rawInteraction.type} is not supported`, 500)) 
+          if(match(this.options.autoDefer, true, { enabled: true })) {
+            interaction.replied = true;
+            // auto defer
+            return resolve(res.reply({ type: InteractionResponseType.DeferredChannelMessageWithSource }))
+          }
+          else interaction.timedOut = true;
+        })
+
+        switch(rawInteraction.type) {
+          // handle pings
+          case InteractionType.Ping:
+            callback(res.reply({ type: InteractionResponseType.Pong }))
+          break;
+          // application commands
+          case InteractionType.ApplicationCommand:
+              // sub types
+              switch(rawInteraction.data.type) {
+                // chatinput / slash commands
+                  case ApplicationCommandType.ChatInput:
+                    interaction = new ChatInputCommandContext(rawInteraction, this, callback)
+                  break;
+              }
+          break;
+          default:
+            // not supported
+            callback(res.reply(`Type ${rawInteraction.type} is not supported`, 500))
+          break;
+        }
+
+        // emit the event
+        if(interaction) {
+          this.emit(RequestEvents.interactionCreate, interaction)
+        }
+      })
   }
   /**
    * Verifies if the interaction received has All the Valid Properties

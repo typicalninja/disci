@@ -4,9 +4,9 @@ import type { APIInteractionResponse } from "discord-api-types/v10"
 import { nanoid } from "nanoid";
 
 export type CommonHttpRequest = { 
-    headers?: Record<string, string>,
+    headers?: any,
     // body related
-    body?: string | Record<string, any> | Buffer,
+    body?: any,
     rawBody?: string
 }
 
@@ -55,7 +55,7 @@ export interface HandlerResponse {
    /**
     * Response to the request
     */
-   data: APIInteractionResponse | string;
+   responseData: APIInteractionResponse | string;
    /**
     * Response headers set according to the data 
     */
@@ -113,7 +113,7 @@ export class ResponseTransformer<ResponseType> {
      toRaw(): HandlerResponse {
         return {
             status: this.statusCode,
-            data: this.responseData || 'Unknown',
+            responseData: this.responseData || 'Unknown',
             responseHeaders: this.responseHeaders
          }
      }
