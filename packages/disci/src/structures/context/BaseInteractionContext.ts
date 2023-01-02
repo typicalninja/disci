@@ -1,5 +1,5 @@
 import type { APIInteraction, InteractionType, Snowflake } from "discord-api-types/v10";
-import type { callBackFunction, InteractionHandler } from "../../InteractioHandler";
+import type { callBackFunction, InteractionHandler } from "../../InteractionHandler";
 
 
 

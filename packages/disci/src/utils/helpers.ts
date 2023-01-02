@@ -4,6 +4,7 @@ export function match(value: any, ...patterns: any[]) {
     return patterns.some(pattern => isEqual(value, pattern));
 }
 
+/** encapsulates a fn in try catch block and return value/null */
 export function tryAndValue<ReturnType> (fn: () => ReturnType) {
     try {
         return fn();
@@ -11,6 +12,17 @@ export function tryAndValue<ReturnType> (fn: () => ReturnType) {
     catch {
         return null;
     }
+}
+
+const idCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+export function generateRandomId(length: number): string {
+    let result = '';
+    // result must be at the length
+    for (let i = 0; i < length; i++) {
+        // until it reaches the length add a char to the result (random)
+      result += idCharacters.charAt(Math.floor(Math.random() * idCharacters.length));
+    }
+    return result;
 }
 
 // utility to create custom errorClasses
@@ -24,6 +36,9 @@ function createError(errorName: string) {
           }
     }
 }
+
+
+
 
 export const DisciParseError = createError("ParseError");
 export const DisciValidationError = createError("ValidationError");

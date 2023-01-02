@@ -1,6 +1,5 @@
 import {
   APIInteraction,
-  APIInteractionResponse,
   ApplicationCommandType,
   InteractionResponseType,
   InteractionType,
@@ -10,22 +9,17 @@ import {
   defaultOptions,
   DiscordVerificationHeaders,
   InteractionContext,
+  ClientEvents, 
+  RequestEvents
 } from "./utils/constants";
 import nacl from "tweetnacl";
 // to add typings to events
 import { TypedEmitter } from "tiny-typed-emitter";
-import { ClientEvents, RequestEvents } from "./utils/events";
 import { CommonHttpRequest, HandlerResponse, RequestTransformer, ResponseTransformer } from "./utils/transformers";
 
 import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
 import { DisciParseError, DisciValidationError, match, tryAndValue } from "./utils/helpers";
-
-
-
-export type replyFunction = (
-  data: APIInteractionResponse,
-  code?: number
-) => void;
+import { REST } from '@discordjs/rest';
 
 export type callBackFunction = (data: HandlerResponse) => void;
 const getRespondCallback = (resolve: Function, timeout: number, timeoutFunc: Function): callBackFunction => {
@@ -38,16 +32,19 @@ const getRespondCallback = (resolve: Function, timeout: number, timeoutFunc: Fun
 
 export class InteractionHandler<Request extends CommonHttpRequest, Response> extends TypedEmitter<ClientEvents> {
   options: HandlerOptions;
+  rest: REST | null;
   constructor(options: Partial<HandlerOptions>) {
     super();
     this.options = Object.assign({}, defaultOptions, options);
+    // if rest is enabled
+    this.rest = this.options.token ? new REST({ version: '10' }).setToken(this.options.token) : null
     if(!this.options.publicKey || typeof this.options.publicKey !== 'string') {
       console.warn(`VerifyOff (no publicKey): Running in debug mode, Requests will not be verified of thier origin (Disable This mode by passing your "publicKey" to options)`)
     }
   }
   /**
    * Handles a Request and returns a ResponseTransformer
-   * @param Request the request from the server to handle
+   * @param Request the reques t from the server to handle
    * @param Response the object used to get information on the response
    * @param [verifyRequest = null]  a function that takes a {@link RequestTransformer} and returns a boolean on whether the request is a authorized request
    * @returns A Object containing Response Object
@@ -82,10 +79,10 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
         if(!this.verifyInteractionProperties(rawInteraction)) return reject(new DisciValidationError(`Expected Properties was not found on Request.body expected InteractionBody`))
         
         let interaction: null | InteractionContext = null;
-        const callback = getRespondCallback(resolve, 2900, () => {
+        const callback = getRespondCallback(resolve, this.options.replyTimeout.timeout, () => {
           // timed out
           if(!interaction) return /* Unsupported Type */ resolve(res.reply(`Type ${rawInteraction.type} is not supported`, 500)) 
-          if(match(this.options.autoDefer, true, { enabled: true })) {
+          if(match(this.options.replyTimeout, { action: 'defer' })) {
             interaction.replied = true;
             // auto defer
             return resolve(res.reply({ type: InteractionResponseType.DeferredChannelMessageWithSource }))
@@ -137,8 +134,7 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
     return new Promise((resolve) => {
       // no public key yet (maybe not correctly attached)
       if (!this.options.publicKey) {
-        console.warn(`VerifyOff (no publicKey): Automatic debug mode is running, this request is not validated and maybe malicious`)
-        // debug mode
+        console.warn(`VerifyOff (no publicKey): Automatic debug mode is running, this request is not validated`)
         return resolve(true)
       }
       const timestamp = req.headers[

@@ -1,5 +1,5 @@
 import { APIChatInputApplicationCommandInteractionData, APIInteraction, APIMessageApplicationCommandInteractionData, APIUserApplicationCommandInteractionData, ApplicationCommandType, InteractionType } from "discord-api-types/v10";
-import type { callBackFunction, InteractionHandler } from "../../InteractioHandler";
+import type { callBackFunction, InteractionHandler } from "../../InteractionHandler";
 import BaseInteractionContext from "./BaseInteractionContext";
 
 type ApplicationCommandDataTypes = APIChatInputApplicationCommandInteractionData | APIUserApplicationCommandInteractionData | APIMessageApplicationCommandInteractionData

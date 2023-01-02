@@ -22,7 +22,7 @@ export class ChatInputCommandContext extends BaseCommandContext {
             responseData: {
               type: type,
                data: {
-                content: ''
+                content: 'Test'
                }
             } as APIInteractionResponseChannelMessageWithSource
         })
