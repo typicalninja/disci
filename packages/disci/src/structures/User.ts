@@ -21,7 +21,7 @@ export default class User {
      * Create a new user from discord data
      * @param apiData - data from discord api
      */
-    constructor(apiData: APIUser) {
+    constructor(public apiData: APIUser) {
         
     }
     /**

@@ -1,5 +1,4 @@
-import { APIInteractionResponseChannelMessageWithSource, ApplicationCommandType,InteractionResponseType } from "discord-api-types/v10";
-import { isGeneratorFunction } from "util/types";
+import { APIInteractionResponseChannelMessageWithSource, ApplicationCommandType,InteractionResponseType, Routes } from "discord-api-types/v10";
 import { DisciError } from "../../utils/helpers";
 //import type { MessageReplyOptions } from "../../utils/constants";
 import BaseCommandContext from "./BaseCommandContext";
@@ -40,10 +39,12 @@ export class ChatInputCommandContext extends BaseCommandContext {
         return this.reply(InteractionResponseType.DeferredChannelMessageWithSource);
     }
     /**
-     * Fetch
+     * Fetch The initial Interaction response
      */
     fetchOriginal() {
       if(!this.replied) throw new DisciError(`Cannot Fetch a interaction that has not been replied to.`, { methodName: 'fetchOriginal()' })
-      if(!this.InteractionHandler.rest) throw new DisciError(`Rest Handler is not activated, please provide a token and appId to activate it`, { methodName: 'fetchOriginal' })
+      const { appId } = this.InteractionHandler.options
+      if(!this.InteractionHandler.rest || !appId) throw new DisciError(`Rest Handler is not activated`, { methodName: 'fetchOriginal' });
+      return this.InteractionHandler.rest.get(Routes.webhookMessage(appId, this.token))
     }
 }

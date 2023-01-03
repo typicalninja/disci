@@ -13,7 +13,7 @@ export default class BaseInteractionContext {
      */
     id!: Snowflake;
     /**
-     * Continuation token for responding to the interaction
+     * Continuation token for fetching related tasks for this interaction
      */
     token!: string;
     /**
