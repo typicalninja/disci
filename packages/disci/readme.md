@@ -1,0 +1,3 @@
+# Disci
+
+* The Core module

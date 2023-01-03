@@ -37,7 +37,7 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
     super();
     this.options = Object.assign({}, defaultOptions, options);
     // if rest is enabled
-    this.rest = this.options.token ? new REST({ version: '10' }).setToken(this.options.token) : null
+    this.rest = (this.options.token && this.options.appId ) ? new REST({ version: '10' }).setToken(this.options.token) : null
     if(!this.options.publicKey || typeof this.options.publicKey !== 'string') {
       console.warn(`VerifyOff (no publicKey): Running in debug mode, Requests will not be verified of thier origin (Disable This mode by passing your "publicKey" to options)`)
     }
@@ -64,7 +64,7 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
          else return resolve(res.reply('Authorization invalid', 400))
       });
     });
-  }
+  } 
   /**
    * Process a request and return a response according to the request
    * this does not verify if request is valid or not

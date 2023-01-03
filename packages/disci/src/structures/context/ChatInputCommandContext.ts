@@ -1,4 +1,6 @@
 import { APIInteractionResponseChannelMessageWithSource, ApplicationCommandType,InteractionResponseType } from "discord-api-types/v10";
+import { isGeneratorFunction } from "util/types";
+import { DisciError } from "../../utils/helpers";
 //import type { MessageReplyOptions } from "../../utils/constants";
 import BaseCommandContext from "./BaseCommandContext";
 
@@ -11,7 +13,7 @@ export class ChatInputCommandContext extends BaseCommandContext {
      * @param data 
      * @returns 
      */
-    reply(type: InteractionResponseType.DeferredChannelMessageWithSource | InteractionResponseType.ChannelMessageWithSource, /*data?: MessageReplyOptions*/) {
+    reply(type: InteractionResponseType.DeferredChannelMessageWithSource | InteractionResponseType.ChannelMessageWithSource, /*data?: MessageReplyOptions*/): ChatInputCommandContext {
         if(this.replied) throw new Error(`Interaction already replied`)
         if(![InteractionResponseType.DeferredChannelMessageWithSource, InteractionResponseType.ChannelMessageWithSource].includes(type)) throw new Error(`Invalid response type ${type}`)
         this.replied = true;
@@ -33,8 +35,15 @@ export class ChatInputCommandContext extends BaseCommandContext {
      * cannot defer if already replied
      * @returns 
      */
-    deferReply() {
-        if(this.replied) throw new Error(`Interaction already replied`)
+    deferReply(): ChatInputCommandContext {
+        if(this.replied) throw new DisciError(`Interaction already replied`, { methodName: 'deferReply' })
         return this.reply(InteractionResponseType.DeferredChannelMessageWithSource);
+    }
+    /**
+     * Fetch
+     */
+    fetchOriginal() {
+      if(!this.replied) throw new DisciError(`Cannot Fetch a interaction that has not been replied to.`, { methodName: 'fetchOriginal()' })
+      if(!this.InteractionHandler.rest) throw new DisciError(`Rest Handler is not activated, please provide a token and appId to activate it`, { methodName: 'fetchOriginal' })
     }
 }

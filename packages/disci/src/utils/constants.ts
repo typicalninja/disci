@@ -23,16 +23,20 @@ export interface HandlerOptions {
      */
     action: 'defer' | 'ignore';
     timeout: number;
-   }
+   };
   /**
    * PublicKey for authorization (keeping this field empty will boot the server to debug mode)
    * Allowing any request to get through
    */
-  publicKey?: string, 
+  publicKey?: string;
   /**
-   * For rest Module
+   * Token for authorization on rest requsts
    */
-  token?: string,
+  token?: string;
+  /**
+   * id of the current user
+   */
+   appId?: string;
 }
 
 export interface BaseReplyOptions {
