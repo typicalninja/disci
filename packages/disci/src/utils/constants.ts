@@ -28,15 +28,15 @@ export interface HandlerOptions {
    * PublicKey for authorization (keeping this field empty will boot the server to debug mode)
    * Allowing any request to get through
    */
-  publicKey?: string;
+  publicKey: string;
   /**
    * Token for authorization on rest requsts
    */
-  token?: string;
+  token: string;
   /**
    * id of the current user
    */
-   appId?: string;
+   appId: string;
 }
 
 export interface BaseReplyOptions {
@@ -53,7 +53,11 @@ export const defaultOptions: HandlerOptions = {
   replyTimeout: {
    action: 'defer',
    timeout: 2900
-  }
+  },
+  // we assume credentials are in .env files [If provided in options, will be overidden]
+  publicKey: process.env.PUBLIC_KEY!,
+  token: process.env.TOKEN!,
+  appId: process.env.APPID!
 }
 
 export const debugNameSpace = `disci`

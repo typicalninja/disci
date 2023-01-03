@@ -36,8 +36,9 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
   constructor(options: Partial<HandlerOptions>) {
     super();
     this.options = Object.assign({}, defaultOptions, options);
-    // if rest is enabled
-    this.rest = (this.options.token && this.options.appId ) ? new REST({ version: '10' }).setToken(this.options.token) : null
+    if(!this.options.token || !this.options.appId || !this.options.publicKey) throw new DisciValidationError(`Token/appId/publicKey is Required`)
+    // Our Rest manager
+    this.rest = new REST({ version: '10' }).setToken(this.options.token);
     if(!this.options.publicKey || typeof this.options.publicKey !== 'string') {
       console.warn(`VerifyOff (no publicKey): Running in debug mode, Requests will not be verified of thier origin (Disable This mode by passing your "publicKey" to options)`)
     }
