@@ -76,20 +76,20 @@ export abstract class BaseInteraction implements IBase {
     /**
      * Timestamp of this interaction
      */
-    get createdTimeStamp() {
+    get createdTimestamp() {
         return convertSnowflakeToTimeStamp(this.id)
     }
     /**
      * Created time as a date
      */
     get createdAt(): Date {
-		return new Date(this.createdTimeStamp);
+		return new Date(this.createdTimestamp);
 	}
 
     isCommand(): this is ApplicationCommand {
 		return this.type === InteractionType.ApplicationCommand;
 	}
 
-    
+
 }
 
