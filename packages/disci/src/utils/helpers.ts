@@ -1,4 +1,10 @@
+import type { Snowflake } from "discord-api-types/globals";
 import isEqual from "lodash.isequal";
+
+export const DiscordEpoch = 14200704e5;
+export const SnowFlakeToTimestamp = (id: Snowflake): number => {
+    return (Number(id) >> 22) + DiscordEpoch;
+}
 
 export function match(value: any, ...patterns: any[]) {
     return patterns.some(pattern => isEqual(value, pattern));
@@ -24,6 +30,8 @@ export function generateRandomId(length: number): string {
     }
     return result;
 }
+
+
 
 // utility to create custom errorClasses
 function createError(errorName: string) {

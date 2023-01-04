@@ -4,6 +4,7 @@ import { Permissions } from "../Permissions";
 
 import type { Snowflake } from "discord-api-types/globals";
 import type { APIInteraction, InteractionType } from "discord-api-types/v10";
+import { SnowFlakeToTimestamp } from "../utils/helpers";
 
 /**
  * Base Interaction, used by all other Interaction related Structures
@@ -42,7 +43,7 @@ export abstract class BaseInteraction implements IBase {
      /**
       * If this interaction has Already been replied to
       */
-     replied: boolean;
+     responded: boolean;
      /**
       * If this interaction timed out
       */
@@ -68,7 +69,16 @@ export abstract class BaseInteraction implements IBase {
         }
 
         // properties to keep track of this Interaction
-        this.replied = false;
+        this.responded = false;
         this.timeout = false;
     }
+    get createdTimeStamp() {
+        return SnowFlakeToTimestamp(this.id)
+    }
+    /**
+     * Created time as a date
+     */
+    get createdAt(): Date {
+		return new Date(this.createdTimeStamp);
+	}
 }

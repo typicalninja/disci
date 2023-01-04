@@ -1,66 +1,80 @@
 import { DisciTypeError } from "./utils/helpers";
+import { PermissionFlagsBits } from "discord-api-types/v10";
+
+export type PermissionFlagString = keyof typeof PermissionFlagsBits
+export type PermissionResolvable = bigint | bigint[] | PermissionFlagString | PermissionFlagString[]
 
 /**
  * A class for manipulating a bitfield of permissions.
  */
 export class Permissions {
-    bitfield!: bigint
+    static readonly Flags = PermissionFlagsBits
+    static None = 0n;
+    bitfield: bigint
     /**
      * Create a new Permissions Instance
      * @param basePermissions - Permissions to institate the class with
+     * @param adminBypass - If true **AND** This permission bitfield has administator bitfield will return true for all **has()**
      */
-    constructor(basePermissions: bigint | bigint[]) {
-        if(Array.isArray(basePermissions)) {
-            this.bitfield = BigInt(0)
-            for(const permission of basePermissions) {
-                this.set(permission)
-            }
-        }
-        else if(basePermissions) {
-            this.bitfield = basePermissions;
-        }
+    constructor(basePermissions: PermissionResolvable, public adminBypass: boolean = true) {
+        this.bitfield = Permissions.resolve(basePermissions)
     }
-    set(flag: bigint): Permissions {
-        if(!this.bitfield) return this;
-        this.bitfield |= flag;
+    /**
+     * Adds bits to the bitfield
+     * @param bits New bits to add
+     * @returns 
+     */
+    set(bits: PermissionResolvable): Permissions {
+        const resolvedBits = Permissions.resolve(bits);
+        this.bitfield |= resolvedBits;
         return this;
     }
-    unset(flag: bigint): Permissions {
-        if(!this.bitfield) return this;
-        this.bitfield &= ~flag;
+    /**
+     * Removes bits from the bitfield
+     * @param bits bits to remove
+     * @returns 
+     */
+    unset(bits: PermissionResolvable): Permissions {
+        const resolvedBits = Permissions.resolve(bits);
+        this.bitfield &= ~resolvedBits;
         return this;
     }
 
     /**
-     * Checks if one or more flags are set in the bitfield.
-     * @param flag - A single Permissions Bitfield or a Array of Bitfields
-     * @returns `true` if ANY of the flag/s are set, `false` otherwise.
+     * checks if all bits are present in the bitfield
+     * @param bits bits to check
+     * @returns 
      */
-    has(flag: bigint | bigint[]): boolean {
-        if(!this.bitfield) return false;
-        if(Array.isArray(flag)) {
-            for(const singleFlag of flag) {
-                if(this.has(singleFlag)) return true;
-            }
-            return false;
-        }
-        // expect a number
-        else {
-            return (this.bitfield & flag) === flag;
-        }
+    has(bits: PermissionResolvable): boolean {
+        const resolvedBits = Permissions.resolve(bits);
+        if(this.adminBypass && (this.bitfield & Permissions.Flags.Administrator)) return true;
+        return (this.bitfield & resolvedBits) === resolvedBits;
     }
 
-    /**
-     * Checks if all of the specified flags are set in the bitfield.
-     * @param flag - Array of Permissions Bitfields to check
-     * @returns `true` if ANY of the flag/s are set, `false` otherwise.
-     */
-    hasAll(flags: bigint[]): boolean {
-        if(!this.bitfield) return false;
-        if(!Array.isArray(flags)) throw new DisciTypeError(`Expected Flags to be a Array of Bitfields.received ${typeof flags}`, { methodName: 'hasAll'});
-        for(const flag of flags) {
-            if(!this.has(flag)) return false;
+    equals(bit: PermissionResolvable): boolean {
+        return !!(this.bitfield & Permissions.resolve(bit));
+    }
+
+    static resolve(bit: PermissionResolvable): bigint {
+        switch(typeof bit) {
+            case 'bigint': 
+                return bit
+            case 'number': 
+                return BigInt(bit)
+            case 'string':
+                const resolved = Permissions.Flags[bit]
+                if(!resolved) throw new DisciTypeError(`Cannot Resolve permission Bit: ${bit} [StringFlag Not found]`)
+                return resolved;
+            default:
+                // Someone can pass something not handled by any of the above cases, maybe its a array of bits
+                if(Array.isArray(bit)) {
+                    return Permissions.resolve(
+                        bit
+                        .map((eBit) => typeof eBit === 'string' ? Permissions.Flags[eBit] : eBit)
+                        .reduce((acc, cur) => acc | cur, Permissions.None)
+                    )
+                }
+                else throw new DisciTypeError(`Cannot Resolve permission Bit: ${bit} [Not Expected type]`)
         }
-        return true;
     }
 }
