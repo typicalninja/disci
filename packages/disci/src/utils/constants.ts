@@ -1,5 +1,6 @@
 import type { APIActionRowComponent, APIEmbed, APIMessageActionRowComponent } from "discord-api-types/v10";
-import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
+import type { ChatInputInteraction } from "../structures/ApplicationCommand";
+//import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
 import type { RequestTransformer, ResponseTransformer } from "./transformers";
 
 
@@ -10,7 +11,7 @@ export enum DiscordVerificationHeaders {
 
 
 // Common type for interactions
-export type InteractionContext = ChatInputCommandContext ;
+export type InteractionContext = ChatInputInteraction;
 
 export interface HandlerOptions {
   /**

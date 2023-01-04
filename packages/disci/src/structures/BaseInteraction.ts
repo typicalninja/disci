@@ -3,8 +3,9 @@ import type { IBase } from "./Base";
 import { Permissions } from "../Permissions";
 
 import type { Snowflake } from "discord-api-types/globals";
-import type { APIInteraction, InteractionType } from "discord-api-types/v10";
-import { SnowFlakeToTimestamp } from "../utils/helpers";
+import { APIInteraction, InteractionType } from "discord-api-types/v10";
+import { convertSnowflakeToTimeStamp } from "../utils/helpers";
+import type { ApplicationCommand } from "./ApplicationCommand";
 
 /**
  * Base Interaction, used by all other Interaction related Structures
@@ -41,11 +42,11 @@ export abstract class BaseInteraction implements IBase {
      readonly version: 1;
      appPermissions?: Permissions;
      /**
-      * If this interaction has Already been replied to
+      * If this interaction has Already been responded to
       */
      responded: boolean;
      /**
-      * If this interaction timed out
+      * If this interaction timed out (3s)
       */
      timeout: boolean;
     /**
@@ -72,8 +73,11 @@ export abstract class BaseInteraction implements IBase {
         this.responded = false;
         this.timeout = false;
     }
+    /**
+     * Timestamp of this interaction
+     */
     get createdTimeStamp() {
-        return SnowFlakeToTimestamp(this.id)
+        return convertSnowflakeToTimeStamp(this.id)
     }
     /**
      * Created time as a date
@@ -81,4 +85,11 @@ export abstract class BaseInteraction implements IBase {
     get createdAt(): Date {
 		return new Date(this.createdTimeStamp);
 	}
+
+    isCommand(): this is ApplicationCommand {
+		return this.type === InteractionType.ApplicationCommand;
+	}
+
+    
 }
+

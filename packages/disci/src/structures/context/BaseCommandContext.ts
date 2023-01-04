@@ -1,5 +1,5 @@
 import { APIChatInputApplicationCommandInteractionData, APIInteraction, APIMessageApplicationCommandInteractionData, APIUserApplicationCommandInteractionData, ApplicationCommandType, InteractionType } from "discord-api-types/v10";
-import type { callBackFunction, InteractionHandler } from "../../InteractionHandler";
+import type { InteractionHandler } from "../../InteractionHandler";
 import BaseInteractionContext from "./BaseInteractionContext";
 
 type ApplicationCommandDataTypes = APIChatInputApplicationCommandInteractionData | APIUserApplicationCommandInteractionData | APIMessageApplicationCommandInteractionData
@@ -23,7 +23,7 @@ export default class BaseCommandContext extends BaseInteractionContext {
      * @param apiData 
      * @param InteractionHandler 
      */
-    constructor(apiData: APIInteraction, InteractionHandler: InteractionHandler<any, any>, callback: callBackFunction) {
+    constructor(apiData: APIInteraction, InteractionHandler: InteractionHandler<any, any>, callback: any) {
         super(apiData, InteractionHandler, callback);
         const Data = apiData.data as ApplicationCommandDataTypes;
         this.type = InteractionType.ApplicationCommand;

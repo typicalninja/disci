@@ -1,5 +1,5 @@
 import type { APIInteraction, InteractionType, Snowflake } from "discord-api-types/v10";
-import type { callBackFunction, InteractionHandler } from "../../InteractionHandler";
+import type { InteractionHandler } from "../../InteractionHandler";
 
 
 
@@ -37,7 +37,7 @@ export default class BaseInteractionContext {
      * Indicated wether the Interaction was Timedout
      */
     timedOut: boolean = false;
-    constructor(apiData: APIInteraction, public InteractionHandler: InteractionHandler<any, any>, public callback: callBackFunction) {
+    constructor(apiData: APIInteraction, public InteractionHandler: InteractionHandler<any, any>, public callback: any) {
         this.token = apiData.token;
         // if interaction from guild
         if(apiData.guild_id) {

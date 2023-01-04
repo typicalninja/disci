@@ -1,9 +1,12 @@
 import type { Snowflake } from "discord-api-types/globals";
 import isEqual from "lodash.isequal";
+import type { HandlerResponse } from "./transformers";
 
 export const DiscordEpoch = 14200704e5;
-export const SnowFlakeToTimestamp = (id: Snowflake): number => {
-    return (Number(id) >> 22) + DiscordEpoch;
+export const convertSnowflakeToTimeStamp = (id: Snowflake): number => {
+    // just a little hack, since ids are too large 
+    const milliseconds = BigInt(id) >> 22n
+    return Number(milliseconds) + DiscordEpoch
 }
 
 export function match(value: any, ...patterns: any[]) {
@@ -31,6 +34,14 @@ export function generateRandomId(length: number): string {
     return result;
 }
 
+export type callBackFunction = (data: HandlerResponse) => void;
+export const getRespondCallback = (resolve: Function, timeout: number, timeoutFunc: Function): callBackFunction => {
+  const timer = setTimeout(() => timeoutFunc(resolve), timeout)
+  return (data: HandlerResponse) => {
+    clearTimeout(timer);
+    return void resolve(data);
+  }
+}
 
 
 // utility to create custom errorClasses

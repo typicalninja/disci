@@ -1,4 +1,5 @@
 import {
+  APIChatInputApplicationCommandInteraction,
   APIInteraction,
   ApplicationCommandType,
   InteractionResponseType,
@@ -17,18 +18,11 @@ import nacl from "tweetnacl";
 import { TypedEmitter } from "tiny-typed-emitter";
 import { CommonHttpRequest, HandlerResponse, RequestTransformer, ResponseTransformer } from "./utils/transformers";
 
-import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
-import { DisciParseError, DisciValidationError, match, tryAndValue } from "./utils/helpers";
+//import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
+import { DisciParseError, DisciValidationError, getRespondCallback, match, tryAndValue } from "./utils/helpers";
 import { REST } from '@discordjs/rest';
+import { ChatInputInteraction } from "./structures/ApplicationCommand";
 
-export type callBackFunction = (data: HandlerResponse) => void;
-const getRespondCallback = (resolve: Function, timeout: number, timeoutFunc: Function): callBackFunction => {
-  const timer = setTimeout(() => timeoutFunc(resolve), timeout)
-  return (data: HandlerResponse) => {
-    clearTimeout(timer);
-    return void resolve(data);
-  }
-}
 
 export class InteractionHandler<Request extends CommonHttpRequest, Response> extends TypedEmitter<ClientEvents> {
   options: HandlerOptions;
@@ -84,11 +78,11 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
           // timed out
           if(!interaction) return /* Unsupported Type */ resolve(res.reply(`Type ${rawInteraction.type} is not supported`, 500)) 
           if(match(this.options.replyTimeout, { action: 'defer' })) {
-            interaction.replied = true;
+            interaction.responded = true;
             // auto defer
             return resolve(res.reply({ type: InteractionResponseType.DeferredChannelMessageWithSource }))
           }
-          else interaction.timedOut = true;
+          else interaction.timeout = true;
         })
 
         switch(rawInteraction.type) {
@@ -102,7 +96,7 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
               switch(rawInteraction.data.type) {
                 // chatinput / slash commands
                   case ApplicationCommandType.ChatInput:
-                    interaction = new ChatInputCommandContext(rawInteraction, this, callback)
+                    interaction = new ChatInputInteraction(this, rawInteraction as APIChatInputApplicationCommandInteraction)
                   break;
               }
           break;
