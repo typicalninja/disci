@@ -1,19 +1,74 @@
 import type { InteractionHandler } from "../InteractionHandler";
-import type { Base } from "./Base";
-
+import type { IBase } from "./Base";
+import { Permissions } from "../Permissions";
 
 import type { Snowflake } from "discord-api-types/globals";
-import type { APIInteraction } from "discord-api-types/v10";
+import type { APIInteraction, InteractionType } from "discord-api-types/v10";
 
 /**
  * Base Interaction, used by all other Interaction related Structures
  */
-export abstract class BaseInteraction implements Base {
+export abstract class BaseInteraction implements IBase {
     /**
      * ID of the interaction
      */
     id: Snowflake;
-    constructor(public handler: InteractionHandler<any, any>, InteractionData: APIInteraction) {
-        
+    /**
+     * ID of the application this interaction is for
+     */
+    applicationId: Snowflake
+    /**
+     * Token of this interaction
+     */
+    token: string;
+     /**
+     * Type of this interaction
+     */
+     type: InteractionType
+     /**
+      * Guild that the interaction was sent from
+      */
+     guildId?: string;
+     /**
+      * Channel that the interaction was sent from
+      */
+     channelId?: string
+     /**
+      * Readonly Property, as per the Discord docs always 1
+      * https://discord.com/developers/docs/interactions/receiving-and-responding
+      */
+     readonly version: 1;
+     appPermissions?: Permissions;
+     /**
+      * If this interaction has Already been replied to
+      */
+     replied: boolean;
+     /**
+      * If this interaction timed out
+      */
+     timeout: boolean;
+    /**
+     * 
+     * @param handler 
+     * @param RawInteractionData 
+     */
+    constructor(public handler: InteractionHandler<any, any>, readonly RawInteractionData: APIInteraction) {
+        this.id = RawInteractionData.id;
+        this.applicationId = RawInteractionData.application_id;
+        this.token = RawInteractionData.token;
+        this.type = RawInteractionData.type;
+        this.version = RawInteractionData.version;
+
+        if(RawInteractionData.guild_id) this.guildId = RawInteractionData.guild_id;
+        if(RawInteractionData.channel_id) this.channelId = RawInteractionData.channel_id;
+
+        const permissions = RawInteractionData.app_permissions;
+        if(permissions) {
+            this.appPermissions = new Permissions(BigInt(permissions))
+        }
+
+        // properties to keep track of this Interaction
+        this.replied = false;
+        this.timeout = false;
     }
 }
