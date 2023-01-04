@@ -1,17 +1,18 @@
+import { PermissionFlagsBits } from "discord-api-types/v10";
 import { DisciTypeError } from "../utils/helpers";
 
-export type BitFieldResolvable = bigint | bigint[]
+export type BitFieldResolvable = bigint | bigint[] | string | string[]
 
 export class BitField {
-    static readonly Flags = {}
+    static Flags: any = {}
     static None = 0n;
     bitfield: bigint
     /**
      * Create a new Bitfield Instance
-     * @param baseBitField - Permissions to institate the class with
+     * @param baseBits - Base bits to institate the class with
      */
-    constructor(basePermissions: BitFieldResolvable) {
-        this.bitfield = BitField.resolve(basePermissions)
+    constructor(baseBits: BitFieldResolvable = BitField.None) {
+        this.bitfield = BitField.resolve(baseBits)
     }
     /**
      * Adds bits to the bitfield
@@ -55,19 +56,29 @@ export class BitField {
             case 'number': 
                 return BigInt(bit)
             case 'string':
-                const resolved = BitField.Flags[bit]
-                if(!resolved) throw new DisciTypeError(`Cannot Resolve permission Bit: ${bit} [StringFlag Not found]`)
+                const resolved = this.Flags[bit]
+                if(!resolved) throw new DisciTypeError(`Cannot Resolve Bitfield Bit: ${bit} [StringFlag Not found]`)
                 return resolved;
             default:
                 // Someone can pass something not handled by any of the above cases, maybe its a array of bits
                 if(Array.isArray(bit)) {
                     return BitField.resolve(
                         bit
-                        .map((eBit) => typeof eBit === 'string' ? BitField.Flags[eBit] : eBit)
+                        .map((eBit) => (typeof eBit === 'string' && this.Flags[eBit]) ? this.Flags[eBit] : eBit)
                         .reduce((acc, cur) => acc | cur, BitField.None)
                     )
                 }
-                else throw new DisciTypeError(`Cannot Resolve permission Bit: ${bit} [Not Expected type]`)
+                else throw new DisciTypeError(`Cannot Resolve Bitfield Bit: ${bit} [Not Expected type]`)
         }
+    }
+}
+
+// Permission Bitfield
+export type PermissionFlagString = keyof typeof PermissionFlagsBits
+export type PermissionResolvable = BitFieldResolvable | PermissionFlagString | PermissionFlagString[]
+export class PermissionsBitField extends BitField {
+    static override Flags = PermissionFlagsBits
+    constructor(basePermissions: PermissionResolvable = BitField.None) {
+        super(basePermissions)
     }
 }
