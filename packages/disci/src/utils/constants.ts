@@ -64,6 +64,10 @@ export const defaultOptions: HandlerOptions = {
 export const debugNameSpace = `disci`
 
 
+export const ErrorMessages = {
+  'ResponseTimedOut': 'The response to this Interaction timed out'
+}
+
 /**
  * Names of {@link ClientEvents}
  */

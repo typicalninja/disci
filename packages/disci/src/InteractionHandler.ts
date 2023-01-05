@@ -96,7 +96,7 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
               switch(rawInteraction.data.type) {
                 // chatinput / slash commands
                   case ApplicationCommandType.ChatInput:
-                    interaction = new ChatInputInteraction(this, rawInteraction as APIChatInputApplicationCommandInteraction)
+                    interaction = new ChatInputInteraction(this, rawInteraction as APIChatInputApplicationCommandInteraction, callback)
                   break;
               }
           break;

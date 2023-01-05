@@ -1,10 +1,10 @@
 import type { InteractionHandler } from "../InteractionHandler";
 import type { IBase } from "./Base";
-import { Permissions } from "../Permissions";
+import { PermissionsBitField } from "./Bitfield";
 
 import type { Snowflake } from "discord-api-types/globals";
 import { APIInteraction, InteractionType } from "discord-api-types/v10";
-import { convertSnowflakeToTimeStamp } from "../utils/helpers";
+import { callBackFunction, convertSnowflakeToTimeStamp, DisciError } from "../utils/helpers";
 import type { ApplicationCommand } from "./ApplicationCommand";
 
 /**
@@ -40,7 +40,7 @@ export abstract class BaseInteraction implements IBase {
       * https://discord.com/developers/docs/interactions/receiving-and-responding
       */
      readonly version: 1;
-     appPermissions?: Permissions;
+     appPermissions?: PermissionsBitField;
      /**
       * If this interaction has Already been responded to
       */
@@ -54,7 +54,7 @@ export abstract class BaseInteraction implements IBase {
      * @param handler 
      * @param RawInteractionData 
      */
-    constructor(public handler: InteractionHandler<any, any>, readonly RawInteractionData: APIInteraction) {
+    constructor(public handler: InteractionHandler<any, any>, readonly RawInteractionData: APIInteraction, protected callback: callBackFunction) {
         this.id = RawInteractionData.id;
         this.applicationId = RawInteractionData.application_id;
         this.token = RawInteractionData.token;
@@ -66,7 +66,7 @@ export abstract class BaseInteraction implements IBase {
 
         const permissions = RawInteractionData.app_permissions;
         if(permissions) {
-            this.appPermissions = new Permissions(BigInt(permissions))
+            this.appPermissions = new PermissionsBitField(BigInt(permissions))
         }
 
         // properties to keep track of this Interaction
@@ -90,6 +90,9 @@ export abstract class BaseInteraction implements IBase {
 		return this.type === InteractionType.ApplicationCommand;
 	}
 
-
+    respond() {
+        if(this.timeout) throw new DisciError(`Response Stale, the Interaction has expired`);
+        if(this.responded) throw new DisciError(`This interaction has already been responded to.`)   
+    }
 }
 

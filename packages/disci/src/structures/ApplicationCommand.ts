@@ -4,6 +4,7 @@ import {
   ApplicationCommandType,
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
+import type { callBackFunction } from "../utils/helpers";
 import type { IBase } from "./Base";
 import { BaseInteraction } from "./BaseInteraction";
 
@@ -26,9 +27,10 @@ export abstract class ApplicationCommand
   commandId: string;
   constructor(
     handler: InteractionHandler<any, any>,
-    rawData: APIApplicationCommandInteraction
+    rawData: APIApplicationCommandInteraction,
+    callback: callBackFunction
   ) {
-    super(handler, rawData);
+    super(handler, rawData, callback);
     const data = rawData.data;
     this.commandType = data.type;
     this.commandName = data.name;
@@ -57,9 +59,10 @@ export abstract class ApplicationCommand
 export class ChatInputInteraction extends ApplicationCommand implements IBase {
   constructor(
     handler: InteractionHandler<any, any>,
-    rawData: APIChatInputApplicationCommandInteraction
+    rawData: APIChatInputApplicationCommandInteraction,
+    callback: callBackFunction
   ) {
-    super(handler, rawData);
+    super(handler, rawData, callback);
   }
 }
 

@@ -7,4 +7,4 @@ export type { ChatInputCommandContext } from './src/structures/context/ChatInput
 
 // request related
 export type { RequestTransformer, ResponseTransformer, HandlerResponse } from './src/utils/transformers';
-export { Permissions } from './src/Permissions'
+export { BitField, PermissionsBitField } from './src/structures/Bitfield';

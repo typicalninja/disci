@@ -1,10 +1,10 @@
 import { PermissionFlagsBits } from "discord-api-types/v10";
 import { DisciTypeError } from "../utils/helpers";
 
-export type BitFieldResolvable = bigint | bigint[] | string | string[]
-
-export class BitField {
-    static Flags: any = {}
+export type BitFieldResolvable = bigint | bigint[]
+export type BitFieldFlags = { [key:string]: bigint }
+export abstract class BitField {
+    static Flags: BitFieldFlags = {}
     static None = 0n;
     bitfield: bigint
     /**
@@ -14,23 +14,32 @@ export class BitField {
     constructor(baseBits: BitFieldResolvable = BitField.None) {
         this.bitfield = BitField.resolve(baseBits)
     }
+
     /**
      * Adds bits to the bitfield
      * @param bits New bits to add
      * @returns 
      */
-    set(bits: BitFieldResolvable): BitField {
-        const resolvedBits = BitField.resolve(bits);
+    add(bits: BitFieldResolvable[]): BitField {
+        let resolvedBits = 0n
+        for(const bit of bits) {
+            resolvedBits |= BitField.resolve(bit)
+        }
         this.bitfield |= resolvedBits;
         return this;
     }
+
     /**
      * Removes bits from the bitfield
+     * @param flags
      * @param bits bits to remove
      * @returns 
      */
-    unset(bits: BitFieldResolvable): BitField {
-        const resolvedBits = BitField.resolve(bits);
+    remove(bits: BitFieldResolvable[], Flags: BitFieldFlags): BitField {
+        let resolvedBits = 0n
+        for(const bit of bits) {
+            resolvedBits |= BitField.resolve(bit, Flags)
+        }
         this.bitfield &= ~resolvedBits;
         return this;
     }
@@ -40,13 +49,13 @@ export class BitField {
      * @param bits bits to check
      * @returns 
      */
-    has(bits: BitFieldResolvable): boolean {
-        const resolvedBits = BitField.resolve(bits);
+    has(bits: BitFieldResolvable, Flags: BitFieldFlags): boolean {
+        const resolvedBits = BitField.resolve(bits, Flags);
         return (this.bitfield & resolvedBits) === resolvedBits;
     }
 
-    equals(bit: BitFieldResolvable): boolean {
-        return !!(this.bitfield & BitField.resolve(bit));
+    equals(bit: BitFieldResolvable, Flags: BitFieldFlags): boolean {
+        return !!(this.bitfield & BitField.resolve(bit, Flags));
     }
 
     static resolve(bit: BitFieldResolvable): bigint {
@@ -55,16 +64,12 @@ export class BitField {
                 return bit
             case 'number': 
                 return BigInt(bit)
-            case 'string':
-                const resolved = this.Flags[bit]
-                if(!resolved) throw new DisciTypeError(`Cannot Resolve Bitfield Bit: ${bit} [StringFlag Not found]`)
-                return resolved;
             default:
                 // Someone can pass something not handled by any of the above cases, maybe its a array of bits
                 if(Array.isArray(bit)) {
                     return BitField.resolve(
                         bit
-                        .map((eBit) => (typeof eBit === 'string' && this.Flags[eBit]) ? this.Flags[eBit] : eBit)
+                        .map((eBit) => (eBit || BitField.None))
                         .reduce((acc, cur) => acc | cur, BitField.None)
                     )
                 }
@@ -80,5 +85,22 @@ export class PermissionsBitField extends BitField {
     static override Flags = PermissionFlagsBits
     constructor(basePermissions: PermissionResolvable = BitField.None) {
         super(basePermissions)
+    }
+    static override resolve(bit: PermissionResolvable) {
+        return BitField.resolve(bit, this.Flags);
+    }
+    override has(bits: PermissionResolvable) {
+        return super.has(bits, PermissionsBitField.Flags);
+    }
+    override equals(bit: PermissionResolvable): boolean {
+        return super.equals(bit, PermissionsBitField.Flags);
+    }
+    override add(bits: PermissionResolvable[]) {
+        super.add(bits, PermissionsBitField.Flags);
+        return this;
+    }
+    override remove(bits: PermissinResolvable[]) {
+        super.remove(bits, PermissionsBitField.Flags);
+        return this;
     }
 }
