@@ -92,7 +92,8 @@ export abstract class BaseInteraction implements IBase {
 
     respond() {
         if(this.timeout) throw new DisciError(`Response Stale, the Interaction has expired`);
-        if(this.responded) throw new DisciError(`This interaction has already been responded to.`)   
+        if(this.responded) throw new DisciError(`This interaction has already been responded to.`);
+        
     }
 }
 
