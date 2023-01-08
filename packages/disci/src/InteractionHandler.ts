@@ -11,15 +11,16 @@ import {
   DiscordVerificationHeaders,
   InteractionContext,
   ClientEvents, 
-  RequestEvents
+  RequestEvents,
+  httpErrorMessages
 } from "./utils/constants";
 import nacl from "tweetnacl";
 // to add typings to events
 import { TypedEmitter } from "tiny-typed-emitter";
-import { CommonHttpRequest, HandlerResponse, RequestTransformer, ResponseTransformer } from "./utils/transformers";
+import { CommonHttpRequest, IHandlerResponse, RequestTransformer } from "./utils/transformers";
 
 //import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
-import { DisciParseError, DisciValidationError, getRespondCallback, match, tryAndValue } from "./utils/helpers";
+import { DisciParseError, DisciValidationError, getResponseCallback, match, tryAndValue } from "./utils/helpers";
 import { REST } from '@discordjs/rest';
 import { ChatInputInteraction } from "./structures/ApplicationCommand";
 
@@ -48,15 +49,18 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
     _req: Request,
     _res: Response,
     verifyRequest?: (req: RequestTransformer<Request>) => Promise<boolean>
-  ): Promise<HandlerResponse> {
+  ): Promise<IHandlerResponse> {
     // create our custom response/request transformers
     const req = new RequestTransformer<Request>(_req);
-    const res = new ResponseTransformer<Response>(_res);
     return new Promise((resolve) => {
       // verify if its a valid request
       return (verifyRequest || this.verifyRequest.bind(this))(req).then((verified) => {
-         if(verified) return this.processRequest(req, res).then(resolve)
-         else return resolve(res.reply('Authorization invalid', 400))
+         if(verified) return this.processRequest(req).then(resolve)
+         // headers invalid, respond accordingly
+         else return resolve({
+          responseData: httpErrorMessages.Unauthorized,
+          statusCode: 401,
+         })
       });
     });
   } 
@@ -66,29 +70,47 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
    * @param req 
    * @param res 
    */
-  processRequest(req: RequestTransformer<Request>, res: ResponseTransformer<Response>): Promise<HandlerResponse> {
+  processRequest(req: RequestTransformer<Request>): Promise<IHandlerResponse> {
     return new Promise((resolve, reject) => {
         // this does not verify if request is valid or not
         const rawInteraction = tryAndValue<APIInteraction>(() => JSON.parse(req.rawBody));
         if(!rawInteraction) return reject(new DisciParseError(`Failed to parse rawBody into a valid ApiInteraction`));
-        if(!this.verifyInteractionProperties(rawInteraction)) return reject(new DisciValidationError(`Expected Properties was not found on Request.body expected InteractionBody`))
         
         let interaction: null | InteractionContext = null;
-        const callback = getRespondCallback(resolve, this.options.replyTimeout.timeout, () => {
+        const callback = getResponseCallback(resolve, this.options.replyTimeout.timeout, () => {
           // timed out
-          if(!interaction) return /* Unsupported Type */ resolve(res.reply(`Type ${rawInteraction.type} is not supported`, 500)) 
+          if(!interaction) return /* Unsupported Type */ {
+            responseData: httpErrorMessages.NotSupported,
+            statusCode: 501,
+          }
+          // autodefer if time out
           if(match(this.options.replyTimeout, { action: 'defer' })) {
             interaction.responded = true;
             // auto defer
-            return resolve(res.reply({ type: InteractionResponseType.DeferredChannelMessageWithSource }))
+            return {
+              responseData: {
+                type: InteractionResponseType.DeferredChannelMessageWithSource,
+              },
+              statusCode: 200,
+            }
           }
-          else interaction.timeout = true;
+          else {
+            // handle timeout else
+            interaction.timeout = true;
+            return {
+              responseData: httpErrorMessages.TimedOut,
+              statusCode: 504
+            }
+          }
         })
 
         switch(rawInteraction.type) {
           // handle pings
           case InteractionType.Ping:
-            callback(res.reply({ type: InteractionResponseType.Pong }))
+            callback({
+              responseData: { type: InteractionResponseType.Pong },
+              statusCode: 200,
+            })
           break;
           // application commands
           case InteractionType.ApplicationCommand:
@@ -102,7 +124,10 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
           break;
           default:
             // not supported
-            callback(res.reply(`Type ${rawInteraction.type} is not supported`, 500))
+            callback({
+              responseData: httpErrorMessages.NotSupported,
+              statusCode: 501,
+            })
           break;
         }
 
@@ -111,15 +136,6 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
           this.emit(RequestEvents.interactionCreate, interaction)
         }
       })
-  }
-  /**
-   * Verifies if the interaction received has All the Valid Properties
-   * @param body 
-   * @returns 
-   */
-  verifyInteractionProperties(body?: APIInteraction): Boolean {
-    if(!body) return false;
-    return Boolean(body.type && body.token && body.id)
   }
   /**
    * Verfies a request to validate if it originated from discord

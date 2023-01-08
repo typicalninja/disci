@@ -46,12 +46,14 @@ export class RequestTransformer<RequestType extends CommonHttpRequest> {
                         : Buffer.from(JSON.stringify(body), "utf-8")
     }
 }
-
-export interface HandlerResponse {
+/**
+ * Data returned by handleRequest
+ */
+export interface IHandlerResponse {
    /**
     * Status code for this response
     */
-   status: number;
+   statusCode?: number;
    /**
     * Response to the request
     */
@@ -60,61 +62,4 @@ export interface HandlerResponse {
     * Response headers set according to the data 
     */
    responseHeaders?: Record<string, string>
-}
-
-/**
- * Create a Common Response type from given type
- * @private
- */
-export class ResponseTransformer<ResponseType> {
-    /**
-     * Status code of the response
-     */
-     statusCode: number;
-     /**
-      * Data that should be sent back as a response / error
-      */
-     responseData?: APIInteractionResponse | string;
-     /**
-      * Random id, used internally to respond to this request
-      */
-     responseId: string;
-     /**
-      * Headers used in a response
-      */
-     responseHeaders: Record<string, string>;
-     constructor(public res: ResponseType) {
-        this.statusCode = 200;
-        this.responseId = nanoid(9);
-        this.responseHeaders = {};
-     }
-     setStatus(code: number) {
-        this.statusCode = code;
-        return this;
-     }
-     setData(data: APIInteractionResponse | string) {
-        if(typeof data === 'string') this.setHeader('content-type', 'text/plain')
-        else this.setHeader('content-type', 'application/json')
-
-        this.responseData = data;
-        return this;
-     }
-     setHeader(headerName: string, value: string) {
-        return Object.defineProperty(this.responseHeaders, headerName, { value, enumerable: true, writable: true })
-     }
-     reply(data: string | APIInteractionResponse, code: number = 200): HandlerResponse {
-         this.setData(data);
-         this.setStatus(code);
-         return this.toRaw();
-     }
-     /**
-      * Convert class Data to a object
-      */
-     toRaw(): HandlerResponse {
-        return {
-            status: this.statusCode,
-            responseData: this.responseData || 'Unknown',
-            responseHeaders: this.responseHeaders
-         }
-     }
 }

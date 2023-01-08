@@ -1,6 +1,6 @@
 import type { Snowflake } from "discord-api-types/globals";
 import isEqual from "lodash.isequal";
-import type { HandlerResponse } from "./transformers";
+import type { IHandlerResponse } from "./transformers";
 
 export const DiscordEpoch = 14200704e5;
 export const convertSnowflakeToTimeStamp = (id: Snowflake): number => {
@@ -34,14 +34,20 @@ export function generateRandomId(length: number): string {
     return result;
 }
 
-export type callBackFunction = (data: Partial<HandlerResponse>) => void;
-export const getRespondCallback = (resolve: Function, timeout: number, timeoutFunc: Function): callBackFunction => {
-  const timer = setTimeout(() => timeoutFunc(resolve), timeout)
-  return (data: HandlerResponse) => {
-    clearTimeout(timer);
-    if(!data.status) data.status = 200; 
-    return void resolve(data);
-  }
+
+export type callBackFunction = (data: IHandlerResponse) => void;
+export const getResponseCallback = (
+    resolve: (responseData: IHandlerResponse) => void,
+    timeout: number,
+    timeoutFunction: () => IHandlerResponse
+    ): callBackFunction => {
+        const timer = setTimeout(() => {
+            return resolve(timeoutFunction())
+        }, timeout);
+    return (data: IHandlerResponse) => {
+        clearTimeout(timer);
+        return resolve(data);
+    }
 }
 
 

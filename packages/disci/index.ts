@@ -9,13 +9,11 @@ export type {
   RequestEvents,
   ClientEvents,
 } from "./src/utils/constants";
-export type { ChatInputCommandContext } from "./src/structures/context/ChatInputCommandContext";
 
 // request related
 export type {
   RequestTransformer,
-  ResponseTransformer,
-  HandlerResponse,
+  IHandlerResponse,
 } from "./src/utils/transformers";
 export {
   BitField,

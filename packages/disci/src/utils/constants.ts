@@ -3,7 +3,7 @@ import type { APIActionRowComponent, APIEmbed, APIMessageActionRowComponent } fr
 import type { ChatInputInteraction } from "../structures/ApplicationCommand";
 import type { Embed } from "../structures/builders/Embed";
 //import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
-import type { RequestTransformer, ResponseTransformer } from "./transformers";
+import type { RequestTransformer } from "./transformers";
 
 
 export enum DiscordVerificationHeaders {
@@ -64,6 +64,12 @@ export const ErrorMessages = {
   'ResponseTimedOut': 'The response to this Interaction timed out'
 }
 
+export enum httpErrorMessages {
+  Unauthorized = "Unable to Authorize. Check your headers",
+  NotSupported = "This Feature is not yet supported",
+  TimedOut = "Response Timed Out"
+}
+
 /**
  * Names of {@link ClientEvents}
  */
@@ -79,7 +85,7 @@ export enum RequestEvents {
 }
 export interface ClientEvents {
   'requestCreate': (
-    requestData: { request: RequestTransformer<any>; reply: ResponseTransformer<any> },
+    requestData: { request: RequestTransformer<any>; reply: any },
     verified: boolean
   ) => void;
   'interactionCreate': (InteractionContext: InteractionContext) => void;
