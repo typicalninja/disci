@@ -34,11 +34,12 @@ export function generateRandomId(length: number): string {
     return result;
 }
 
-export type callBackFunction = (data: HandlerResponse) => void;
+export type callBackFunction = (data: Partial<HandlerResponse>) => void;
 export const getRespondCallback = (resolve: Function, timeout: number, timeoutFunc: Function): callBackFunction => {
   const timer = setTimeout(() => timeoutFunc(resolve), timeout)
   return (data: HandlerResponse) => {
     clearTimeout(timer);
+    if(!data.status) data.status = 200; 
     return void resolve(data);
   }
 }

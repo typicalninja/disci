@@ -59,7 +59,7 @@ export interface HandlerResponse {
    /**
     * Response headers set according to the data 
     */
-   responseHeaders: Record<string, string>
+   responseHeaders?: Record<string, string>
 }
 
 /**

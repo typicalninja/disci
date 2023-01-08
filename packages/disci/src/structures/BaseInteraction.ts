@@ -3,8 +3,8 @@ import type { IBase } from "./Base";
 import { PermissionsBitField } from "./Bitfield";
 
 import type { Snowflake } from "discord-api-types/globals";
-import { APIInteraction, InteractionType } from "discord-api-types/v10";
-import { callBackFunction, convertSnowflakeToTimeStamp, DisciError } from "../utils/helpers";
+import { APIInteraction, APIInteractionResponseCallbackData, InteractionResponseType, InteractionType } from "discord-api-types/v10";
+import { callBackFunction, convertSnowflakeToTimeStamp, DisciError, DisciTypeError } from "../utils/helpers";
 import type { ApplicationCommand } from "./ApplicationCommand";
 
 /**
@@ -89,11 +89,25 @@ export abstract class BaseInteraction implements IBase {
     isCommand(): this is ApplicationCommand {
 		return this.type === InteractionType.ApplicationCommand;
 	}
-
-    respond() {
+    /**
+     * Respond to this interaction
+     * @returns 
+     */
+    respond(type: InteractionResponseType.ChannelMessageWithSource | InteractionResponseType.DeferredChannelMessageWithSource = InteractionResponseType.DeferredChannelMessageWithSource, options: APIInteractionResponseCallbackData) {
         if(this.timeout) throw new DisciError(`Response Stale, the Interaction has expired`);
         if(this.responded) throw new DisciError(`This interaction has already been responded to.`);
-        
+        const { content, embeds } = options;
+        if(!content || !embeds) throw new DisciTypeError(`Invalid Response options, require atleast content`)
+        this.callback({
+            responseData: {
+                type,
+                data: options,
+            },
+            status: 200,
+            
+        });
+        this.responded = true;
+        return this;
     }
 }
 

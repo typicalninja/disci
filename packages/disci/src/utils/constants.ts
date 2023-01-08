@@ -1,5 +1,7 @@
+import type { APIInteractionResponseCallbackData } from "discord-api-types/payloads/v10";
 import type { APIActionRowComponent, APIEmbed, APIMessageActionRowComponent } from "discord-api-types/v10";
 import type { ChatInputInteraction } from "../structures/ApplicationCommand";
+import type { Embed } from "../structures/builders/Embed";
 //import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
 import type { RequestTransformer, ResponseTransformer } from "./transformers";
 
@@ -40,15 +42,9 @@ export interface HandlerOptions {
    appId: string;
 }
 
-export interface BaseReplyOptions {
-  content?: string
-  embeds?: Array<APIEmbed>
+export type MessageReplyOptions = APIInteractionResponseCallbackData & {
+  embeds?: APIEmbed[] | Embed[]
 }
-
-export interface MessageReplyOptions extends BaseReplyOptions {
-  components?: Array<APIActionRowComponent<APIMessageActionRowComponent>>
-}
-
 
 export const defaultOptions: HandlerOptions = {
   replyTimeout: {
