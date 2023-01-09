@@ -1,5 +1,5 @@
 import type { APIInteractionResponseCallbackData } from "discord-api-types/payloads/v10";
-import type { APIActionRowComponent, APIEmbed, APIMessageActionRowComponent } from "discord-api-types/v10";
+import type { APIEmbed } from "discord-api-types/v10";
 import type { ChatInputInteraction } from "../structures/ApplicationCommand";
 import type { Embed } from "../structures/builders/Embed";
 //import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";

@@ -1,7 +1,7 @@
 // utilities to extract common fields from requests
 
 import type { APIInteractionResponse } from "discord-api-types/v10"
-import { nanoid } from "nanoid";
+
 
 export type CommonHttpRequest = { 
     headers?: any,

@@ -39,15 +39,13 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
     }
   }
   /**
-   * Handles a Request and returns a ResponseTransformer
+   * Handles a Request and returns a Response Object
    * @param Request the reques t from the server to handle
-   * @param Response the object used to get information on the response
    * @param [verifyRequest = null]  a function that takes a {@link RequestTransformer} and returns a boolean on whether the request is a authorized request
    * @returns A Object containing Response Object
    */
   handleRequest(
     _req: Request,
-    _res: Response,
     verifyRequest?: (req: RequestTransformer<Request>) => Promise<boolean>
   ): Promise<IHandlerResponse> {
     // create our custom response/request transformers
@@ -72,7 +70,7 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
    */
   processRequest(req: RequestTransformer<Request>): Promise<IHandlerResponse> {
     return new Promise((resolve, reject) => {
-        // this does not verify if request is valid or not
+        // parse the request body
         const rawInteraction = tryAndValue<APIInteraction>(() => JSON.parse(req.rawBody));
         if(!rawInteraction) return reject(new DisciParseError(`Failed to parse rawBody into a valid ApiInteraction`));
         
@@ -135,7 +133,7 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
         if(interaction) {
           this.emit(RequestEvents.interactionCreate, interaction)
         }
-      })
+      });
   }
   /**
    * Verfies a request to validate if it originated from discord

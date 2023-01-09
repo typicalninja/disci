@@ -103,8 +103,7 @@ export abstract class BaseInteraction implements IBase {
                 type,
                 data: options,
             },
-            status: 200,
-            
+            statusCode: 200,
         });
         this.responded = true;
         return this;
