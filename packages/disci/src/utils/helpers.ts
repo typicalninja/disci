@@ -50,6 +50,13 @@ export const getResponseCallback = (
     }
 }
 
+export const hex2bin = (hex: string) => {
+    const buf = new Uint8Array(Math.ceil(hex.length / 2));
+    for (var i = 0; i < buf.length; i++) {
+        buf[i] = parseInt(hex.substring(i * 2, (i * 2) + 2), 16);
+    }
+    return buf;
+}
 
 // utility to create custom errorClasses
 function createError(errorName: string) {

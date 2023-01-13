@@ -6,7 +6,7 @@ import {
   InteractionType,
 } from "discord-api-types/v10";
 import {
-  HandlerOptions,
+  IHandlerOptions,
   defaultOptions,
   DiscordVerificationHeaders,
   InteractionContext,
@@ -14,29 +14,29 @@ import {
   RequestEvents,
   httpErrorMessages
 } from "./utils/constants";
+import crypto from 'node:crypto'
 import nacl from "tweetnacl";
 // to add typings to events
 import { TypedEmitter } from "tiny-typed-emitter";
 import { CommonHttpRequest, IHandlerResponse, RequestTransformer } from "./utils/transformers";
 
 //import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
-import { DisciParseError, DisciValidationError, getResponseCallback, match, tryAndValue } from "./utils/helpers";
+import { DisciParseError, DisciTypeError, DisciValidationError, getResponseCallback, hex2bin, match, tryAndValue } from "./utils/helpers";
 import { REST } from '@discordjs/rest';
 import { ChatInputInteraction } from "./structures/ApplicationCommand";
 
-
-export class InteractionHandler<Request extends CommonHttpRequest, Response> extends TypedEmitter<ClientEvents> {
-  options: HandlerOptions;
+const Txtencoder = new TextEncoder();
+export class InteractionHandler<Request extends CommonHttpRequest> extends TypedEmitter<ClientEvents> {
+  options: IHandlerOptions;
   rest: REST | null;
-  constructor(options: Partial<HandlerOptions>) {
+  private publicKey: any
+  constructor(options: Partial<IHandlerOptions>) {
     super();
     this.options = Object.assign({}, defaultOptions, options);
-    if(!this.options.token || !this.options.appId || !this.options.publicKey) throw new DisciValidationError(`Token/appId/publicKey is Required`)
+    if(!this.options.token || !this.options.publicKey) throw new DisciValidationError(`Token/publicKey is Required`)
     // Our Rest manager
     this.rest = new REST({ version: '10' }).setToken(this.options.token);
-    if(!this.options.publicKey || typeof this.options.publicKey !== 'string') {
-      console.warn(`VerifyOff (no publicKey): Running in debug mode, Requests will not be verified of thier origin (Disable This mode by passing your "publicKey" to options)`)
-    }
+    this.publicKey = null;
   }
   /**
    * Handles a Request and returns a Response Object
@@ -139,12 +139,19 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
    * Verfies a request to validate if it originated from discord
    * https://discord.com/developers/docs/interactions/receiving-and-responding#security-and-authorization
    */
-  verifyRequest(req: RequestTransformer<any>): Promise<boolean> {
-    return new Promise((resolve) => {
-      // no public key yet (maybe not correctly attached)
-      if (!this.options.publicKey) {
-        console.warn(`VerifyOff (no publicKey): Automatic debug mode is running, this request is not validated`)
-        return resolve(true)
+  async verifyRequest(req: RequestTransformer<any>): Promise<boolean> {
+      // no public key yet (maybe first run)
+      if (!this.publicKey) {
+        this.publicKey = await crypto.subtle.importKey(
+          'raw', 
+          hex2bin(this.options.publicKey),
+          {
+            name: "NODE-ED25519",
+            namedCurve: "NODE-ED25519",
+          },
+          true,
+		      ['verify'],
+          )
       }
       const timestamp = req.headers[
         DiscordVerificationHeaders.TimeStamp
@@ -154,18 +161,18 @@ export class InteractionHandler<Request extends CommonHttpRequest, Response> ext
       ] as string;
       const { body } = req
       // all of them should be present
-      if (!timestamp || !signature || !body) return resolve(false);
+      if (!timestamp || !signature || !body) return false;
       try {
-        return resolve(
+        return crypto.subtle.verify()
+       /*  return resolve(
           nacl.sign.detached.verify(
             Buffer.from(timestamp + body),
             Buffer.from(signature, "hex"),
             Buffer.from(this.options.publicKey, "hex")
           )
-        );
+        );*/
       } catch {
-        return resolve(false);
+        return false;
       }
-    });
   }
 }

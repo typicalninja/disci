@@ -15,7 +15,7 @@ export enum DiscordVerificationHeaders {
 // Common type for interactions
 export type InteractionContext = ChatInputInteraction;
 
-export interface HandlerOptions {
+export interface IHandlerOptions {
   /**
    * Time to reply has/about ended/to end
    */
@@ -28,7 +28,7 @@ export interface HandlerOptions {
     timeout: number;
    };
   /**
-   * PublicKey for authorization (keeping this field empty will boot the server to debug mode)
+   * PublicKey for authorization 
    * Allowing any request to get through
    */
   publicKey: string;
@@ -36,17 +36,13 @@ export interface HandlerOptions {
    * Token for authorization on rest requsts
    */
   token: string;
-  /**
-   * id of the current user
-   */
-   appId: string;
 }
 
 export type MessageReplyOptions = APIInteractionResponseCallbackData & {
   embeds?: APIEmbed[] | Embed[]
 }
 
-export const defaultOptions: HandlerOptions = {
+export const defaultOptions: IHandlerOptions = {
   replyTimeout: {
    action: 'defer',
    timeout: 2900
@@ -54,7 +50,6 @@ export const defaultOptions: HandlerOptions = {
   // we assume credentials are in .env files [If provided in options, will be overidden]
   publicKey: process.env.PUBLIC_KEY!,
   token: process.env.TOKEN!,
-  appId: process.env.APPID!
 }
 
 export const debugNameSpace = `disci`

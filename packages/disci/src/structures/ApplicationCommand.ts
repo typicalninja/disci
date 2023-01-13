@@ -26,7 +26,7 @@ export abstract class ApplicationCommand
    */
   commandId: string;
   constructor(
-    handler: InteractionHandler<any, any>,
+    handler: InteractionHandler<any>,
     rawData: APIApplicationCommandInteraction,
     callback: callBackFunction
   ) {
@@ -45,7 +45,7 @@ export abstract class ApplicationCommand
   /**
    * If this is a User Context menu
    */
-  isUserCommand() {
+  isUserCommand(): this is UserCommandInteraction {
     return this.commandType === ApplicationCommandType.User;
   }
   /**
@@ -56,9 +56,9 @@ export abstract class ApplicationCommand
   }
 }
 
-export class ChatInputInteraction extends ApplicationCommand implements IBase {
+export class ChatInputInteraction extends ApplicationCommand {
   constructor(
-    handler: InteractionHandler<any, any>,
+    handler: InteractionHandler<any>,
     rawData: APIChatInputApplicationCommandInteraction,
     callback: callBackFunction
   ) {
@@ -66,6 +66,5 @@ export class ChatInputInteraction extends ApplicationCommand implements IBase {
   }
 }
 
-export class MessageCommandInteraction
-  extends ApplicationCommand
-  implements IBase {}
+export class MessageCommandInteraction extends ApplicationCommand {}
+export class UserCommandInteraction extends ApplicationCommand {}

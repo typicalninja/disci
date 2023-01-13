@@ -4,7 +4,7 @@ import { PermissionsBitField } from "./Bitfield";
 
 import type { Snowflake } from "discord-api-types/globals";
 import { APIInteraction, APIInteractionResponseCallbackData, InteractionResponseType, InteractionType } from "discord-api-types/v10";
-import { callBackFunction, convertSnowflakeToTimeStamp, DisciError, DisciTypeError } from "../utils/helpers";
+import { callBackFunction, convertSnowflakeToTimeStamp, DisciError, DisciInteractionError, DisciTypeError } from "../utils/helpers";
 import type { ApplicationCommand } from "./ApplicationCommand";
 
 /**
@@ -14,15 +14,15 @@ export abstract class BaseInteraction implements IBase {
     /**
      * ID of the interaction
      */
-    id: Snowflake;
+    readonly id: Snowflake;
     /**
      * ID of the application this interaction is for
      */
-    applicationId: Snowflake
+    readonly applicationId: Snowflake
     /**
      * Token of this interaction
      */
-    token: string;
+    readonly token: string;
      /**
      * Type of this interaction
      */
@@ -54,7 +54,7 @@ export abstract class BaseInteraction implements IBase {
      * @param handler 
      * @param RawInteractionData 
      */
-    constructor(public handler: InteractionHandler<any, any>, readonly RawInteractionData: APIInteraction, protected callback: callBackFunction) {
+    constructor(public handler: InteractionHandler<any>, readonly RawInteractionData: APIInteraction, protected callback: callBackFunction) {
         this.id = RawInteractionData.id;
         this.applicationId = RawInteractionData.application_id;
         this.token = RawInteractionData.token;
@@ -66,7 +66,7 @@ export abstract class BaseInteraction implements IBase {
 
         const permissions = RawInteractionData.app_permissions;
         if(permissions) {
-            this.appPermissions = new PermissionsBitField(BigInt(permissions))
+            this.appPermissions = new PermissionsBitField(BigInt(permissions));
         }
 
         // properties to keep track of this Interaction
@@ -85,7 +85,10 @@ export abstract class BaseInteraction implements IBase {
     get createdAt(): Date {
 		return new Date(this.createdTimestamp);
 	}
-
+    /**
+     * Type guard to verify if this interaction is ApplicationCommand
+     * @returns 
+     */
     isCommand(): this is ApplicationCommand {
 		return this.type === InteractionType.ApplicationCommand;
 	}
@@ -93,20 +96,35 @@ export abstract class BaseInteraction implements IBase {
      * Respond to this interaction
      * @returns 
      */
-    respond(type: InteractionResponseType.ChannelMessageWithSource | InteractionResponseType.DeferredChannelMessageWithSource = InteractionResponseType.DeferredChannelMessageWithSource, options: APIInteractionResponseCallbackData) {
+    respond(type: InteractionResponseType = InteractionResponseType.DeferredChannelMessageWithSource, options?: APIInteractionResponseCallbackData) {
         if(this.timeout) throw new DisciError(`Response Stale, the Interaction has expired`);
         if(this.responded) throw new DisciError(`This interaction has already been responded to.`);
-        const { content, embeds } = options;
-        if(!content || !embeds) throw new DisciTypeError(`Invalid Response options, require atleast content`)
+        let APIdata: APIApplicationCommandRes;
+
+        if(type === InteractionResponseType.DeferredChannelMessageWithSource) {
+            APIdata = { type }
+        } 
+        else if(options) {
+            const { content, embeds } = options;
+            if(!content && !embeds) throw new DisciTypeError(`Invalid Response options, require atleast content`)
+            APIdata = { type, data: options }
+        }
+        else throw new DisciTypeError(`Response types other than defer require options`)
+
         this.callback({
-            responseData: {
-                type,
-                data: options,
-            },
+            responseData: APIdata,
             statusCode: 200,
         });
         this.responded = true;
         return this;
+    }
+    /**
+     * Send a defer type response, gives you extra time to reply
+     */
+    deferResponse() {
+        if(this.timeout) throw new DisciInteractionError(`Interaction already timed out`);
+        if(this.responded) throw new DisciInteractionError(`This interaction has already been responded to.`);
+        return this.respond(InteractionResponseType.DeferredChannelMessageWithSource)
     }
 }
 
