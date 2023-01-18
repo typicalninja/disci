@@ -7,6 +7,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
+    "disci:dev": "yarn run build --filter=disci",
     "lint": "turbo run lint",
     "docs:build": "typedoc --out docs packages/disci/index.ts",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""

@@ -1968,7 +1968,6 @@ __metadata:
     "@types/node": ^18.11.15
     debug: ^4.3.4
     discord-api-types: ^0.37.22
-    lodash.isequal: ^4.5.0
     tiny-typed-emitter: ^2.1.0
     tslib: ^2.4.1
     tweetnacl: ^1.0.3
@@ -3747,13 +3746,6 @@ __metadata:
     process-warning: ^2.0.0
     set-cookie-parser: ^2.4.1
   checksum: 8744ba4a43f19e82b6e51a67d1b0b2b789b96ad54e120bfc1a985cd0c05a2ba136510f2abf23c82e913ab791bcb115e820cdbdeb3a02e1b4d05c670d95d5a8c8
-  languageName: node
-  linkType: hard
-
-"lodash.isequal@npm:^4.5.0":
-  version: 4.5.0
-  resolution: "lodash.isequal@npm:4.5.0"
-  checksum: da27515dc5230eb1140ba65ff8de3613649620e8656b19a6270afe4866b7bd461d9ba2ac8a48dcc57f7adac4ee80e1de9f965d89d4d81a0ad52bb3eec2609644
   languageName: node
   linkType: hard
 

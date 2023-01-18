@@ -20,11 +20,11 @@ import { TypedEmitter } from "tiny-typed-emitter";
 import { CommonHttpRequest, IHandlerResponse, RequestTransformer } from "./utils/transformers";
 
 //import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
-import { DisciParseError, DisciValidationError, getResponseCallback, hex2bin, tryAndValue } from "./utils/helpers";
+import { DisciParseError, DisciValidationError, getResponseCallback, tryAndValue } from "./utils/helpers";
 import { REST } from '@discordjs/rest';
 import { ChatInputInteraction } from "./structures/ApplicationCommand";
 
-const Txtencoder = new TextEncoder();
+//const Txtencoder = new TextEncoder();
 export class InteractionHandler<Request extends CommonHttpRequest> extends TypedEmitter<ClientEvents> {
   options: IHandlerOptions;
   rest: REST;
@@ -143,7 +143,7 @@ export class InteractionHandler<Request extends CommonHttpRequest> extends Typed
       if (!this.publicKey) {
         this.publicKey = await crypto.subtle.importKey(
           'raw', 
-          hex2bin(this.options.publicKey),
+          Buffer.from(this.options.publicKey, "hex"),
           this.options.cryptoAlgorithm,
           true,
 		      ['verify'],
@@ -163,15 +163,8 @@ export class InteractionHandler<Request extends CommonHttpRequest> extends Typed
           this.options.cryptoAlgorithm, 
           this.publicKey,
           Buffer.from(signature, "hex"),
-          Txtencoder.encode(`${timestamp}${body}`)
-          )
-       /*  return resolve(
-          nacl.sign.detached.verify(
-            Buffer.from(timestamp + body),
-            Buffer.from(signature, "hex"),
-            Buffer.from(this.options.publicKey, "hex")
-          )
-        );*/
+          Buffer.from(timestamp + body)
+          );
       } catch {
         return false;
       }
