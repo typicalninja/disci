@@ -15,21 +15,20 @@ import {
   httpErrorMessages
 } from "./utils/constants";
 import crypto from 'node:crypto'
-import nacl from "tweetnacl";
 // to add typings to events
 import { TypedEmitter } from "tiny-typed-emitter";
 import { CommonHttpRequest, IHandlerResponse, RequestTransformer } from "./utils/transformers";
 
 //import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
-import { DisciParseError, DisciTypeError, DisciValidationError, getResponseCallback, hex2bin, match, tryAndValue } from "./utils/helpers";
+import { DisciParseError, DisciValidationError, getResponseCallback, hex2bin, tryAndValue } from "./utils/helpers";
 import { REST } from '@discordjs/rest';
 import { ChatInputInteraction } from "./structures/ApplicationCommand";
 
 const Txtencoder = new TextEncoder();
 export class InteractionHandler<Request extends CommonHttpRequest> extends TypedEmitter<ClientEvents> {
   options: IHandlerOptions;
-  rest: REST | null;
-  private publicKey: any
+  rest: REST;
+  private publicKey: null | crypto.webcrypto.CryptoKey
   constructor(options: Partial<IHandlerOptions>) {
     super();
     this.options = Object.assign({}, defaultOptions, options);
@@ -75,14 +74,14 @@ export class InteractionHandler<Request extends CommonHttpRequest> extends Typed
         if(!rawInteraction) return reject(new DisciParseError(`Failed to parse rawBody into a valid ApiInteraction`));
         
         let interaction: null | InteractionContext = null;
-        const callback = getResponseCallback(resolve, this.options.replyTimeout.timeout, () => {
+        const callback = getResponseCallback(resolve, this.options.replyTimeout, () => {
           // timed out
           if(!interaction) return /* Unsupported Type */ {
             responseData: httpErrorMessages.NotSupported,
             statusCode: 501,
           }
           // autodefer if time out
-          if(match(this.options.replyTimeout, { action: 'defer' })) {
+          if(this.options.deferOnTimeout) {
             interaction.responded = true;
             // auto defer
             return {
@@ -145,10 +144,7 @@ export class InteractionHandler<Request extends CommonHttpRequest> extends Typed
         this.publicKey = await crypto.subtle.importKey(
           'raw', 
           hex2bin(this.options.publicKey),
-          {
-            name: "NODE-ED25519",
-            namedCurve: "NODE-ED25519",
-          },
+          this.options.cryptoAlgorithm,
           true,
 		      ['verify'],
           )
@@ -163,7 +159,12 @@ export class InteractionHandler<Request extends CommonHttpRequest> extends Typed
       // all of them should be present
       if (!timestamp || !signature || !body) return false;
       try {
-        return crypto.subtle.verify()
+        return crypto.subtle.verify(
+          this.options.cryptoAlgorithm, 
+          this.publicKey,
+          Buffer.from(signature, "hex"),
+          Txtencoder.encode(`${timestamp}${body}`)
+          )
        /*  return resolve(
           nacl.sign.detached.verify(
             Buffer.from(timestamp + body),

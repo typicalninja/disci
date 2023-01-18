@@ -17,25 +17,23 @@ export type InteractionContext = ChatInputInteraction;
 
 export interface IHandlerOptions {
   /**
-   * Time to reply has/about ended/to end
+   * After this, the request will be considered stale
    */
-  replyTimeout: { 
-    /**
-     * If set to defer, will automatically send a defer reply if timed out for all requests
-     * If set to ignore, will set Interaction.timedout to true and not respond to the the request
-     */
-    action: 'defer' | 'ignore';
-    timeout: number;
-   };
+  replyTimeout: number;
+  /**
+   * Instead of request getting marked as stale, respond to it with a "defer" if timed out
+   * Allows you to have more time to reply
+   */
+  deferOnTimeout: boolean;
   /**
    * PublicKey for authorization 
-   * Allowing any request to get through
    */
   publicKey: string;
   /**
    * Token for authorization on rest requsts
    */
   token: string;
+  cryptoAlgorithm: string
 }
 
 export type MessageReplyOptions = APIInteractionResponseCallbackData & {
@@ -43,13 +41,12 @@ export type MessageReplyOptions = APIInteractionResponseCallbackData & {
 }
 
 export const defaultOptions: IHandlerOptions = {
-  replyTimeout: {
-   action: 'defer',
-   timeout: 2900
-  },
+  replyTimeout: 2900,
+  deferOnTimeout: true,
   // we assume credentials are in .env files [If provided in options, will be overidden]
   publicKey: process.env.PUBLIC_KEY!,
   token: process.env.TOKEN!,
+  cryptoAlgorithm: 'Ed25519'
 }
 
 export const debugNameSpace = `disci`

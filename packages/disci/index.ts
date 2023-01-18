@@ -5,7 +5,7 @@ export { InteractionHandler } from "./src/InteractionHandler";
 export type {
   InteractionContext,
   MessageReplyOptions,
-  HandlerOptions,
+  IHandlerOptions,
   RequestEvents,
   ClientEvents,
 } from "./src/utils/constants";

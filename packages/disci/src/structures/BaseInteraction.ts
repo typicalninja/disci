@@ -99,7 +99,7 @@ export abstract class BaseInteraction implements IBase {
     respond(type: InteractionResponseType = InteractionResponseType.DeferredChannelMessageWithSource, options?: APIInteractionResponseCallbackData) {
         if(this.timeout) throw new DisciError(`Response Stale, the Interaction has expired`);
         if(this.responded) throw new DisciError(`This interaction has already been responded to.`);
-        let APIdata: APIApplicationCommandRes;
+        let APIdata: any;
 
         if(type === InteractionResponseType.DeferredChannelMessageWithSource) {
             APIdata = { type }
