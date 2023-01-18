@@ -1,6 +1,6 @@
 import type { InteractionHandler } from "../InteractionHandler";
 import type { IBase } from "./Base";
-import { PermissionsBitField } from "./Bitfield";
+import { PermissionsBitField } from "./builders/Bitfield";
 
 import type { Snowflake } from "discord-api-types/globals";
 import { APIInteraction, APIInteractionResponseCallbackData, InteractionResponseType, InteractionType } from "discord-api-types/v10";
@@ -96,7 +96,9 @@ export abstract class BaseInteraction implements IBase {
      * Respond to this interaction
      * @returns 
      */
-    respond(type: InteractionResponseType = InteractionResponseType.DeferredChannelMessageWithSource, options?: APIInteractionResponseCallbackData) {
+    respond(message: string, options: Omit<APIInteractionResponseCallbackData, 'content'>): this;
+    respond(type: InteractionResponseType, options?: APIInteractionResponseCallbackData): this;
+    respond(type: InteractionResponseType | string = InteractionResponseType.DeferredChannelMessageWithSource, options?: APIInteractionResponseCallbackData) {
         if(this.timeout) throw new DisciError(`Response Stale, the Interaction has expired`);
         if(this.responded) throw new DisciError(`This interaction has already been responded to.`);
         let APIdata: any;

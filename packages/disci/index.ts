@@ -15,9 +15,10 @@ export type {
   RequestTransformer,
   IHandlerResponse,
 } from "./src/utils/transformers";
+
 export {
   BitField,
-  PermissionsBitField,
   BitFieldResolvable,
+  PermissionsBitField,
   UserFlagsBitField,
-} from "./src/structures/Bitfield";
+} from "./src/structures/builders/Bitfield";

@@ -135,7 +135,7 @@ export class InteractionHandler<Request extends CommonHttpRequest> extends Typed
       });
   }
   /**
-   * Verfies a request to validate if it originated from discord
+   * Used to validate if a request originated from discord
    * https://discord.com/developers/docs/interactions/receiving-and-responding#security-and-authorization
    */
   async verifyRequest(req: RequestTransformer<any>): Promise<boolean> {
