@@ -36,8 +36,9 @@ export interface IHandlerOptions {
   cryptoAlgorithm: string
 }
 
-export type MessageReplyOptions = APIInteractionResponseCallbackData & {
-  embeds?: APIEmbed[] | Embed[]
+export type MessageReplyOptions = {
+  embeds?: APIEmbed[] | Embed[];
+  content: string
 }
 
 export const defaultOptions: IHandlerOptions = {

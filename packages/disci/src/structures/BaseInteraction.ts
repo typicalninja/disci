@@ -3,9 +3,10 @@ import type { IBase } from "./Base";
 import { PermissionsBitField } from "./builders/Bitfield";
 
 import type { Snowflake } from "discord-api-types/globals";
-import { APIInteraction, APIInteractionResponseCallbackData, InteractionResponseType, InteractionType } from "discord-api-types/v10";
+import { APIInteraction, APIInteractionResponse, APIInteractionResponseCallbackData, InteractionResponseType, InteractionType } from "discord-api-types/v10";
 import { callBackFunction, convertSnowflakeToTimeStamp, DisciError, DisciInteractionError, DisciTypeError } from "../utils/helpers";
 import type { ApplicationCommand } from "./ApplicationCommand";
+import type { MessageReplyOptions } from "../utils/constants";
 
 /**
  * Base Interaction, used by all other Interaction related Structures
@@ -96,16 +97,27 @@ export abstract class BaseInteraction implements IBase {
      * Respond to this interaction
      * @returns 
      */
-    respond(message: string, options: Omit<APIInteractionResponseCallbackData, 'content'>): this;
-    respond(type: InteractionResponseType, options?: APIInteractionResponseCallbackData): this;
-    respond(type: InteractionResponseType | string = InteractionResponseType.DeferredChannelMessageWithSource, options?: APIInteractionResponseCallbackData) {
+    respond(message: string, options?: Omit<MessageReplyOptions, 'content'>): this;
+    respond(type: InteractionResponseType, options?: MessageReplyOptions): this;
+    respond(type: InteractionResponseType | string = InteractionResponseType.DeferredChannelMessageWithSource, options?: MessageReplyOptions) {
         if(this.timeout) throw new DisciError(`Response Stale, the Interaction has expired`);
         if(this.responded) throw new DisciError(`This interaction has already been responded to.`);
-        let APIdata: any;
+        let APIdata = {} as APIInteractionResponse;
 
+        // if a Defer just the type is required
         if(type === InteractionResponseType.DeferredChannelMessageWithSource) {
             APIdata = { type }
         } 
+        // can pass the text to reply with
+        else if(typeof type === 'string') {
+            APIdata = {
+                type: InteractionResponseType.ChannelMessageWithSource,
+                data: {
+                    content: type,
+                }
+            }
+
+        }
         else if(options) {
             const { content, embeds } = options;
             if(!content && !embeds) throw new DisciTypeError(`Invalid Response options, require atleast content`)
