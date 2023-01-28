@@ -3,10 +3,11 @@ import type { IBase } from "./Base";
 import { PermissionsBitField } from "./builders/Bitfield";
 
 import type { Snowflake } from "discord-api-types/globals";
-import { APIInteraction, APIInteractionResponse, APIInteractionResponseCallbackData, InteractionResponseType, InteractionType } from "discord-api-types/v10";
+import { APIInteraction, APIInteractionResponse, InteractionResponseType, InteractionType } from "discord-api-types/v10";
 import { callBackFunction, convertSnowflakeToTimeStamp, DisciError, DisciInteractionError, DisciTypeError } from "../utils/helpers";
 import type { ApplicationCommand } from "./ApplicationCommand";
 import type { MessageReplyOptions } from "../utils/constants";
+import User from "./User";
 
 /**
  * Base Interaction, used by all other Interaction related Structures
@@ -50,6 +51,7 @@ export abstract class BaseInteraction implements IBase {
       * If this interaction timed out (3s)
       */
      timeout: boolean;
+     author?: User;
     /**
      * 
      * @param handler 
@@ -68,6 +70,10 @@ export abstract class BaseInteraction implements IBase {
         const permissions = RawInteractionData.app_permissions;
         if(permissions) {
             this.appPermissions = new PermissionsBitField(BigInt(permissions));
+        }
+
+        if(RawInteractionData.user) {
+            this.author = new User(RawInteractionData.user)
         }
 
         // properties to keep track of this Interaction
@@ -121,7 +127,7 @@ export abstract class BaseInteraction implements IBase {
         else if(options) {
             const { content, embeds } = options;
             if(!content && !embeds) throw new DisciTypeError(`Invalid Response options, require atleast content`)
-            APIdata = { type, data: options }
+            //APIdata = { type, data: options }
         }
         else throw new DisciTypeError(`Response types other than defer require options`)
 

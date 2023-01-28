@@ -9,14 +9,11 @@ import {
   IHandlerOptions,
   defaultOptions,
   DiscordVerificationHeaders,
-  InteractionContext,
-  ClientEvents, 
-  RequestEvents,
+  InteractionContext, 
   httpErrorMessages
 } from "./utils/constants";
 import crypto from 'node:crypto'
 // to add typings to events
-import { TypedEmitter } from "tiny-typed-emitter";
 import { CommonHttpRequest, IHandlerResponse, RequestTransformer } from "./utils/transformers";
 
 //import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
@@ -24,12 +21,11 @@ import { DisciInteractionError, DisciParseError, DisciValidationError, getRespon
 import { REST } from '@discordjs/rest';
 import { ChatInputInteraction } from "./structures/ApplicationCommand";
 
-export class InteractionHandler<Request extends CommonHttpRequest> extends TypedEmitter<ClientEvents> {
+export class InteractionHandler<Request extends CommonHttpRequest>  {
   options: IHandlerOptions;
   rest: REST;
   private publicKey: null | crypto.webcrypto.CryptoKey
   constructor(options: Partial<IHandlerOptions>) {
-    super();
     this.options = Object.assign({}, defaultOptions, options);
     if(!this.options.token || !this.options.publicKey) throw new DisciValidationError(`Token/publicKey is Required`)
     // Our Rest manager
@@ -51,8 +47,8 @@ export class InteractionHandler<Request extends CommonHttpRequest> extends Typed
     return new Promise((resolve, reject) => {
       // verify if its a valid request
       return (verifyRequest || this.verifyRequest.bind(this))(req).then((verified) => {
-         if(verified) return this.processRequest(req).then(resolve)
-         // headers invalid, respond accordingly
+         if(verified) return this.processRequest(req).then(resolve).catch(reject)
+         // Invalid Request, reject.
          else return reject(new DisciInteractionError(httpErrorMessages.Unauthorized))
       });
     });
@@ -124,10 +120,6 @@ export class InteractionHandler<Request extends CommonHttpRequest> extends Typed
           break;
         }
 
-        // emit the event
-        if(interaction) {
-          this.emit(RequestEvents.interactionCreate, interaction)
-        }
       });
   }
   /**

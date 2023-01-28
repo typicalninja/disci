@@ -61,24 +61,3 @@ export enum httpErrorMessages {
   NotSupported = "This Feature is not yet supported",
   TimedOut = "Response Timed Out"
 }
-
-/**
- * Names of {@link ClientEvents}
- */
-export enum RequestEvents {
-  /**
-   * Fired when a new Request comes through (unverified)
-   */
-  requestCreate = 'requestCreate',
-  /**
-   * When a request is succefully identified as a Interaction and context is created
-   */
-  interactionCreate ='interactionCreate',
-}
-export interface ClientEvents {
-  'requestCreate': (
-    requestData: { request: RequestTransformer<any>; reply: any },
-    verified: boolean
-  ) => void;
-  'interactionCreate': (InteractionContext: InteractionContext) => void;
-}
