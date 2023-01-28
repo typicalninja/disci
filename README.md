@@ -10,3 +10,8 @@
 
 > Disci -> Disc = Discord | i = interactions
 > Disci = Discord interactions
+
+
+# License
+
+This repository and the code inside it is licensed under the ISC License. Read [LICENSE](https://github.com/typicalninja493/disci/blob/master/LICENSE) for more information.

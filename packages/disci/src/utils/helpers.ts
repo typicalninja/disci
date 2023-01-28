@@ -18,16 +18,6 @@ export function tryAndValue<ReturnType> (fn: () => ReturnType) {
     }
 }
 
-const idCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789';
-export function generateRandomId(length: number): string {
-    let result = '';
-    // result must be at the length
-    for (let i = 0; i < length; i++) {
-        // until it reaches the length add a char to the result (random)
-      result += idCharacters.charAt(Math.floor(Math.random() * idCharacters.length));
-    }
-    return result;
-}
 
 
 export type callBackFunction = (data: IHandlerResponse) => void;

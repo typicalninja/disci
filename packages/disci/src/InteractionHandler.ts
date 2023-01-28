@@ -20,11 +20,10 @@ import { TypedEmitter } from "tiny-typed-emitter";
 import { CommonHttpRequest, IHandlerResponse, RequestTransformer } from "./utils/transformers";
 
 //import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
-import { DisciParseError, DisciValidationError, getResponseCallback, tryAndValue } from "./utils/helpers";
+import { DisciInteractionError, DisciParseError, DisciValidationError, getResponseCallback, tryAndValue } from "./utils/helpers";
 import { REST } from '@discordjs/rest';
 import { ChatInputInteraction } from "./structures/ApplicationCommand";
 
-//const Txtencoder = new TextEncoder();
 export class InteractionHandler<Request extends CommonHttpRequest> extends TypedEmitter<ClientEvents> {
   options: IHandlerOptions;
   rest: REST;
@@ -49,15 +48,12 @@ export class InteractionHandler<Request extends CommonHttpRequest> extends Typed
   ): Promise<IHandlerResponse> {
     // create our custom response/request transformers
     const req = new RequestTransformer<Request>(_req);
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       // verify if its a valid request
       return (verifyRequest || this.verifyRequest.bind(this))(req).then((verified) => {
          if(verified) return this.processRequest(req).then(resolve)
          // headers invalid, respond accordingly
-         else return resolve({
-          responseData: httpErrorMessages.Unauthorized,
-          statusCode: 401,
-         })
+         else return reject(new DisciInteractionError(httpErrorMessages.Unauthorized))
       });
     });
   } 
