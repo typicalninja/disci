@@ -10,18 +10,18 @@ import {
   defaultOptions,
   DiscordVerificationHeaders,
   InteractionContext, 
-  httpErrorMessages
+  httpErrorMessages,
 } from "./utils/constants";
 import crypto from 'node:crypto'
 // to add typings to events
-import { CommonHttpRequest, IHandlerResponse, RequestTransformer } from "./utils/transformers";
+import type { IRequest, IResponse } from "./utils/request";
 
 //import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
 import { DisciInteractionError, DisciParseError, DisciValidationError, getResponseCallback, tryAndValue } from "./utils/helpers";
 import { REST } from '@discordjs/rest';
 import { ChatInputInteraction } from "./structures/ApplicationCommand";
 
-export class InteractionHandler<Request extends CommonHttpRequest>  {
+export class InteractionHandler  {
   options: IHandlerOptions;
   rest: REST;
   private publicKey: null | crypto.webcrypto.CryptoKey
@@ -39,11 +39,9 @@ export class InteractionHandler<Request extends CommonHttpRequest>  {
    * @returns A Object containing Response Object
    */
   handleRequest(
-    _req: Request,
-    verifyRequest?: (req: RequestTransformer<Request>) => Promise<boolean>
-  ): Promise<IHandlerResponse> {
-    // create our custom response/request transformers
-    const req = new RequestTransformer<Request>(_req);
+    req: IRequest,
+    verifyRequest?: (req:IRequest) => Promise<boolean>
+  ): Promise<IResponse> {
     return new Promise((resolve, reject) => {
       // verify if its a valid request
       return (verifyRequest || this.verifyRequest.bind(this))(req).then((verified) => {
@@ -59,10 +57,10 @@ export class InteractionHandler<Request extends CommonHttpRequest>  {
    * @param req 
    * @param res 
    */
-  processRequest(req: RequestTransformer<Request>): Promise<IHandlerResponse> {
+  processRequest(req: IRequest): Promise<IResponse> {
     return new Promise((resolve, reject) => {
         // parse the request body
-        const rawInteraction = tryAndValue<APIInteraction>(() => JSON.parse(req.rawBody));
+        const rawInteraction = tryAndValue<APIInteraction>(() => JSON.parse(req.body));
         if(!rawInteraction) return reject(new DisciParseError(`Failed to parse rawBody into a valid ApiInteraction`));
         
         let interaction: null | InteractionContext = null;
@@ -126,7 +124,7 @@ export class InteractionHandler<Request extends CommonHttpRequest>  {
    * Used to validate if a request originated from discord
    * https://discord.com/developers/docs/interactions/receiving-and-responding#security-and-authorization
    */
-  async verifyRequest(req: RequestTransformer<any>): Promise<boolean> {
+  async verifyRequest(req: IRequest): Promise<boolean> {
       // no public key yet (maybe first run)
       if (!this.publicKey) {
         this.publicKey = await crypto.subtle.importKey(

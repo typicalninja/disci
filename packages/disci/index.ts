@@ -6,15 +6,13 @@ export type {
   InteractionContext,
   MessageReplyOptions,
   IHandlerOptions,
-  RequestEvents,
-  ClientEvents,
 } from "./src/utils/constants";
 
 // request related
 export type {
-  RequestTransformer,
-  IHandlerResponse,
-} from "./src/utils/transformers";
+  IRequest,
+  IResponse
+} from "./src/utils/request";
 
 export {
   BitField,

@@ -2,14 +2,11 @@ import type { APIEmbed } from "discord-api-types/v10";
 import type { ChatInputInteraction } from "../structures/ApplicationCommand";
 import type { Embed } from "../structures/builders/Embed";
 //import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
-import type { RequestTransformer } from "./transformers";
-
 
 export enum DiscordVerificationHeaders {
   Signature = "x-signature-ed25519",
-  TimeStamp = "x-signature-timestamp"
+  TimeStamp = "x-signature-timestamp",
 }
-
 
 // Common type for interactions
 export type InteractionContext = ChatInputInteraction;
@@ -25,20 +22,20 @@ export interface IHandlerOptions {
    */
   deferOnTimeout: boolean;
   /**
-   * PublicKey for authorization 
+   * PublicKey for authorization
    */
   publicKey: string;
   /**
    * Token for authorization on rest requsts
    */
   token: string;
-  cryptoAlgorithm: string
+  cryptoAlgorithm: string;
 }
 
 export type MessageReplyOptions = {
   embeds?: APIEmbed[] | Embed[];
-  content: string
-}
+  content: string;
+};
 
 export const defaultOptions: IHandlerOptions = {
   replyTimeout: 2900,
@@ -46,18 +43,17 @@ export const defaultOptions: IHandlerOptions = {
   // we assume credentials are in .env files [If provided in options, will be overidden]
   publicKey: process.env.PUBLIC_KEY!,
   token: process.env.TOKEN!,
-  cryptoAlgorithm: 'Ed25519'
-}
+  cryptoAlgorithm: "Ed25519",
+};
 
-export const debugNameSpace = `disci`
-
+export const debugNameSpace = `disci`;
 
 export const ErrorMessages = {
-  'ResponseTimedOut': 'The response to this Interaction timed out'
-}
+  ResponseTimedOut: "The response to this Interaction timed out",
+};
 
 export enum httpErrorMessages {
   Unauthorized = "Unable to Authorize. Check your headers",
   NotSupported = "This Feature is not yet supported",
-  TimedOut = "Response Timed Out"
+  TimedOut = "Response Timed Out",
 }
