@@ -22,7 +22,7 @@ import crypto from 'node:crypto'
 import { IRequest, IResponse, toResponse } from "./utils/request";
 
 //import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
-import { DisciInteractionError, DisciParseError, DisciValidationError, getResponseCallback, tryAndValue } from "./utils/helpers";
+import { DisciParseError, DisciValidationError, tryAndValue } from "./utils/helpers";
 import { REST } from '@discordjs/rest';
 import { ChatInputInteraction } from "./structures/ApplicationCommand";
 
@@ -79,11 +79,14 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
             // ping responses
           case InteractionType.ApplicationCommand: {
             const command = rawInteraction.data;
-            if(command.type === ApplicationCommandType.ChatInput) interaction = new ChatInputInteraction(this, rawInteraction as APIChatInputApplicationCommandInteraction, () => '')
+            if(command.type === ApplicationCommandType.ChatInput) interaction = new ChatInputInteraction(this, rawInteraction, () => '')
           }
         }
 
-        if(interaction) return this.emit('interaction', interaction);
+        if(interaction) {
+
+          return this.emit('interaction', interaction);
+        }
         else if(rawInteraction.type === InteractionType.Ping) return resolve(toResponse({
           type: InteractionResponseType.Pong,
         }))

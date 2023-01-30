@@ -56,15 +56,7 @@ export abstract class ApplicationCommand
   }
 }
 
-export class ChatInputInteraction extends ApplicationCommand {
-  constructor(
-    handler: InteractionHandler,
-    rawData: APIChatInputApplicationCommandInteraction,
-    callback: callBackFunction
-  ) {
-    super(handler, rawData, callback);
-  }
-}
+export class ChatInputInteraction extends ApplicationCommand {}
 
 export class MessageCommandInteraction extends ApplicationCommand {}
 export class UserCommandInteraction extends ApplicationCommand {}
