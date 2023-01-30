@@ -79,7 +79,7 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
             // ping responses
           case InteractionType.ApplicationCommand: {
             const command = rawInteraction.data;
-            if(command.type === ApplicationCommandType.ChatInput) interaction = new ChatInputInteraction(this, rawInteraction, () => '')
+            if(command.type === ApplicationCommandType.ChatInput) interaction = new ChatInputInteraction(this, rawInteraction as APIChatInputApplicationCommandInteraction, () => '')
           }
         }
 

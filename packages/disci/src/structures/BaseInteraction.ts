@@ -57,7 +57,7 @@ export abstract class BaseInteraction implements IBase {
      * @param handler 
      * @param RawInteractionData 
      */
-    constructor(public handler: InteractionHandler<any>, readonly RawInteractionData: APIInteraction, protected callback: callBackFunction) {
+    constructor(public handler: InteractionHandler, readonly RawInteractionData: APIInteraction, protected callback: callBackFunction) {
         this.id = RawInteractionData.id;
         this.applicationId = RawInteractionData.application_id;
         this.token = RawInteractionData.token;

@@ -26,7 +26,7 @@ export abstract class ApplicationCommand
    */
   commandId: string;
   constructor(
-    handler: InteractionHandler<any>,
+    handler: InteractionHandler,
     rawData: APIApplicationCommandInteraction,
     callback: callBackFunction
   ) {
@@ -58,7 +58,7 @@ export abstract class ApplicationCommand
 
 export class ChatInputInteraction extends ApplicationCommand {
   constructor(
-    handler: InteractionHandler<any>,
+    handler: InteractionHandler,
     rawData: APIChatInputApplicationCommandInteraction,
     callback: callBackFunction
   ) {
