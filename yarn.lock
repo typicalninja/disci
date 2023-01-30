@@ -1968,6 +1968,7 @@ __metadata:
     "@types/node": ^18.11.15
     debug: ^4.3.4
     discord-api-types: ^0.37.22
+    tiny-typed-emitter: ^2.1.0
     tslib: ^2.4.1
     tweetnacl: ^1.0.3
   languageName: unknown
@@ -6272,6 +6273,13 @@ __metadata:
   version: 10.0.1
   resolution: "tiny-lru@npm:10.0.1"
   checksum: 58b5f17a357625335aa3b90ee8c9b3e9abede5c1f46066c73deb129574a205efb112807d6d473909e73f1d874ea99bf14eb5c88223d540eb32ebb5e1ff146689
+  languageName: node
+  linkType: hard
+
+"tiny-typed-emitter@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "tiny-typed-emitter@npm:2.1.0"
+  checksum: 709bca410054e08df4dc29d5ea0916328bb2900d60245c6a743068ea223887d9fd2c945b6070eb20336275a557a36c2808e5c87d2ed4b60633458632be4a3e10
   languageName: node
   linkType: hard
 

@@ -3,7 +3,7 @@
 import type { APIInteractionResponse } from "discord-api-types/v10"
 
 /**
- * Commong Request type containing required parts for our scripts
+ * Common Request type containing required parts for our scripts
  */
 export interface IRequest {
     /**
@@ -17,6 +17,13 @@ export interface IRequest {
      */
     headers: Record<string, string>;
 }
+
+export function ToIRequest(rawRequest: Record<string, any>): IRequest {
+    return {
+        body: rawRequest.body ?? rawRequest.rawBody,
+        headers: rawRequest.headers ?? {}
+    }
+}
   
 
 /**
@@ -26,13 +33,23 @@ export interface IResponse {
    /**
     * Status code for this response
     */
-   statusCode?: number;
+   statusCode: number;
    /**
     * Response to the request
     */
-   responseData: APIInteractionResponse | string;
+   responseData: APIInteractionResponse | { data: string };
    /**
     * Response headers set according to the data 
     */
    responseHeaders?: Record<string, string>
+}
+
+export function toResponse(data: string | APIInteractionResponse, status: number = 200): IResponse {
+    return {
+        responseData:  typeof data === 'string' ? { data } : data,
+        statusCode: status,
+        responseHeaders: {
+            'content-type': 'application/json'
+        }
+    }
 }

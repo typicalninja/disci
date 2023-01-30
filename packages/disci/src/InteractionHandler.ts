@@ -1,3 +1,6 @@
+// types for events
+import { TypedEmitter } from 'tiny-typed-emitter';
+
 import {
   APIChatInputApplicationCommandInteraction,
   APIInteraction,
@@ -10,22 +13,25 @@ import {
   defaultOptions,
   DiscordVerificationHeaders,
   InteractionContext, 
-  httpErrorMessages,
+  EResponseErrorMessages,
+  TRespondCallback,
+  IClientEvents,
 } from "./utils/constants";
 import crypto from 'node:crypto'
 // to add typings to events
-import type { IRequest, IResponse } from "./utils/request";
+import { IRequest, IResponse, toResponse } from "./utils/request";
 
 //import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
 import { DisciInteractionError, DisciParseError, DisciValidationError, getResponseCallback, tryAndValue } from "./utils/helpers";
 import { REST } from '@discordjs/rest';
 import { ChatInputInteraction } from "./structures/ApplicationCommand";
 
-export class InteractionHandler  {
+export class InteractionHandler extends TypedEmitter<IClientEvents>  {
   options: IHandlerOptions;
   rest: REST;
   private publicKey: null | crypto.webcrypto.CryptoKey
   constructor(options: Partial<IHandlerOptions>) {
+    super()
     this.options = Object.assign({}, defaultOptions, options);
     if(!this.options.token || !this.options.publicKey) throw new DisciValidationError(`Token/publicKey is Required`)
     // Our Rest manager
@@ -34,20 +40,22 @@ export class InteractionHandler  {
   }
   /**
    * Handles a Request and returns a Response Object
-   * @param Request the reques t from the server to handle
-   * @param [verifyRequest = null]  a function that takes a {@link RequestTransformer} and returns a boolean on whether the request is a authorized request
-   * @returns A Object containing Response Object
+   * @param Request the request from the server to handle
+   * @returns A Object containing Response Object.Does not reject
    */
   handleRequest(
     req: IRequest,
-    verifyRequest?: (req:IRequest) => Promise<boolean>
   ): Promise<IResponse> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       // verify if its a valid request
-      return (verifyRequest || this.verifyRequest.bind(this))(req).then((verified) => {
-         if(verified) return this.processRequest(req).then(resolve).catch(reject)
-         // Invalid Request, reject.
-         else return reject(new DisciInteractionError(httpErrorMessages.Unauthorized))
+      return (this.options.verifyRequest || this.verifyRequest.bind(this))(req).then((verified) => {
+          // if not verified, resolve as unauthed
+          if(!verified) return resolve(toResponse(EResponseErrorMessages.Unauthorized, 400));
+          // process the request
+          return this.processRequest(req).then(resolve).catch((err) => {
+            this.emit('error', err);
+            resolve(toResponse(EResponseErrorMessages.InternalError, 500))
+          });
       });
     });
   } 
@@ -63,10 +71,30 @@ export class InteractionHandler  {
         const rawInteraction = tryAndValue<APIInteraction>(() => JSON.parse(req.body));
         if(!rawInteraction) return reject(new DisciParseError(`Failed to parse rawBody into a valid ApiInteraction`));
         
+        // convert rawInteraction -> interaction
+        let interaction: InteractionContext | null = null;
+        
+        // decide interaction type
+        switch(rawInteraction.type) {
+            // ping responses
+          case InteractionType.ApplicationCommand: {
+            const command = rawInteraction.data;
+            if(command.type === ApplicationCommandType.ChatInput) interaction = new ChatInputInteraction(this, rawInteraction, () => '')
+          }
+        }
+
+        if(interaction) return this.emit('interaction', interaction);
+        else if(rawInteraction.type === InteractionType.Ping) return resolve(toResponse({
+          type: InteractionResponseType.Pong,
+        }))
+        else return resolve(toResponse(EResponseErrorMessages.NotSupported, 500))
+        /*
+        
+           
         let interaction: null | InteractionContext = null;
         const callback = getResponseCallback(resolve, this.options.replyTimeout, () => {
           // timed out
-          if(!interaction) return /* Unsupported Type */ {
+          if(!interaction) return /* Unsupported Type / {
             responseData: httpErrorMessages.NotSupported,
             statusCode: 501,
           }
@@ -117,7 +145,8 @@ export class InteractionHandler  {
             })
           break;
         }
-
+        this.emit('int', interaction)
+        */
       });
   }
   /**
@@ -130,7 +159,7 @@ export class InteractionHandler  {
         this.publicKey = await crypto.subtle.importKey(
           'raw', 
           Buffer.from(this.options.publicKey, "hex"),
-          this.options.cryptoAlgorithm,
+          'Ed25519',
           true,
 		      ['verify'],
           )
@@ -146,7 +175,7 @@ export class InteractionHandler  {
       if (!timestamp || !signature || !body) return false;
       try {
         return crypto.subtle.verify(
-          this.options.cryptoAlgorithm, 
+          'Ed25519', 
           this.publicKey,
           Buffer.from(signature, "hex"),
           Buffer.from(timestamp + body)

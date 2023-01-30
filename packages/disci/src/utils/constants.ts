@@ -1,6 +1,7 @@
 import type { APIEmbed } from "discord-api-types/v10";
 import type { ChatInputInteraction } from "../structures/ApplicationCommand";
 import type { Embed } from "../structures/builders/Embed";
+import type { IRequest, IResponse } from "./request";
 //import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
 
 export enum DiscordVerificationHeaders {
@@ -29,7 +30,12 @@ export interface IHandlerOptions {
    * Token for authorization on rest requsts
    */
   token: string;
-  cryptoAlgorithm: string;
+  /**
+   * Used to validate if a request originated from discord
+   * @param req - The request from the server to verify
+   * @returns boolean indicating wether this is a verified request or not
+   */
+  verifyRequest?: (req: IRequest) => Promise<boolean>
 }
 
 export type MessageReplyOptions = {
@@ -43,7 +49,6 @@ export const defaultOptions: IHandlerOptions = {
   // we assume credentials are in .env files [If provided in options, will be overidden]
   publicKey: process.env.PUBLIC_KEY!,
   token: process.env.TOKEN!,
-  cryptoAlgorithm: "Ed25519",
 };
 
 export const debugNameSpace = `disci`;
@@ -52,8 +57,28 @@ export const ErrorMessages = {
   ResponseTimedOut: "The response to this Interaction timed out",
 };
 
-export enum httpErrorMessages {
+/**
+ * Error Messages Returned in HttpErrors
+ */
+export enum EResponseErrorMessages {
   Unauthorized = "Unable to Authorize. Check your headers",
   NotSupported = "This Feature is not yet supported",
   TimedOut = "Response Timed Out",
+  InternalError = "Internal Server Error occurred."
+}
+
+
+/** Type used to represent the respond callback function */
+export type TRespondCallback = (interaction: InteractionContext) => IResponse | Promise<IResponse>;
+
+/**
+ * Events fired by the handler
+ */
+export interface IClientEvents {
+  /**
+   * Fired when a interaction is received
+   * @param interaction - Interaction contact
+   */
+  'interaction': (interaction: InteractionContext) => void;
+  'error': (err: Error) => void;
 }
