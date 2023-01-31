@@ -4,10 +4,12 @@ import { PermissionsBitField } from "./builders/Bitfield";
 
 import type { Snowflake } from "discord-api-types/globals";
 import { APIInteraction, APIInteractionResponse, InteractionResponseType, InteractionType } from "discord-api-types/v10";
-import { callBackFunction, convertSnowflakeToTimeStamp, DisciError, DisciInteractionError, DisciTypeError } from "../utils/helpers";
+import { convertSnowflakeToTimeStamp, DisciError, DisciInteractionError, DisciTypeError } from "../utils/helpers";
 import type { ApplicationCommand } from "./ApplicationCommand";
 import type { MessageReplyOptions } from "../utils/constants";
 import User from "./User";
+
+type TcallbackFn = (data: APIInteractionResponse) => void;
 
 /**
  * Base Interaction, used by all other Interaction related Structures
@@ -52,12 +54,13 @@ export abstract class BaseInteraction implements IBase {
       */
      timeout: boolean;
      author?: User;
+     private _callback!: TcallbackFn;
     /**
      * 
      * @param handler 
      * @param RawInteractionData 
      */
-    constructor(public handler: InteractionHandler, readonly RawInteractionData: APIInteraction, protected callback: callBackFunction) {
+    constructor(public handler: InteractionHandler, readonly RawInteractionData: APIInteraction) {
         this.id = RawInteractionData.id;
         this.applicationId = RawInteractionData.application_id;
         this.token = RawInteractionData.token;
@@ -81,6 +84,16 @@ export abstract class BaseInteraction implements IBase {
         this.timeout = false;
     }
     /**
+     * Internal function. define the function used to respond the interaction
+     * @param fn 
+     */
+    useCallback(fn: TcallbackFn) {
+        Reflect.defineProperty(this, '_callback', {
+            value: fn
+        });
+        return this;
+    }
+    /**
      * Timestamp of this interaction
      */
     get createdTimestamp() {
@@ -91,7 +104,7 @@ export abstract class BaseInteraction implements IBase {
      */
     get createdAt(): Date {
 		return new Date(this.createdTimestamp);
-	}
+    }
     /**
      * Type guard to verify if this interaction is ApplicationCommand
      * @returns 
@@ -106,7 +119,7 @@ export abstract class BaseInteraction implements IBase {
     respond(message: string, options?: Omit<MessageReplyOptions, 'content'>): this;
     respond(type: InteractionResponseType, options?: MessageReplyOptions): this;
     respond(type: InteractionResponseType | string = InteractionResponseType.DeferredChannelMessageWithSource, options?: MessageReplyOptions) {
-        if(this.timeout) throw new DisciError(`Response Stale, the Interaction has expired`);
+        if(this.timeout) throw new DisciError(`This Interaction already timed out`);
         if(this.responded) throw new DisciError(`This interaction has already been responded to.`);
         let APIdata = {} as APIInteractionResponse;
 
@@ -130,11 +143,8 @@ export abstract class BaseInteraction implements IBase {
             //APIdata = { type, data: options }
         }
         else throw new DisciTypeError(`Response types other than defer require options`)
-
-        this.callback({
-            responseData: APIdata,
-            statusCode: 200,
-        });
+        
+        this._callback(APIdata)
         this.responded = true;
         return this;
     }
@@ -142,7 +152,7 @@ export abstract class BaseInteraction implements IBase {
      * Send a defer type response, gives you extra time to reply
      */
     deferResponse() {
-        if(this.timeout) throw new DisciInteractionError(`Interaction already timed out`);
+        if(this.timeout) throw new DisciInteractionError(`This Interaction already timed out`);
         if(this.responded) throw new DisciInteractionError(`This interaction has already been responded to.`);
         return this.respond(InteractionResponseType.DeferredChannelMessageWithSource)
     }

@@ -2,7 +2,6 @@
 import { TypedEmitter } from 'tiny-typed-emitter';
 
 import {
-  APIChatInputApplicationCommandInteraction,
   APIInteraction,
   ApplicationCommandType,
   InteractionResponseType,
@@ -14,7 +13,6 @@ import {
   DiscordVerificationHeaders,
   InteractionContext, 
   EResponseErrorMessages,
-  TRespondCallback,
   IClientEvents,
 } from "./utils/constants";
 import crypto from 'node:crypto'
@@ -79,13 +77,30 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
             // ping responses
           case InteractionType.ApplicationCommand: {
             const command = rawInteraction.data;
-            if(command.type === ApplicationCommandType.ChatInput) interaction = new ChatInputInteraction(this, rawInteraction, () => '')
+            if(command.type === ApplicationCommandType.ChatInput) interaction = new ChatInputInteraction(this, rawInteraction)
           }
         }
 
         if(interaction) {
+          interaction.useCallback((response) => {
+            return resolve(toResponse(response))
+          });
 
-          return this.emit('interaction', interaction);
+          // timeout after specified time out duration, usually below 3s
+          setTimeout(() => {
+            if(interaction) {
+              if(this.options.deferOnTimeout) {
+                return interaction.deferResponse();
+              }
+              else {
+                interaction.timeout = true;
+                return resolve(toResponse(EResponseErrorMessages.TimedOut, 504))
+              }
+            }
+          }, this.options.replyTimeout)
+
+          // finally emit the event
+          return this.emit('interactionCreate', interaction);
         }
         else if(rawInteraction.type === InteractionType.Ping) return resolve(toResponse({
           type: InteractionResponseType.Pong,

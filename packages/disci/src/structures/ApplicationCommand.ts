@@ -1,10 +1,8 @@
 import {
   APIApplicationCommandInteraction,
-  APIChatInputApplicationCommandInteraction,
   ApplicationCommandType,
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
-import type { callBackFunction } from "../utils/helpers";
 import type { IBase } from "./Base";
 import { BaseInteraction } from "./BaseInteraction";
 
@@ -28,9 +26,8 @@ export abstract class ApplicationCommand
   constructor(
     handler: InteractionHandler,
     rawData: APIApplicationCommandInteraction,
-    callback: callBackFunction
   ) {
-    super(handler, rawData, callback);
+    super(handler, rawData);
     const data = rawData.data;
     this.commandType = data.type;
     this.commandName = data.name;
