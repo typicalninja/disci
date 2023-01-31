@@ -6,7 +6,8 @@ export type {
   InteractionContext,
   MessageReplyOptions,
   IHandlerOptions,
-  TRespondCallback
+  TRespondCallback,
+  IClientEvents
 } from "./src/utils/constants";
 
 // request related

@@ -1,1 +1,7 @@
-# Docs for Disci
+# Disci website
+
+The docs and guide for disci
+
+# Website
+
+This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
