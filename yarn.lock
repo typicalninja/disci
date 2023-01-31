@@ -1743,6 +1743,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@disci/docs@workspace:apps/docs":
+  version: 0.0.0-use.local
+  resolution: "@disci/docs@workspace:apps/docs"
+  dependencies:
+    "@docusaurus/core": 2.3.0
+    "@docusaurus/module-type-aliases": 2.3.0
+    "@docusaurus/preset-classic": 2.3.0
+    "@mdx-js/react": ^1.6.22
+    "@tsconfig/docusaurus": ^1.0.5
+    clsx: ^1.2.1
+    docusaurus-plugin-typedoc: ^0.18.0
+    prism-react-renderer: ^1.3.5
+    react: ^17.0.2
+    react-dom: ^17.0.2
+    typedoc-plugin-markdown: ^3.14.0
+    typescript: ^4.7.4
+  languageName: unknown
+  linkType: soft
+
 "@discordjs/collection@npm:^1.3.0":
   version: 1.3.0
   resolution: "@discordjs/collection@npm:1.3.0"
@@ -3774,25 +3793,6 @@ __metadata:
   checksum: 3e044fd6d1d26545f235a9fe4d7a534e2029d8e59fa7fd9f2a6eb21230f6b5380ea1eaf55136e60cbf8e613544b3b766e7a6fa2102e2a3a117505466e3025dc2
   languageName: node
   linkType: hard
-
-"apps-docs@workspace:apps/docs":
-  version: 0.0.0-use.local
-  resolution: "apps-docs@workspace:apps/docs"
-  dependencies:
-    "@docusaurus/core": 2.3.0
-    "@docusaurus/module-type-aliases": 2.3.0
-    "@docusaurus/preset-classic": 2.3.0
-    "@mdx-js/react": ^1.6.22
-    "@tsconfig/docusaurus": ^1.0.5
-    clsx: ^1.2.1
-    docusaurus-plugin-typedoc: ^0.18.0
-    prism-react-renderer: ^1.3.5
-    react: ^17.0.2
-    react-dom: ^17.0.2
-    typedoc-plugin-markdown: ^3.14.0
-    typescript: ^4.7.4
-  languageName: unknown
-  linkType: soft
 
 "aproba@npm:^1.0.3 || ^2.0.0":
   version: 2.0.0

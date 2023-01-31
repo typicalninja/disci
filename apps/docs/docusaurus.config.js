@@ -41,8 +41,6 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            '',
         },
       }),
     ],
@@ -57,7 +55,7 @@ const config = {
         title: 'Disci.js',
         logo: {
           alt: 'Disci.js logo',
-          src: 'img/disci.svg',
+          src: 'img/disci.png',
         },
         items: [
           {
@@ -94,8 +92,14 @@ const config = {
   
         // Plugin / TypeDoc options
         {
+          id: 'disci',
           entryPoints: ['../../packages/disci/index.ts'],
           tsconfig: '../../tsconfig.json',
+          sidebar: {
+            categoryLabel: 'disci',
+            position: 1,
+            fullNames: true,
+          },
         },
       ],
     ]
