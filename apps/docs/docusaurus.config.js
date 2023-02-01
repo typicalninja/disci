@@ -11,7 +11,7 @@ const config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-test-site.com',
+  url: 'http://disci.typical.gq/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -23,7 +23,6 @@ const config = {
 
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
-
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
@@ -40,7 +39,10 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
+          showLastUpdateTime: true,
+        },
+        theme: {
+          customCss: require.resolve('./src/css/custom.css'),
         },
       }),
     ],
@@ -49,13 +51,26 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      docs: {
+        sidebar: {
+          hideable: true,
+          autoCollapseCategories: true,
+        },
+      },
+      announcementBar: {
+        id: 'announcementBar-1',
+        content: `🚧 Disci is still in ALPHA stage`,
+      },
       // Replace with your project's social card
       image: 'img/disci.png',
       navbar: {
-        title: 'Disci.js',
+        hideOnScroll: true,
+        title: 'Disci',
         logo: {
-          alt: 'Disci.js logo',
+          alt: '',
           src: 'img/disci.png',
+          width: 32,
+          height: 32,
         },
         items: [
           {
@@ -79,7 +94,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} typicalninja493. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} typicalninja. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
@@ -92,16 +107,26 @@ const config = {
   
         // Plugin / TypeDoc options
         {
-          id: 'disci',
+          id: 'Disci',
           entryPoints: ['../../packages/disci/index.ts'],
           tsconfig: '../../tsconfig.json',
           sidebar: {
-            categoryLabel: 'disci',
+            categoryLabel: 'API Documentation',
             position: 1,
             fullNames: true,
           },
         },
       ],
+      async function tailwind() {
+        return {
+          name: 'docusaurus-tailwindcss',
+          configurePostCss(postcssOptions) {
+            postcssOptions.plugins.push(require('tailwindcss'));
+            postcssOptions.plugins.push(require('autoprefixer'));
+            return postcssOptions;
+          },
+        };
+      },
     ]
 };
 

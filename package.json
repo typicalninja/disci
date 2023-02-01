@@ -9,7 +9,8 @@
     "build:docs": "turbo run build --filter=@disci/docs",
     "build:disci": "turbo run build --filter=disci",
     "dev": "turbo run dev --parallel",
-    "disci:dev": "yarn run build --filter=disci",
+    "dev:disci": "turbo run dev --filter=disci",
+    "dev:docs": "turbo run dev --filter=@disci/docs",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

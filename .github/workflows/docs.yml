@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploying Docs to Github Pages
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to GitHub Pages
+    name: Deploy Docs to GitHub Pages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
