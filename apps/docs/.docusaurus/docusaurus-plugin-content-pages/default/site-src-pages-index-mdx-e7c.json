@@ -1,8 +1,0 @@
-{
-  "type": "mdx",
-  "permalink": "/",
-  "source": "@site/src/pages/index.mdx",
-  "title": "Disci.js",
-  "description": "* Imagine a discord bot... without a gateway",
-  "frontMatter": {}
-}
