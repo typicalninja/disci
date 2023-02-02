@@ -17,7 +17,7 @@ import {
 } from "./utils/constants";
 import crypto from 'node:crypto'
 // to add typings to events
-import { IRequest, IResponse, toResponse } from "./utils/request";
+import { IRequest, IResponse, ToRequest, toResponse } from "./utils/request";
 
 //import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
 import { DisciParseError, DisciValidationError, tryAndValue } from "./utils/helpers";
@@ -31,10 +31,23 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
   constructor(options: Partial<IHandlerOptions>) {
     super()
     this.options = Object.assign({}, defaultOptions, options);
-    if(!this.options.token || !this.options.publicKey) throw new DisciValidationError(`Token & Publick key is required`)
+    if(!this.options.token || !this.options.publicKey) throw new DisciValidationError(`Token & Public key is required`)
     // Our Rest manager
     this.rest = new REST({ version: '10' }).setToken(this.options.token);
     this.publicKey = null;
+  }
+  /**
+   * Internal function for debugging conditionally
+   */
+  private debug(msg: string) {
+    msg = '[@DISCI/HANDLER]: ' + msg;
+    if(this.options.debug) {
+      // if debug is enabled
+      if(typeof this.options.debug === 'function') this.options.debug(msg)
+      else console.debug(msg)
+    }
+
+    return void 0;
   }
   /**
    * Handles a Request and returns a Response Object
@@ -45,13 +58,16 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
     req: IRequest,
   ): Promise<IResponse> {
     return new Promise((resolve) => {
+      req = ToRequest(req)
       // verify if its a valid request
       return (this.options.verifyRequest || this.verifyRequest.bind(this))(req).then((verified) => {
           // if not verified, resolve as unauthed
-          if(!verified) return resolve(toResponse(EResponseErrorMessages.Unauthorized, 400));
+          this.debug(`New Request ${verified ? 'Passed Verification' : 'Failed verification'}`)
+          if(!verified) return resolve(toResponse(EResponseErrorMessages.Unauthorized, 401));
           // process the request
-          return this.processRequest(req).then(resolve).catch((err) => {
+          this.processRequest(req).then(resolve).catch((err) => {
             this.emit('error', err);
+            this.debug(`Error occurred while processing an Interaction > ${err}`)
             resolve(toResponse(EResponseErrorMessages.InternalError, 500))
           });
       });
@@ -83,13 +99,16 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
 
         if(interaction) {
           interaction.useCallback((response) => {
+            this.debug(`Resolving Interaction with ${JSON.stringify(response)} `)
             return resolve(toResponse(response))
           });
 
           // timeout after specified time out duration, usually below 3s
           setTimeout(() => {
             if(interaction) {
+              this.debug(`Interaction of id ${interaction.id} timed out`)
               if(this.options.deferOnTimeout) {
+                this.debug(`Interaction of id ${interaction.id} was auto defered`)
                 return interaction.deferResponse();
               }
               else {
@@ -105,66 +124,10 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
         else if(rawInteraction.type === InteractionType.Ping) return resolve(toResponse({
           type: InteractionResponseType.Pong,
         }))
-        else return resolve(toResponse(EResponseErrorMessages.NotSupported, 500))
-        /*
-        
-           
-        let interaction: null | InteractionContext = null;
-        const callback = getResponseCallback(resolve, this.options.replyTimeout, () => {
-          // timed out
-          if(!interaction) return /* Unsupported Type / {
-            responseData: httpErrorMessages.NotSupported,
-            statusCode: 501,
-          }
-          // autodefer if time out
-          if(this.options.deferOnTimeout) {
-            interaction.responded = true;
-            // auto defer
-            return {
-              responseData: {
-                type: InteractionResponseType.DeferredChannelMessageWithSource,
-              },
-              statusCode: 200,
-            }
-          }
-          else {
-            // handle timeout else
-            interaction.timeout = true;
-            return {
-              responseData: httpErrorMessages.TimedOut,
-              statusCode: 504
-            }
-          }
-        })
-
-        switch(rawInteraction.type) {
-          // handle pings
-          case InteractionType.Ping:
-            callback({
-              responseData: { type: InteractionResponseType.Pong },
-              statusCode: 200,
-            })
-          break;
-          // application commands
-          case InteractionType.ApplicationCommand:
-              // sub types
-              switch(rawInteraction.data.type) {
-                // chatinput / slash commands
-                  case ApplicationCommandType.ChatInput:
-                    interaction = new ChatInputInteraction(this, rawInteraction as APIChatInputApplicationCommandInteraction, callback)
-                  break;
-              }
-          break;
-          default:
-            // not supported
-            callback({
-              responseData: httpErrorMessages.NotSupported,
-              statusCode: 501,
-            })
-          break;
+        else {
+          this.debug(`Unsupported Interaction type of ${rawInteraction.type} was received`);
+          return resolve(toResponse(EResponseErrorMessages.NotSupported, 500));
         }
-        this.emit('int', interaction)
-        */
       });
   }
   /**
@@ -173,6 +136,7 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
    */
   async verifyRequest(req: IRequest): Promise<boolean> {
       // no public key yet (maybe first run)
+      //console.log('Verify', this.publicKey, req.body, req.headers)
       if (!this.publicKey) {
         this.publicKey = await crypto.subtle.importKey(
           'raw', 
@@ -188,8 +152,9 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
       const signature = req.headers[
         DiscordVerificationHeaders.Signature
       ] as string;
-      const { body } = req
+      const { body } = req;
       // all of them should be present
+      console.log(signature, timestamp + body)
       if (!timestamp || !signature || !body) return false;
       try {
         return crypto.subtle.verify(

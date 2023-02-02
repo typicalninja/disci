@@ -1,0 +1,11 @@
+{
+    "name": "@disci/forge",
+    "description": "A Library for testing a disci server",
+    "scripts": {
+        "build": "tsc"
+    },
+    "dependencies": {
+        "tweetnacl": "^1.0.3",
+        "undici": "^5.16.0"
+    }
+}

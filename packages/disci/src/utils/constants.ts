@@ -35,7 +35,11 @@ export interface IHandlerOptions {
    * @param req - The request from the server to verify
    * @returns boolean indicating wether this is a verified request or not
    */
-  verifyRequest?: (req: IRequest) => Promise<boolean>
+  verifyRequest?: (req: IRequest) => Promise<boolean>;
+  /**
+   * A debug callback function that can be used for debugging
+   */
+  debug?: (msg: string) => void;
 }
 
 export type MessageReplyOptions = {
@@ -52,10 +56,6 @@ export const defaultOptions: IHandlerOptions = {
 };
 
 export const debugNameSpace = `disci`;
-
-export const ErrorMessages = {
-  ResponseTimedOut: "The response to this Interaction timed out",
-};
 
 /**
  * Error Messages Returned in HttpErrors
