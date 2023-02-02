@@ -79,6 +79,11 @@ export interface IClientEvents {
    * Fired when a interaction is received
    * @param interaction - Interaction contact
    */
-  'interaction': (interaction: InteractionContext) => void;
+  'interactionCreate': (interaction: InteractionContext) => void;
+  /**
+   * Fired when there is a error 
+   * @param err 
+   * @returns 
+   */
   'error': (err: Error) => void;
 }

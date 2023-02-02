@@ -6,7 +6,16 @@ node_modules
 dist
 .next
 
-apps/example
+# docs
+.docusaurus
+.cache-loader
+apps/docs/docs/api
+apps/docs/build
+
+/build
 
 .yarnrc.yml
 .vscode
+
+
+.env
