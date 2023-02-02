@@ -5,8 +5,8 @@ import fastify, { FastifyReply, FastifyRequest } from "fastify";
 const server = fastify();
 
 const client = new InteractionHandler({
-  publicKey: "a0a9e3f5bef2c0426ddfb3ba462491a0281ddc271c3f503ddbe69dfced3e3785",
-  token: "ODIzNDQ4ODE0MTg2Mzk3Njk2.GfAtkd.VWeUkALvYs-qF9lVpxO-TBXl-Nn3GujFoD3N24",
+  publicKey: process.env.PUBLIC_KEY,
+  token: process.env.TOKEN,
 });
 
 const start = async () => {
@@ -37,7 +37,6 @@ const start = async () => {
           /*interaction.respond(InteractionResponseType.ChannelMessageWithSource, {
             content: "test",
           }).catch(() => null);*/
-      console.log(`Req: ${d}`)
         }
     })
     await server.listen({ port: 3000 });
