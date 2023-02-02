@@ -1,0 +1,83 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/docs",
+          "mainDocId": "api/index",
+          "docs": [
+            {
+              "id": "api/classes/BitField",
+              "path": "/docs/api/classes/BitField",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/classes/InteractionHandler",
+              "path": "/docs/api/classes/InteractionHandler",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/classes/PermissionsBitField",
+              "path": "/docs/api/classes/PermissionsBitField",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/classes/UserFlagsBitField",
+              "path": "/docs/api/classes/UserFlagsBitField",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/index",
+              "path": "/docs/api/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/interfaces/IClientEvents",
+              "path": "/docs/api/interfaces/IClientEvents",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/interfaces/IHandlerOptions",
+              "path": "/docs/api/interfaces/IHandlerOptions",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/interfaces/IRequest",
+              "path": "/docs/api/interfaces/IRequest",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/interfaces/IResponse",
+              "path": "/docs/api/interfaces/IResponse",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/modules",
+              "path": "/docs/api/modules",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "intro",
+              "path": "/docs/intro",
+              "sidebar": "tutorialSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "tutorialSidebar": {
+              "link": {
+                "path": "/docs/api/",
+                "label": "API Documentation"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

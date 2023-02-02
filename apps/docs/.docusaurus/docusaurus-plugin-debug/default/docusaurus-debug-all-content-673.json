@@ -1,0 +1,482 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "loadedVersions": [
+        {
+          "versionName": "current",
+          "label": "Next",
+          "banner": null,
+          "badge": false,
+          "noIndex": false,
+          "className": "docs-version-current",
+          "path": "/docs",
+          "tagsPath": "/docs/tags",
+          "isLast": true,
+          "routePriority": -1,
+          "sidebarFilePath": "D:\\coding\\npm-pkgs\\disci\\apps\\docs\\sidebars.js",
+          "contentPath": "D:\\coding\\npm-pkgs\\disci\\apps\\docs\\docs",
+          "contentPathLocalized": "D:\\coding\\npm-pkgs\\disci\\apps\\docs\\i18n\\en\\docusaurus-plugin-content-docs\\current",
+          "docs": [
+            {
+              "unversionedId": "api/classes/BitField",
+              "id": "api/classes/BitField",
+              "title": "Class: BitField",
+              "description": "Utility structure to help with bitfield creation and manipulation",
+              "source": "@site/docs/api/classes/BitField.md",
+              "sourceDirName": "api/classes",
+              "slug": "/api/classes/BitField",
+              "permalink": "/docs/api/classes/BitField",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
+              "sidebarPosition": 0,
+              "frontMatter": {
+                "id": "BitField",
+                "title": "Class: BitField",
+                "sidebar_label": "BitField",
+                "sidebar_position": 0,
+                "custom_edit_url": null
+              },
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "Exports",
+                "permalink": "/docs/api/modules"
+              },
+              "next": {
+                "title": "InteractionHandler",
+                "permalink": "/docs/api/classes/InteractionHandler"
+              }
+            },
+            {
+              "unversionedId": "api/classes/InteractionHandler",
+              "id": "api/classes/InteractionHandler",
+              "title": "Class: InteractionHandler",
+              "description": "Hierarchy",
+              "source": "@site/docs/api/classes/InteractionHandler.md",
+              "sourceDirName": "api/classes",
+              "slug": "/api/classes/InteractionHandler",
+              "permalink": "/docs/api/classes/InteractionHandler",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
+              "sidebarPosition": 0,
+              "frontMatter": {
+                "id": "InteractionHandler",
+                "title": "Class: InteractionHandler",
+                "sidebar_label": "InteractionHandler",
+                "sidebar_position": 0,
+                "custom_edit_url": null
+              },
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "BitField",
+                "permalink": "/docs/api/classes/BitField"
+              },
+              "next": {
+                "title": "PermissionsBitField",
+                "permalink": "/docs/api/classes/PermissionsBitField"
+              }
+            },
+            {
+              "unversionedId": "api/classes/PermissionsBitField",
+              "id": "api/classes/PermissionsBitField",
+              "title": "Class: PermissionsBitField",
+              "description": "Utility structure to help with bitfield creation and manipulation",
+              "source": "@site/docs/api/classes/PermissionsBitField.md",
+              "sourceDirName": "api/classes",
+              "slug": "/api/classes/PermissionsBitField",
+              "permalink": "/docs/api/classes/PermissionsBitField",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
+              "sidebarPosition": 0,
+              "frontMatter": {
+                "id": "PermissionsBitField",
+                "title": "Class: PermissionsBitField",
+                "sidebar_label": "PermissionsBitField",
+                "sidebar_position": 0,
+                "custom_edit_url": null
+              },
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "InteractionHandler",
+                "permalink": "/docs/api/classes/InteractionHandler"
+              },
+              "next": {
+                "title": "UserFlagsBitField",
+                "permalink": "/docs/api/classes/UserFlagsBitField"
+              }
+            },
+            {
+              "unversionedId": "api/classes/UserFlagsBitField",
+              "id": "api/classes/UserFlagsBitField",
+              "title": "Class: UserFlagsBitField",
+              "description": "Utility structure to help with bitfield creation and manipulation",
+              "source": "@site/docs/api/classes/UserFlagsBitField.md",
+              "sourceDirName": "api/classes",
+              "slug": "/api/classes/UserFlagsBitField",
+              "permalink": "/docs/api/classes/UserFlagsBitField",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
+              "sidebarPosition": 0,
+              "frontMatter": {
+                "id": "UserFlagsBitField",
+                "title": "Class: UserFlagsBitField",
+                "sidebar_label": "UserFlagsBitField",
+                "sidebar_position": 0,
+                "custom_edit_url": null
+              },
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "PermissionsBitField",
+                "permalink": "/docs/api/classes/PermissionsBitField"
+              },
+              "next": {
+                "title": "IClientEvents",
+                "permalink": "/docs/api/interfaces/IClientEvents"
+              }
+            },
+            {
+              "unversionedId": "api/index",
+              "id": "api/index",
+              "title": "disci",
+              "description": "* The Core module",
+              "source": "@site/docs/api/index.md",
+              "sourceDirName": "api",
+              "slug": "/api/",
+              "permalink": "/docs/api/",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
+              "sidebarPosition": 0,
+              "frontMatter": {
+                "id": "index",
+                "title": "disci",
+                "sidebar_label": "Readme",
+                "sidebar_position": 0,
+                "custom_edit_url": null
+              },
+              "sidebar": "tutorialSidebar",
+              "next": {
+                "title": "Exports",
+                "permalink": "/docs/api/modules"
+              }
+            },
+            {
+              "unversionedId": "api/interfaces/IClientEvents",
+              "id": "api/interfaces/IClientEvents",
+              "title": "Interface: IClientEvents",
+              "description": "Events fired by the handler",
+              "source": "@site/docs/api/interfaces/IClientEvents.md",
+              "sourceDirName": "api/interfaces",
+              "slug": "/api/interfaces/IClientEvents",
+              "permalink": "/docs/api/interfaces/IClientEvents",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
+              "sidebarPosition": 0,
+              "frontMatter": {
+                "id": "IClientEvents",
+                "title": "Interface: IClientEvents",
+                "sidebar_label": "IClientEvents",
+                "sidebar_position": 0,
+                "custom_edit_url": null
+              },
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "UserFlagsBitField",
+                "permalink": "/docs/api/classes/UserFlagsBitField"
+              },
+              "next": {
+                "title": "IHandlerOptions",
+                "permalink": "/docs/api/interfaces/IHandlerOptions"
+              }
+            },
+            {
+              "unversionedId": "api/interfaces/IHandlerOptions",
+              "id": "api/interfaces/IHandlerOptions",
+              "title": "Interface: IHandlerOptions",
+              "description": "Properties",
+              "source": "@site/docs/api/interfaces/IHandlerOptions.md",
+              "sourceDirName": "api/interfaces",
+              "slug": "/api/interfaces/IHandlerOptions",
+              "permalink": "/docs/api/interfaces/IHandlerOptions",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
+              "sidebarPosition": 0,
+              "frontMatter": {
+                "id": "IHandlerOptions",
+                "title": "Interface: IHandlerOptions",
+                "sidebar_label": "IHandlerOptions",
+                "sidebar_position": 0,
+                "custom_edit_url": null
+              },
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "IClientEvents",
+                "permalink": "/docs/api/interfaces/IClientEvents"
+              },
+              "next": {
+                "title": "IRequest",
+                "permalink": "/docs/api/interfaces/IRequest"
+              }
+            },
+            {
+              "unversionedId": "api/interfaces/IRequest",
+              "id": "api/interfaces/IRequest",
+              "title": "Interface: IRequest",
+              "description": "Common Request type containing required parts for our scripts",
+              "source": "@site/docs/api/interfaces/IRequest.md",
+              "sourceDirName": "api/interfaces",
+              "slug": "/api/interfaces/IRequest",
+              "permalink": "/docs/api/interfaces/IRequest",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
+              "sidebarPosition": 0,
+              "frontMatter": {
+                "id": "IRequest",
+                "title": "Interface: IRequest",
+                "sidebar_label": "IRequest",
+                "sidebar_position": 0,
+                "custom_edit_url": null
+              },
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "IHandlerOptions",
+                "permalink": "/docs/api/interfaces/IHandlerOptions"
+              },
+              "next": {
+                "title": "IResponse",
+                "permalink": "/docs/api/interfaces/IResponse"
+              }
+            },
+            {
+              "unversionedId": "api/interfaces/IResponse",
+              "id": "api/interfaces/IResponse",
+              "title": "Interface: IResponse",
+              "description": "Data returned by handleRequest",
+              "source": "@site/docs/api/interfaces/IResponse.md",
+              "sourceDirName": "api/interfaces",
+              "slug": "/api/interfaces/IResponse",
+              "permalink": "/docs/api/interfaces/IResponse",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
+              "sidebarPosition": 0,
+              "frontMatter": {
+                "id": "IResponse",
+                "title": "Interface: IResponse",
+                "sidebar_label": "IResponse",
+                "sidebar_position": 0,
+                "custom_edit_url": null
+              },
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "IRequest",
+                "permalink": "/docs/api/interfaces/IRequest"
+              },
+              "next": {
+                "title": "Guide to disci",
+                "permalink": "/docs/intro"
+              }
+            },
+            {
+              "unversionedId": "api/modules",
+              "id": "api/modules",
+              "title": "disci",
+              "description": "Classes",
+              "source": "@site/docs/api/modules.md",
+              "sourceDirName": "api",
+              "slug": "/api/modules",
+              "permalink": "/docs/api/modules",
+              "draft": false,
+              "editUrl": null,
+              "tags": [],
+              "version": "current",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
+              "sidebarPosition": 0.5,
+              "frontMatter": {
+                "id": "modules",
+                "title": "disci",
+                "sidebar_label": "Exports",
+                "sidebar_position": 0.5,
+                "custom_edit_url": null
+              },
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "Readme",
+                "permalink": "/docs/api/"
+              },
+              "next": {
+                "title": "BitField",
+                "permalink": "/docs/api/classes/BitField"
+              }
+            },
+            {
+              "unversionedId": "intro",
+              "id": "intro",
+              "title": "Guide to disci",
+              "description": "",
+              "source": "@site/docs/intro.md",
+              "sourceDirName": ".",
+              "slug": "/intro",
+              "permalink": "/docs/intro",
+              "draft": false,
+              "tags": [],
+              "version": "current",
+              "lastUpdatedAt": 1539502055,
+              "formattedLastUpdatedAt": "Oct 14, 2018",
+              "sidebarPosition": 1,
+              "frontMatter": {
+                "sidebar_position": 1
+              },
+              "sidebar": "tutorialSidebar",
+              "previous": {
+                "title": "IResponse",
+                "permalink": "/docs/api/interfaces/IResponse"
+              }
+            }
+          ],
+          "drafts": [],
+          "sidebars": {
+            "tutorialSidebar": [
+              {
+                "type": "category",
+                "label": "API Documentation",
+                "collapsible": true,
+                "collapsed": true,
+                "items": [
+                  {
+                    "type": "doc",
+                    "id": "api/modules",
+                    "label": "Exports"
+                  },
+                  {
+                    "type": "category",
+                    "label": "Classes",
+                    "collapsible": true,
+                    "collapsed": true,
+                    "items": [
+                      {
+                        "type": "doc",
+                        "id": "api/classes/BitField",
+                        "label": "BitField"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "api/classes/InteractionHandler",
+                        "label": "InteractionHandler"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "api/classes/PermissionsBitField",
+                        "label": "PermissionsBitField"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "api/classes/UserFlagsBitField",
+                        "label": "UserFlagsBitField"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "category",
+                    "label": "Interfaces",
+                    "collapsible": true,
+                    "collapsed": true,
+                    "items": [
+                      {
+                        "type": "doc",
+                        "id": "api/interfaces/IClientEvents",
+                        "label": "IClientEvents"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "api/interfaces/IHandlerOptions",
+                        "label": "IHandlerOptions"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "api/interfaces/IRequest",
+                        "label": "IRequest"
+                      },
+                      {
+                        "type": "doc",
+                        "id": "api/interfaces/IResponse",
+                        "label": "IResponse"
+                      }
+                    ]
+                  }
+                ],
+                "link": {
+                  "type": "doc",
+                  "id": "api/index"
+                }
+              },
+              {
+                "type": "doc",
+                "id": "intro"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "docusaurus-plugin-content-blog": {
+    "default": {
+      "blogSidebarTitle": "Recent posts",
+      "blogPosts": [],
+      "blogListPaginated": [],
+      "blogTags": {},
+      "blogTagsListPath": "/blog/tags",
+      "blogTagsPaginated": []
+    }
+  },
+  "docusaurus-plugin-content-pages": {
+    "default": [
+      {
+        "type": "jsx",
+        "permalink": "/",
+        "source": "@site/src/pages/index.tsx"
+      }
+    ]
+  },
+  "docusaurus-plugin-debug": {},
+  "docusaurus-theme-classic": {},
+  "docusaurus-plugin-typedoc": {},
+  "docusaurus-tailwindcss": {},
+  "docusaurus-bootstrap-plugin": {},
+  "docusaurus-mdx-fallback-plugin": {}
+}

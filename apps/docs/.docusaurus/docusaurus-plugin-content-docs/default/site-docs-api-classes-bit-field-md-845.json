@@ -1,0 +1,33 @@
+{
+  "unversionedId": "api/classes/BitField",
+  "id": "api/classes/BitField",
+  "title": "Class: BitField",
+  "description": "Utility structure to help with bitfield creation and manipulation",
+  "source": "@site/docs/api/classes/BitField.md",
+  "sourceDirName": "api/classes",
+  "slug": "/api/classes/BitField",
+  "permalink": "/docs/api/classes/BitField",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "lastUpdatedAt": 1539502055,
+  "formattedLastUpdatedAt": "Oct 14, 2018",
+  "sidebarPosition": 0,
+  "frontMatter": {
+    "id": "BitField",
+    "title": "Class: BitField",
+    "sidebar_label": "BitField",
+    "sidebar_position": 0,
+    "custom_edit_url": null
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Exports",
+    "permalink": "/docs/api/modules"
+  },
+  "next": {
+    "title": "InteractionHandler",
+    "permalink": "/docs/api/classes/InteractionHandler"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "unversionedId": "api/interfaces/IResponse",
+  "id": "api/interfaces/IResponse",
+  "title": "Interface: IResponse",
+  "description": "Data returned by handleRequest",
+  "source": "@site/docs/api/interfaces/IResponse.md",
+  "sourceDirName": "api/interfaces",
+  "slug": "/api/interfaces/IResponse",
+  "permalink": "/docs/api/interfaces/IResponse",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "lastUpdatedAt": 1539502055,
+  "formattedLastUpdatedAt": "Oct 14, 2018",
+  "sidebarPosition": 0,
+  "frontMatter": {
+    "id": "IResponse",
+    "title": "Interface: IResponse",
+    "sidebar_label": "IResponse",
+    "sidebar_position": 0,
+    "custom_edit_url": null
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "IRequest",
+    "permalink": "/docs/api/interfaces/IRequest"
+  },
+  "next": {
+    "title": "Guide to disci",
+    "permalink": "/docs/intro"
+  }
+}

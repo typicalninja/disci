@@ -1,0 +1,33 @@
+{
+  "unversionedId": "api/classes/PermissionsBitField",
+  "id": "api/classes/PermissionsBitField",
+  "title": "Class: PermissionsBitField",
+  "description": "Utility structure to help with bitfield creation and manipulation",
+  "source": "@site/docs/api/classes/PermissionsBitField.md",
+  "sourceDirName": "api/classes",
+  "slug": "/api/classes/PermissionsBitField",
+  "permalink": "/docs/api/classes/PermissionsBitField",
+  "draft": false,
+  "editUrl": null,
+  "tags": [],
+  "version": "current",
+  "lastUpdatedAt": 1539502055,
+  "formattedLastUpdatedAt": "Oct 14, 2018",
+  "sidebarPosition": 0,
+  "frontMatter": {
+    "id": "PermissionsBitField",
+    "title": "Class: PermissionsBitField",
+    "sidebar_label": "PermissionsBitField",
+    "sidebar_position": 0,
+    "custom_edit_url": null
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "InteractionHandler",
+    "permalink": "/docs/api/classes/InteractionHandler"
+  },
+  "next": {
+    "title": "UserFlagsBitField",
+    "permalink": "/docs/api/classes/UserFlagsBitField"
+  }
+}

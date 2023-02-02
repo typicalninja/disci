@@ -1,0 +1,103 @@
+{
+  "/__docusaurus/debug-94b": {
+    "__comp": "__comp---theme-debug-config-23-a-2ff",
+    "__context": {
+      "plugin": "plugin---docusaurus-debugf-9-e-bfc"
+    }
+  },
+  "/__docusaurus/debug/config-cdf": {
+    "__comp": "__comp---theme-debug-config-23-a-2ff",
+    "__context": {
+      "plugin": "plugin---docusaurus-debugf-9-e-bfc"
+    }
+  },
+  "/__docusaurus/debug/content-680": {
+    "__comp": "__comp---theme-debug-contentba-8-ce7",
+    "__context": {
+      "plugin": "plugin---docusaurus-debugf-9-e-bfc"
+    },
+    "allContent": "allContent---docusaurus-debug-content-246-9aa"
+  },
+  "/__docusaurus/debug/globalData-367": {
+    "__comp": "__comp---theme-debug-global-dataede-0fa",
+    "__context": {
+      "plugin": "plugin---docusaurus-debugf-9-e-bfc"
+    }
+  },
+  "/__docusaurus/debug/metadata-66c": {
+    "__comp": "__comp---theme-debug-site-metadata-68-e-3d4",
+    "__context": {
+      "plugin": "plugin---docusaurus-debugf-9-e-bfc"
+    }
+  },
+  "/__docusaurus/debug/registry-5b9": {
+    "__comp": "__comp---theme-debug-registry-679-501",
+    "__context": {
+      "plugin": "plugin---docusaurus-debugf-9-e-bfc"
+    }
+  },
+  "/__docusaurus/debug/routes-520": {
+    "__comp": "__comp---theme-debug-routes-946-699",
+    "__context": {
+      "plugin": "plugin---docusaurus-debugf-9-e-bfc"
+    }
+  },
+  "/docs-e42": {
+    "__comp": "__comp---theme-doc-page-1-be-9be",
+    "__context": {
+      "plugin": "plugin---docs-6-de-f4d"
+    },
+    "versionMetadata": "versionMetadata---docs-935-398"
+  },
+  "/docs/api/-aee": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-api-5-e-8-853"
+  },
+  "/docs/api/classes/BitField-faa": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-api-classes-bit-field-845-b88"
+  },
+  "/docs/api/classes/InteractionHandler-f08": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-api-classes-interaction-handlerfc-7-47c"
+  },
+  "/docs/api/classes/PermissionsBitField-2d9": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-api-classes-permissions-bit-field-82-c-19a"
+  },
+  "/docs/api/classes/UserFlagsBitField-377": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-api-classes-user-flags-bit-field-27-f-f35"
+  },
+  "/docs/api/interfaces/IClientEvents-658": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-api-interfaces-i-client-events-30-f-764"
+  },
+  "/docs/api/interfaces/IHandlerOptions-759": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-api-interfaces-i-handler-options-578-52d"
+  },
+  "/docs/api/interfaces/IRequest-572": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-api-interfaces-i-request-2-ef-703"
+  },
+  "/docs/api/interfaces/IResponse-333": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-api-interfaces-i-response-022-236"
+  },
+  "/docs/api/modules-98a": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-api-modulesf-6-a-246"
+  },
+  "/docs/intro-aed": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-intro-0-e-3-be1"
+  },
+  "/-8ea": {
+    "__comp": "__comp---site-src-pages-index-tsx-1-df-d3e",
+    "__context": {
+      "plugin": "plugin---a-9-b-7e7"
+    },
+    "config": "config---5-e-9-4f3"
+  }
+}
