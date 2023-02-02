@@ -14,9 +14,8 @@ apps/docs/build
 
 /build
 
-# example app
-apps/example
-
-
 .yarnrc.yml
 .vscode
+
+
+.env

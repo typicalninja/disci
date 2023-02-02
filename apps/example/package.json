@@ -1,0 +1,19 @@
+{
+  "name": "example",
+  "packageManager": "yarn@3.3.0",
+  "dependencies": {
+    "disci": "workspace:*",
+    "discord-api-types": "^0.37.23",
+    "fastify": "^4.10.2",
+    "fastify-raw-body": "^4.2.0",
+    "prom-client": "^14.1.1"
+  },
+  "scripts": {
+    "dev": "nodemon index.ts --compileOnly",
+    "start": "ts-node index.ts --compileOnly"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1"
+  }
+}

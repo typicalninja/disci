@@ -31,7 +31,7 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
   constructor(options: Partial<IHandlerOptions>) {
     super()
     this.options = Object.assign({}, defaultOptions, options);
-    if(!this.options.token || !this.options.publicKey) throw new DisciValidationError(`Token/publicKey is Required`)
+    if(!this.options.token || !this.options.publicKey) throw new DisciValidationError(`Token & Publick key is required`)
     // Our Rest manager
     this.rest = new REST({ version: '10' }).setToken(this.options.token);
     this.publicKey = null;

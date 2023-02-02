@@ -21,11 +21,14 @@ function HomepageHeader() {
         <div>
           <h1 className="hero_title">{siteConfig.title}</h1>
           <p className="text-md">{siteConfig.tagline}</p>
-          <div className={styles.buttons}>
+          <div>
             <Link
-              className="btn btn-primary"
+              className="btn btn-primary no-underline"
+              style={{
+                textDecoration: "none"
+              }}
               to="/docs/intro">
-              Lets go
+              Start Listening!
             </Link>
           </div>
         </div>

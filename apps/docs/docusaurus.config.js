@@ -69,7 +69,7 @@ const config = {
         logo: {
           alt: '',
           src: 'img/disci.png',
-          width: 32,
+          width: 40,
           height: 32,
         },
         items: [
