@@ -1,6 +1,5 @@
 import { InteractionHandler } from "disci";
-//import { InteractionResponseType } from "discord-api-types/v10";
-//import { InteractionType, ApplicationCommandType, InteractionResponseType } from 'discord-api-types/v10'
+
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 const server = fastify();
 
@@ -16,12 +15,6 @@ const start = async () => {
       async (req: FastifyRequest, res: FastifyReply) => {
         // @ts-expect-error
         const d = await client.handleRequest(req);
-        if(!d) {
-          res.statusCode = 400;
-          return {
-            'message': 'Unauth'
-          }
-        }
         console.log(`Returning: ${JSON.stringify(d)}`)
         res.statusCode = d.statusCode || 200;
         return d.responseData;
@@ -34,9 +27,6 @@ const start = async () => {
             interaction.commandType,
             interaction.createdAt,
           );
-          /*interaction.respond(InteractionResponseType.ChannelMessageWithSource, {
-            content: "test",
-          }).catch(() => null);*/
         }
     })
     await server.listen({ port: 3000 });

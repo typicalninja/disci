@@ -1,3 +1,5 @@
+
+
 // main
 export { InteractionHandler } from "./src/InteractionHandler";
 
@@ -22,3 +24,7 @@ export {
   PermissionsBitField,
   UserFlagsBitField,
 } from "./src/structures/builders/Bitfield";
+
+
+export { ChatInputInteraction, ApplicationCommand } from "./src/structures/ApplicationCommand";
+export { BaseInteraction } from "./src/structures/BaseInteraction";

@@ -1,5 +1,4 @@
 import React from 'react';
-import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
@@ -23,7 +22,7 @@ function HomepageHeader() {
           <p className="text-md">{siteConfig.tagline}</p>
           <div>
             <Link
-              className="btn btn-primary no-underline"
+              className="btn btn-secondary no-underline"
               style={{
                 textDecoration: "none"
               }}

@@ -79,10 +79,16 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
+          {
+            type: 'doc',
+            docId: 'api/modules',
+            position: 'left',
+            label: 'API docs',
+          },
         ],
       },
       footer: {
-        style: 'dark',
+       // style: 'dark',
         links: [
           {
             title: 'Docs',
@@ -97,8 +103,8 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} typicalninja. Built with Docusaurus.`,
       },
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
+         theme: darkCodeTheme,
+       // darkTheme: darkCodeTheme,
       },
     }),
     plugins: [
@@ -112,7 +118,7 @@ const config = {
           tsconfig: '../../tsconfig.json',
           sidebar: {
             categoryLabel: 'API Documentation',
-            position: 1,
+            position: 2,
             fullNames: true,
           },
         },
@@ -127,6 +133,7 @@ const config = {
           },
         };
       },
+      require.resolve('docusaurus-lunr-search')
     ]
 };
 
