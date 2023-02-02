@@ -14,6 +14,8 @@
 Development is done in /dev branch and on each new version, dev will be merged with main
 GH action will deploy docs if there is anything is pushed to /main
 
+> Until dev period is over docs will be built for pushes in /dev
+
 
 # License
 
