@@ -4,20 +4,21 @@ import { InteractionHandler } from "disci";
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 const server = fastify();
 
+// by default will use .env
 const client = new InteractionHandler({
-  //publicKey: process.env.PUBLIC_KEY,
-//  token: process.env.TOKEN,
   debug: (msg:string) => console.log(msg),
 });
 
+
+// attach a route for /interactions
 server.post(
   "/interactions",
   async (req: FastifyRequest, res: FastifyReply) => {
     // @ts-expect-error
-    const d = await client.handleRequest(req);
-    console.log(`Returning ${JSON.stringify(d)}`)
-    res.statusCode = d.statusCode || 200;
-    return d.responseData;
+    const response = await client.handleRequest(req);
+    console.log(`Resolved: ${JSON.stringify(response)}`)
+    res.statusCode = response.statusCode || 200;
+    return response.responseData;
   }
 );
 
@@ -28,6 +29,7 @@ client.on('interactionCreate', (interaction) => {
       interaction.commandType,
       interaction.createdAt
     );
+    interaction.deferResponse();
   }
 });
 

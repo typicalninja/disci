@@ -105,7 +105,7 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
 
           // timeout after specified time out duration, usually below 3s
           setTimeout(() => {
-            if(interaction) {
+            if(interaction && !interaction.responded) {
               this.debug(`Interaction of id ${interaction.id} timed out`)
               if(this.options.deferOnTimeout) {
                 this.debug(`Interaction of id ${interaction.id} was auto defered`)
@@ -136,7 +136,6 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
    */
   async verifyRequest(req: IRequest): Promise<boolean> {
       // no public key yet (maybe first run)
-      //console.log('Verify', this.publicKey, req.body, req.headers)
       if (!this.publicKey) {
         this.publicKey = await crypto.subtle.importKey(
           'raw', 
@@ -153,8 +152,6 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
         DiscordVerificationHeaders.Signature
       ] as string;
       const { body } = req;
-      // all of them should be present
-      console.log(signature, timestamp + body)
       if (!timestamp || !signature || !body) return false;
       try {
         return crypto.subtle.verify(

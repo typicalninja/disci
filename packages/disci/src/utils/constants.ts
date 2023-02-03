@@ -48,7 +48,7 @@ export type MessageReplyOptions = {
 };
 
 export const defaultOptions: IHandlerOptions = {
-  replyTimeout: 2900,
+  replyTimeout: 2600,
   deferOnTimeout: true,
   // we assume credentials are in .env files [If provided in options, will be overidden]
   publicKey: process.env.PUBLIC_KEY!,
