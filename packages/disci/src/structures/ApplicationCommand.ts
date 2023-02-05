@@ -84,19 +84,3 @@ export class UserCommandInteraction extends ApplicationCommand {}
 
 
 export type ApplicationCommands = ChatInputInteraction | MessageCommandInteraction | UserCommandInteraction
-
-
-export class ApplicationCommandFactory {
-  static from(handler: InteractionHandler, APIData: APIApplicationCommandInteraction): ApplicationCommands | null {
-    switch(APIData.data.type) {
-      case ApplicationCommandType.ChatInput:
-        return new ChatInputInteraction(handler, APIData);
-      case ApplicationCommandType.Message:
-        return new MessageCommandInteraction(handler, APIData);
-      case ApplicationCommandType.User:
-        return new UserCommandInteraction(handler, APIData)
-      default:
-        return null;
-    }
-  }
-}

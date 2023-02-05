@@ -27,4 +27,3 @@ export {
 
 
 export { ChatInputInteraction, ApplicationCommand } from "./src/structures/ApplicationCommand";
-export { BaseInteraction } from "./src/structures/BaseInteraction";

@@ -12,10 +12,13 @@ import {
   convertSnowflakeToTimeStamp,
   DisciError,
 } from "../utils/helpers";
-import { ApplicationCommand, ApplicationCommandFactory,  } from "./ApplicationCommand";
+
 import User from "./primitives/User";
 import Member from "./primitives/Member";
-import type { InteractionContext } from "../utils/constants";
+
+// Types for different interaction context's
+import type { ApplicationCommand } from './ApplicationCommand'
+import type { AutoCompleteInteraction } from "./AutoCompleteInteraction";
 
 type TcallbackFn = (data: APIInteractionResponse) => void;
 
@@ -142,6 +145,12 @@ export abstract class BaseInteraction implements IBase {
     return this.type === InteractionType.ApplicationCommand;
   }
   /**
+   * Type guard to verify if this interaction is an autocomplete Request
+   */
+  isAutoComplete(): this is AutoCompleteInteraction {
+    return this.type === InteractionType.ApplicationCommandAutocomplete;
+  }
+  /**
    * Respond to this interaction
    * @returns
    * @private
@@ -155,18 +164,4 @@ export abstract class BaseInteraction implements IBase {
     this.responded = true;
     return this;
   }
-}
-
-/**
- * @private
- */
-export class InteractionFactory {
-    static from(handler: InteractionHandler, APIData: APIInteraction): InteractionContext | null {
-        switch(APIData.type) {
-            case InteractionType.ApplicationCommand:
-                return ApplicationCommandFactory.from(handler, APIData);
-            default:
-                return null;
-        }
-    }
 }

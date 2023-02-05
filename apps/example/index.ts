@@ -29,7 +29,15 @@ client.on('interactionCreate', (interaction) => {
       interaction.commandType,
       interaction.createdAt
     );
-    interaction.re(`Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
+    //interaction.re(`Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
+  }
+  else if(interaction.isAutoComplete()) {
+    interaction.sendChoices([
+      {
+        name: 'test',
+        value: 'hey'
+      }
+    ]);
   }
 });
 

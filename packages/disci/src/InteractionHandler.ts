@@ -18,7 +18,7 @@ import crypto from 'node:crypto'
 import { IRequest, IResponse, ToRequest, toResponse } from "./utils/request";
 import { DisciParseError, DisciValidationError, tryAndValue } from "./utils/helpers";
 import { REST } from '@discordjs/rest';
-import { InteractionFactory } from './structures/BaseInteraction';
+import { InteractionFactory } from './utils/Factories';
 
 export class InteractionHandler extends TypedEmitter<IClientEvents>  {
   options: IHandlerOptions;
@@ -96,7 +96,7 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
             if(interaction && !interaction.responded) {
               this.debug(`Interaction of id ${interaction.id} timed out`)
               // check if option is turned on
-              if(this.options.deferOnTimeout) {
+              if(this.options.deferOnTimeout && !interaction.isAutoComplete()) {
                 this.debug(`Interaction of id ${interaction.id} was auto defered`)
                 return interaction.deferResponse();
               }

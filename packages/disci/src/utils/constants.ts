@@ -1,5 +1,6 @@
 import type { APIEmbed } from "discord-api-types/v10";
 import type { ApplicationCommands } from "../structures/ApplicationCommand";
+import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
 import type { Embed } from "../structures/builders/Embed";
 import type { IRequest, IResponse } from "./request";
 //import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
@@ -10,7 +11,7 @@ export enum DiscordVerificationHeaders {
 }
 
 // Common type for interactions
-export type InteractionContext = ApplicationCommands
+export type InteractionContext = ApplicationCommands | AutoCompleteInteraction;
 
 export interface IHandlerOptions {
   /**
@@ -64,12 +65,13 @@ export enum EResponseErrorMessages {
   Unauthorized = "Unable to Authorize. Check your headers",
   NotSupported = "This Feature is not yet supported",
   TimedOut = "Response Timed Out",
-  InternalError = "Internal Server Error occurred."
+  InternalError = "Internal Server Error occurred.",
 }
 
-
 /** Type used to represent the respond callback function */
-export type TRespondCallback = (interaction: InteractionContext) => IResponse | Promise<IResponse>;
+export type TRespondCallback = (
+  interaction: InteractionContext
+) => IResponse | Promise<IResponse>;
 
 /**
  * Events fired by the handler
@@ -79,11 +81,11 @@ export interface IClientEvents {
    * Fired when a interaction is received
    * @param interaction - Interaction contact
    */
-  'interactionCreate': (interaction: InteractionContext) => void;
+  interactionCreate: (interaction: InteractionContext) => void;
   /**
-   * Fired when there is a error 
-   * @param err 
-   * @returns 
+   * Fired when there is a error
+   * @param err
+   * @returns
    */
-  'error': (err: Error) => void;
+  error: (err: Error) => void;
 }
