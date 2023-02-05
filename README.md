@@ -20,3 +20,8 @@ GH action will deploy docs if there is anything is pushed to /main
 # License
 
 This repository and the code inside it is licensed under the ISC License. Read [LICENSE](https://github.com/typicalninja493/disci/blob/master/LICENSE) for more information.
+
+# Inspiration
+
+    [Biscuit](https://github.com/oasisjs/biscuit/) 
+    [Discord.js]

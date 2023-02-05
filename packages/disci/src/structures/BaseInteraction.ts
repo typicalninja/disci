@@ -4,30 +4,20 @@ import { PermissionsBitField } from "./builders/Bitfield";
 
 import type { Snowflake } from "discord-api-types/globals";
 import {
-    APICommandAutocompleteInteractionResponseCallbackData,
   APIInteraction,
   APIInteractionResponse,
-  APIInteractionResponseCallbackData,
-  APIModalInteractionResponseCallbackData,
-  InteractionResponseType,
   InteractionType,
 } from "discord-api-types/v10";
 import {
   convertSnowflakeToTimeStamp,
   DisciError,
-  DisciInteractionError,
-  DisciTypeError,
 } from "../utils/helpers";
-import type { ApplicationCommand } from "./ApplicationCommand";
+import { ApplicationCommand, ApplicationCommandFactory,  } from "./ApplicationCommand";
 import User from "./primitives/User";
 import Member from "./primitives/Member";
+import type { InteractionContext } from "../utils/constants";
 
 type TcallbackFn = (data: APIInteractionResponse) => void;
-
-type ResponseData =
-  | APIInteractionResponseCallbackData
-  | APIModalInteractionResponseCallbackData
-  | APICommandAutocompleteInteractionResponseCallbackData;
 
 /**
  * Base Interaction, used by all other Interaction related Structures
@@ -165,4 +155,18 @@ export abstract class BaseInteraction implements IBase {
     this.responded = true;
     return this;
   }
+}
+
+/**
+ * @private
+ */
+export class InteractionFactory {
+    static from(handler: InteractionHandler, APIData: APIInteraction): InteractionContext | null {
+        switch(APIData.type) {
+            case InteractionType.ApplicationCommand:
+                return ApplicationCommandFactory.from(handler, APIData);
+            default:
+                return null;
+        }
+    }
 }

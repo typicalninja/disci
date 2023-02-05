@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { InteractionHandler } from "disci";
+import { InteractionHandler } from 'disci';
 
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 const server = fastify();
@@ -10,7 +10,7 @@ const client = new InteractionHandler({
 });
 
 
-// attach a route for /interactions
+// attach a route for /interaction
 server.post(
   "/interactions",
   async (req: FastifyRequest, res: FastifyReply) => {
@@ -29,7 +29,7 @@ client.on('interactionCreate', (interaction) => {
       interaction.commandType,
       interaction.createdAt
     );
-    interaction.respond(`Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
+    interaction.re(`Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
   }
 });
 

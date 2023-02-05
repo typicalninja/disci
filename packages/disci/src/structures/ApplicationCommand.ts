@@ -1,8 +1,10 @@
 import {
   APIApplicationCommandInteraction,
   ApplicationCommandType,
+  InteractionResponseType,
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
+import { DisciInteractionError } from "../utils/helpers";
 import type { IBase } from "./Base";
 import { BaseInteraction } from "./BaseInteraction";
 
@@ -68,9 +70,9 @@ export abstract class ApplicationCommand
       throw new DisciInteractionError(
         `This interaction has already been responded to.`
       );
-    return this._respond(
-      InteractionResponseType.DeferredChannelMessageWithSource
-    );
+    return this._respond({
+      type: InteractionResponseType.DeferredChannelMessageWithSource
+    });
   }
 }
 
@@ -81,4 +83,20 @@ export class UserCommandInteraction extends ApplicationCommand {}
 
 
 
-export type ApplicationCommandTypes = ChatInputInteraction | MessageCommandInteraction | UserCommandInteraction
+export type ApplicationCommands = ChatInputInteraction | MessageCommandInteraction | UserCommandInteraction
+
+
+export class ApplicationCommandFactory {
+  static from(handler: InteractionHandler, APIData: APIApplicationCommandInteraction): ApplicationCommands | null {
+    switch(APIData.data.type) {
+      case ApplicationCommandType.ChatInput:
+        return new ChatInputInteraction(handler, APIData);
+      case ApplicationCommandType.Message:
+        return new MessageCommandInteraction(handler, APIData);
+      case ApplicationCommandType.User:
+        return new UserCommandInteraction(handler, APIData)
+      default:
+        return null;
+    }
+  }
+}

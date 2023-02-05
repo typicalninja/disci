@@ -3,7 +3,6 @@ import { TypedEmitter } from 'tiny-typed-emitter';
 
 import {
   APIInteraction,
-  ApplicationCommandType,
   InteractionResponseType,
   InteractionType,
 } from "discord-api-types/v10";
@@ -11,18 +10,15 @@ import {
   IHandlerOptions,
   defaultOptions,
   DiscordVerificationHeaders,
-  InteractionContext, 
   EResponseErrorMessages,
   IClientEvents,
 } from "./utils/constants";
 import crypto from 'node:crypto'
 // to add typings to events
 import { IRequest, IResponse, ToRequest, toResponse } from "./utils/request";
-
-//import { ChatInputCommandContext } from "./structures/context/ChatInputCommandContext";
 import { DisciParseError, DisciValidationError, tryAndValue } from "./utils/helpers";
 import { REST } from '@discordjs/rest';
-import { ChatInputInteraction } from "./structures/ApplicationCommand";
+import { InteractionFactory } from './structures/BaseInteraction';
 
 export class InteractionHandler extends TypedEmitter<IClientEvents>  {
   options: IHandlerOptions;
@@ -86,17 +82,8 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
         if(!rawInteraction) return reject(new DisciParseError(`Failed to parse rawBody into a valid ApiInteraction`));
         
         // convert rawInteraction -> interaction
-        let interaction: InteractionContext | null = null;
-        
-        // decide interaction type
-        switch(rawInteraction.type) {
-            // ping responses
-          case InteractionType.ApplicationCommand: {
-            const command = rawInteraction.data;
-            if(command.type === ApplicationCommandType.ChatInput) interaction = new ChatInputInteraction(this, rawInteraction)
-          }
-        }
-
+        const interaction = InteractionFactory.from(this, rawInteraction)
+      
         if(interaction) {
           // assign a callback
           interaction.useCallback((response) => {
