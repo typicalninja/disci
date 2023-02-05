@@ -29,7 +29,7 @@ client.on('interactionCreate', (interaction) => {
       interaction.commandType,
       interaction.createdAt
     );
-    interaction.deferResponse();
+    interaction.respond(`Hello ${interaction.user} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
   }
 });
 
@@ -39,6 +39,6 @@ client.on('interactionCreate', (interaction) => {
     console.log(`Sever is Running at http://localhost:3000`);
   } catch (err) {
     console.error(err);
-    process.exit(1)
+    process.exit(1);
   }
 })()

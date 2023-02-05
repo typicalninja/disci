@@ -98,6 +98,7 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
         }
 
         if(interaction) {
+          // assign a callback
           interaction.useCallback((response) => {
             this.debug(`Resolving Interaction with ${JSON.stringify(response)} `)
             return resolve(toResponse(response))
@@ -107,6 +108,7 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
           setTimeout(() => {
             if(interaction && !interaction.responded) {
               this.debug(`Interaction of id ${interaction.id} timed out`)
+              // check if option is turned on
               if(this.options.deferOnTimeout) {
                 this.debug(`Interaction of id ${interaction.id} was auto defered`)
                 return interaction.deferResponse();

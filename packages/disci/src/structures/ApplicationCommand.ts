@@ -51,9 +51,16 @@ export abstract class ApplicationCommand
   isSlashCommand(): this is ChatInputInteraction {
     return this.commandType === ApplicationCommandType.ChatInput;
   }
+
+  /**
+   * Alias to isSlashCommand
+   */
+  isChatInputInteraction(): this is ChatInputInteraction {
+    return this.isSlashCommand()
+  }
 }
 
+// dummy for now
 export class ChatInputInteraction extends ApplicationCommand {}
-
 export class MessageCommandInteraction extends ApplicationCommand {}
 export class UserCommandInteraction extends ApplicationCommand {}

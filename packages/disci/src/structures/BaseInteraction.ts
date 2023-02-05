@@ -7,7 +7,8 @@ import { APIInteraction, APIInteractionResponse, InteractionResponseType, Intera
 import { convertSnowflakeToTimeStamp, DisciError, DisciInteractionError, DisciTypeError } from "../utils/helpers";
 import type { ApplicationCommand } from "./ApplicationCommand";
 import type { MessageReplyOptions } from "../utils/constants";
-import User from "./User";
+import User from "./primitives/User";
+import Member from "./primitives/Member";
 
 type TcallbackFn = (data: APIInteractionResponse) => void;
 
@@ -53,7 +54,14 @@ export abstract class BaseInteraction implements IBase {
       * If this interaction timed out (3s)
       */
      timeout: boolean;
-     author?: User;
+     /**
+      * The user who invoked this interaction
+      */
+     user?: User;
+     /**
+      * Guild member who invoked this interaction
+      */
+     member?: Member;
      private _callback!: TcallbackFn;
     /**
      * 
@@ -67,16 +75,29 @@ export abstract class BaseInteraction implements IBase {
         this.type = RawInteractionData.type;
         this.version = RawInteractionData.version;
 
-        if(RawInteractionData.guild_id) this.guildId = RawInteractionData.guild_id;
+
+
+        if(RawInteractionData.guild_id && RawInteractionData.member) {
+            // from a guild
+            this.member = new Member(RawInteractionData.member);
+            
+            Reflect.defineProperty(this, 'user', {
+                get() {
+                    return this.member.user;
+                }
+            });
+        }
+        else if(RawInteractionData.user) {
+            // not from a guild
+            this.user = new User(RawInteractionData.user)
+        }
+
+
         if(RawInteractionData.channel_id) this.channelId = RawInteractionData.channel_id;
 
         const permissions = RawInteractionData.app_permissions;
         if(permissions) {
             this.appPermissions = new PermissionsBitField(BigInt(permissions));
-        }
-
-        if(RawInteractionData.user) {
-            this.author = new User(RawInteractionData.user)
         }
 
         // properties to keep track of this Interaction
@@ -86,10 +107,12 @@ export abstract class BaseInteraction implements IBase {
     /**
      * Internal function. define the function used to respond the interaction
      * @param fn 
+     * @private
      */
     useCallback(fn: TcallbackFn) {
         Reflect.defineProperty(this, '_callback', {
-            value: fn
+            value: fn, 
+            enumerable: false,
         });
         return this;
     }
@@ -107,7 +130,6 @@ export abstract class BaseInteraction implements IBase {
     }
     /**
      * Type guard to verify if this interaction is ApplicationCommand
-     * @returns 
      */
     isCommand(): this is ApplicationCommand {
 		return this.type === InteractionType.ApplicationCommand;
@@ -119,7 +141,7 @@ export abstract class BaseInteraction implements IBase {
     respond(message: string, options?: Omit<MessageReplyOptions, 'content'>): this;
     respond(type: InteractionResponseType, options?: MessageReplyOptions): this;
     respond(type: InteractionResponseType | string = InteractionResponseType.DeferredChannelMessageWithSource, options?: MessageReplyOptions) {
-        if(this.timeout) throw new DisciError(`This Interaction already timed out`);
+        if(this.timeout) throw new DisciError(`This Interaction has timed out`);
         if(this.responded) throw new DisciError(`This interaction has already been responded to.`);
         let APIdata = {} as APIInteractionResponse;
 

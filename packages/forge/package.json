@@ -1,11 +1,14 @@
 {
     "name": "@disci/forge",
     "description": "A Library for testing a disci server",
+    "version": "0.1.0-alpha",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
         "build": "tsc"
     },
     "dependencies": {
-        "tweetnacl": "^1.0.3",
+        "disci": "workspace:*",
         "undici": "^5.16.0"
     }
 }

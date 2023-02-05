@@ -1697,7 +1697,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@disci/example@workspace:apps/example"
   dependencies:
-    "@disci/forge": "workspace:*"
     disci: "workspace:*"
     discord-api-types: ^0.37.23
     dotenv: ^16.0.3
@@ -1709,11 +1708,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@disci/forge@workspace:*, @disci/forge@workspace:packages/forge":
+"@disci/forge@workspace:packages/forge":
   version: 0.0.0-use.local
   resolution: "@disci/forge@workspace:packages/forge"
   dependencies:
-    tweetnacl: ^1.0.3
+    disci: "workspace:*"
     undici: ^5.16.0
   languageName: unknown
   linkType: soft
@@ -3023,22 +3022,6 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: e009a2bfb50e90ca9b7c6e8f648f8464067271fd99116f881073fa6fa76dc8d0133181dd65e6614d5fb1220d671d67b0124aef7d97dc02d7e342ab143a47779d
-  languageName: node
-  linkType: hard
-
-"@types/lodash.isequal@npm:^4.5.6":
-  version: 4.5.6
-  resolution: "@types/lodash.isequal@npm:4.5.6"
-  dependencies:
-    "@types/lodash": "*"
-  checksum: 0f065989408a9e0584e6c27495be2cd4602e62650f55266aa195812582444463c0c8570c674ae84f947c11748f49ab43fd5b482fa120e08eeee4c23b162edc38
-  languageName: node
-  linkType: hard
-
-"@types/lodash@npm:*":
-  version: 4.14.191
-  resolution: "@types/lodash@npm:4.14.191"
-  checksum: ba0d5434e10690869f32d5ea49095250157cae502f10d57de0a723fd72229ce6c6a4979576f0f13e0aa9fbe3ce2457bfb9fa7d4ec3d6daba56730a51906d1491
   languageName: node
   linkType: hard
 
@@ -5714,13 +5697,10 @@ __metadata:
   resolution: "disci@workspace:packages/disci"
   dependencies:
     "@discordjs/rest": ^1.5.0
-    "@types/lodash.isequal": ^4.5.6
     "@types/node": ^18.11.15
-    debug: ^4.3.4
     discord-api-types: ^0.37.22
     tiny-typed-emitter: ^2.1.0
     tslib: ^2.4.1
-    tweetnacl: ^1.0.3
   languageName: unknown
   linkType: soft
 
@@ -13478,13 +13458,6 @@ __metadata:
   bin:
     turbo: bin/turbo
   checksum: effefebefeb7531bb33205e368b2b3571fee9e8face3530af25126d4162527f105a5fe7777509a99288326be3b6e28953c7ceacab2c2ef74abb0604c8ec9bbe7
-  languageName: node
-  linkType: hard
-
-"tweetnacl@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "tweetnacl@npm:1.0.3"
-  checksum: e4a57cac188f0c53f24c7a33279e223618a2bfb5fea426231991652a13247bea06b081fd745d71291fcae0f4428d29beba1b984b1f1ce6f66b06a6d1ab90645c
   languageName: node
   linkType: hard
 

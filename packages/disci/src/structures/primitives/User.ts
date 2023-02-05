@@ -1,6 +1,7 @@
 import type { APIUser, Snowflake } from "discord-api-types/v10";
 
 /**
+ * Represents a Discord user
  * https://discord.com/developers/docs/resources/user#user-object
  */
 export default class User {
@@ -33,7 +34,7 @@ export default class User {
         return `${this.username}#${this.discriminator}`
     }
     
-    get [Symbol.toStringTag] () {
+    toString() {
         return `<@${this.id}>`
     }
 }
