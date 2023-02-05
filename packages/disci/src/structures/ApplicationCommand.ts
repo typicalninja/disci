@@ -58,9 +58,27 @@ export abstract class ApplicationCommand
   isChatInputInteraction(): this is ChatInputInteraction {
     return this.isSlashCommand()
   }
+   /**
+   * Send a defer type response, gives you extra time to reply.User sees a loading state
+   */
+   deferResponse() {
+    if (this.timeout)
+      throw new DisciInteractionError(`This Interaction already timed out`);
+    if (this.responded)
+      throw new DisciInteractionError(
+        `This interaction has already been responded to.`
+      );
+    return this._respond(
+      InteractionResponseType.DeferredChannelMessageWithSource
+    );
+  }
 }
 
 // dummy for now
 export class ChatInputInteraction extends ApplicationCommand {}
 export class MessageCommandInteraction extends ApplicationCommand {}
 export class UserCommandInteraction extends ApplicationCommand {}
+
+
+
+export type ApplicationCommandTypes = ChatInputInteraction | MessageCommandInteraction | UserCommandInteraction

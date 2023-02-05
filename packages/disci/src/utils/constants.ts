@@ -1,5 +1,5 @@
 import type { APIEmbed } from "discord-api-types/v10";
-import type { ChatInputInteraction } from "../structures/ApplicationCommand";
+import type { ApplicationCommandTypes } from "../structures/ApplicationCommand";
 import type { Embed } from "../structures/builders/Embed";
 import type { IRequest, IResponse } from "./request";
 //import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
@@ -10,7 +10,7 @@ export enum DiscordVerificationHeaders {
 }
 
 // Common type for interactions
-export type InteractionContext = ChatInputInteraction;
+export type InteractionContext = ApplicationCommandTypes
 
 export interface IHandlerOptions {
   /**

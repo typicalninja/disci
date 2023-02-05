@@ -23,13 +23,13 @@ server.post(
 );
 
 client.on('interactionCreate', (interaction) => {
-  if (interaction.isCommand()) {
+  if (interaction.isCommand() && interaction.isChatInputInteraction()) {
     console.log(
       `Interaction ID: ${interaction.id}, type: Command `,
       interaction.commandType,
       interaction.createdAt
     );
-    interaction.respond(`Hello ${interaction.user} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
+    interaction.respond(`Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
   }
 });
 

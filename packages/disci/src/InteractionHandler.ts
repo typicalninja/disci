@@ -123,6 +123,7 @@ export class InteractionHandler extends TypedEmitter<IClientEvents>  {
           // finally emit the event
           return this.emit('interactionCreate', interaction);
         }
+        // a ping
         else if(rawInteraction.type === InteractionType.Ping) return resolve(toResponse({
           type: InteractionResponseType.Pong,
         }))
