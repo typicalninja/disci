@@ -39,7 +39,7 @@ client.on('interactionCreate', (interaction) => {
 
 (async () => {
   try {
-    await server.listen({ port: 3000 });
+    await server.listen({ port: 4000 });
     console.log(`Sever is Running at http://localhost:3000`);
   } catch (err) {
     console.error(err);
