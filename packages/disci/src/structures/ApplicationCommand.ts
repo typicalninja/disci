@@ -1,13 +1,17 @@
 import {
   APIApplicationCommandInteraction,
+  APIApplicationCommandInteractionDataOption,
+  APIChatInputApplicationCommandInteraction,
+  APIInteractionResponseChannelMessageWithSource,
   ApplicationCommandType,
   InteractionResponseType,
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
-import { DisciInteractionError } from "../utils/helpers";
+import type { MessageReplyOptions } from "../utils/constants";
+import { DisciInteractionError, DisciTypeError } from "../utils/helpers";
 import type { IBase } from "./Base";
-import { BaseInteraction } from "./BaseInteraction";
-
+import { BaseInteraction, InteractionOptions } from "./BaseInteraction";
+import { EmbedBuilder } from "./builders/Embed";
 export abstract class ApplicationCommand
   extends BaseInteraction
   implements IBase
@@ -60,6 +64,72 @@ export abstract class ApplicationCommand
   isChatInputInteraction(): this is ChatInputInteraction {
     return this.isSlashCommand()
   }
+  respond(opts: string): this;
+  respond(opts: MessageReplyOptions | string): this {
+    if(this.responded || this.timeout) throw new DisciInteractionError(`This interaction either timed out or already been responded to`)
+    const APIResponse = {
+      type: InteractionResponseType.ChannelMessageWithSource,
+      data: {
+      }
+    } as APIInteractionResponseChannelMessageWithSource
+
+
+    if(typeof opts === 'string') {
+      Reflect.defineProperty(APIResponse.data, 'content', {
+        value: opts,
+        enumerable: true,
+        configurable: true,
+      })
+    }
+    else if(opts) {
+      if((!opts.content) && !Array.isArray(opts.embeds)) throw new DisciTypeError(`Content or Embeds is needed`)
+      
+      // if content is there but not a string, try converting it to one
+      if(opts.content && typeof opts.content !== 'string') {
+        opts.content = new String(opts.content).toString()
+      }
+
+      if(opts.embed && opts.embed instanceof EmbedBuilder) {
+          if(opts.embeds && Array.isArray(opts.embed)) {
+            opts.embeds.push(opts.embed)
+          }
+          else opts.embeds = [opts.embed];
+      }
+
+      if(opts.embeds && Array.isArray(opts.embeds)) {
+        // convert embed builders to apiEmbeds
+        opts.embeds = opts.embeds.map(embed => {
+          if(embed instanceof EmbedBuilder) {
+            return embed.toJSON()
+          }
+          return embed;
+        })
+      }
+    
+      if(opts.content) {
+        Reflect.defineProperty(APIResponse.data, 'content', {
+          value: opts.content,
+          enumerable: true,
+          configurable: true,
+        })
+      }
+
+      if(opts.embeds) {
+        Reflect.defineProperty(APIResponse.data, 'embeds', {
+          value: opts.embeds,
+          enumerable: true,
+          configurable: true,
+        })
+      }
+    }
+    else throw new DisciTypeError(`Respond Options must be either a string or object of messageReplyOptions`)
+
+
+    this._respond(APIResponse);
+    return this;
+  }
+  // custom methods
+
    /**
    * Send a defer type response, gives you extra time to reply.User sees a loading state
    */
@@ -73,11 +143,20 @@ export abstract class ApplicationCommand
     return this._respond({
       type: InteractionResponseType.DeferredChannelMessageWithSource
     });
-  }
+   }
 }
 
 // dummy for now
-export class ChatInputInteraction extends ApplicationCommand {}
+export class ChatInputInteraction extends ApplicationCommand {
+  options: InteractionOptions;
+  constructor(
+    handler: InteractionHandler,
+    rawData: APIChatInputApplicationCommandInteraction,
+  ) {
+    super(handler, rawData)
+    this.options = new InteractionOptions(rawData.data.options ?? [])
+  }
+}
 export class MessageCommandInteraction extends ApplicationCommand {}
 export class UserCommandInteraction extends ApplicationCommand {}
 

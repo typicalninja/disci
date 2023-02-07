@@ -1,5 +1,3 @@
-
-
 // main
 export { InteractionHandler } from "./src/InteractionHandler";
 
@@ -25,5 +23,8 @@ export {
   UserFlagsBitField,
 } from "./src/structures/builders/Bitfield";
 
+
+// Builders
+export { EmbedBuilder } from "./src/structures/builders/Embed"; 
 
 export { ChatInputInteraction, ApplicationCommand } from "./src/structures/ApplicationCommand";

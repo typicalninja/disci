@@ -27,17 +27,13 @@ client.on('interactionCreate', (interaction) => {
     console.log(
       `Interaction ID: ${interaction.id}, type: Command `,
       interaction.commandType,
-      interaction.createdAt
+      interaction.createdAt,
+      interaction.options
     );
-    //interaction.re(`Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
+    interaction.respond(`Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
   }
   else if(interaction.isAutoComplete()) {
-    interaction.sendChoices([
-      {
-        name: 'test',
-        value: 'hey'
-      }
-    ]);
+    interaction.invalid();
   }
 });
 

@@ -4,13 +4,16 @@ import { PermissionsBitField } from "./builders/Bitfield";
 
 import type { Snowflake } from "discord-api-types/globals";
 import {
+  APIApplicationCommandInteractionDataOption,
   APIInteraction,
   APIInteractionResponse,
+  ApplicationCommandOptionType,
   InteractionType,
 } from "discord-api-types/v10";
 import {
   convertSnowflakeToTimeStamp,
   DisciError,
+  DisciTypeError,
 } from "../utils/helpers";
 
 import User from "./primitives/User";
@@ -163,5 +166,49 @@ export abstract class BaseInteraction implements IBase {
     this._callback(response);
     this.responded = true;
     return this;
+  }
+}
+
+
+// inspired from discord.js & biscuit
+/**
+ * Utility for working with interaction options
+ */
+export class InteractionOptions {
+  private _options: APIApplicationCommandInteractionDataOption[];
+  private subCommand?: string;
+  private group?: string;
+  constructor(options: APIApplicationCommandInteractionDataOption[]) {
+    this._options = options ?? [];
+    // from discord.js [thanks :) ]
+    if(this._options[0]?.type === ApplicationCommandOptionType.Subcommand) {
+      this.subCommand = this._options[0].name;
+      this._options = this._options[0].options ?? [];
+    }
+    
+    if(this._options[0]?.type === ApplicationCommandOptionType.SubcommandGroup) {
+      this.group = this._options[0].name;
+      this._options = this._options[0].options ?? [];
+    }
+  }
+  /**
+   * Get a option by name
+   * @param key Key to get
+   * @param required If required and no options found, will throw a error
+   * @returns The option if found, if required is turned of null will be returned if not found
+   */
+  get(key: string, ExpectedType: ApplicationCommandOptionType, required: true): APIApplicationCommandInteractionDataOption;
+  get(key: string, ExpectedType: ApplicationCommandOptionType | null, required?: boolean): APIApplicationCommandInteractionDataOption | null;
+  get(key: string, ExpectedType: ApplicationCommandOptionType | null = null, required = false) {
+    const opt = this._options.find((o) => o.name === key);
+
+    if(required) {
+      // if required
+      if(!opt)  throw new DisciTypeError(`Missing interaction option: ${key}`)
+      if(ExpectedType && ExpectedType !== opt.type) throw new DisciTypeError(`Missing interaction option: ${key}`)
+      
+    }
+
+    return opt ?? null
   }
 }

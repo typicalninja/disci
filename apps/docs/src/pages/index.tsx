@@ -7,7 +7,10 @@ import CodeBlock from '@theme/CodeBlock';
 import styles from './index.module.css';
 
 
-const sampleCodeSnippet = `import something from 'random'
+const sampleCodeSnippet = `import { InteractionHandler } from 'disci';
+import fastify, { FastifyReply, FastifyRequest } from "fastify";
+const server = fastify();
+
 // replace this when ready
 `
 

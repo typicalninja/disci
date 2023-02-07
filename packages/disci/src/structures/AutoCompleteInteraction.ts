@@ -8,6 +8,7 @@ import { BaseInteraction } from "./BaseInteraction";
 
 // TODO
 export class AutoCompleteInteraction extends BaseInteraction implements IBase {
+
   /**
    * Sends the autoComplete choices.Set to empty array for "No choices"
    */
@@ -23,9 +24,9 @@ export class AutoCompleteInteraction extends BaseInteraction implements IBase {
     return this;
   }
   /**
-   * Alias to doing sendChoices with empty ([]) choices
+   * Shows a No choice" (invalid query) screen for user.Alias to doing sendChoices with empty ([]) choices.
    */
-  noResults() {
+  invalid() {
     return this.sendChoices([]);
   }
 }

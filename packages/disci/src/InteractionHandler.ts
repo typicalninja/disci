@@ -1,5 +1,5 @@
 // types for events
-import { TypedEmitter } from 'tiny-typed-emitter';
+import type { TypedEmitter } from './utils/TypedEmitter';
 
 import {
   APIInteraction,
@@ -20,7 +20,9 @@ import { DisciParseError, DisciValidationError, tryAndValue } from "./utils/help
 import { REST } from '@discordjs/rest';
 import { InteractionFactory } from './utils/Factories';
 
-export class InteractionHandler extends TypedEmitter<IClientEvents>  {
+import EventEmitter from 'node:events';
+
+export class InteractionHandler extends (EventEmitter as any as new () => TypedEmitter<IClientEvents>)  {
   options: IHandlerOptions;
   rest: REST;
   private publicKey: null | crypto.webcrypto.CryptoKey

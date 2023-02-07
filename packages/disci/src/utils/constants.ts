@@ -1,7 +1,7 @@
 import type { APIEmbed } from "discord-api-types/v10";
 import type { ApplicationCommands } from "../structures/ApplicationCommand";
 import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
-import type { Embed } from "../structures/builders/Embed";
+import type { EmbedBuilder } from "../structures/builders/Embed";
 import type { IRequest, IResponse } from "./request";
 //import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
 
@@ -44,7 +44,8 @@ export interface IHandlerOptions {
 }
 
 export type MessageReplyOptions = {
-  embeds?: APIEmbed[] | Embed[];
+  embeds?: APIEmbed[] | EmbedBuilder[];
+  embed: EmbedBuilder;
   content: string;
 };
 

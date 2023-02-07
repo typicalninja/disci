@@ -1,6 +1,6 @@
 // factorie pattern 
 // fixes a circular dep bug due to old factories being in thier respective files?
-import { type APIInteraction, InteractionType, APIApplicationCommandInteraction, ApplicationCommandType } from "discord-api-types/v10";
+import { type APIInteraction, InteractionType, APIApplicationCommandInteraction, ApplicationCommandType, APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
 import { type ApplicationCommands, ChatInputInteraction, MessageCommandInteraction, UserCommandInteraction } from "../structures/ApplicationCommand";
 import { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
@@ -29,7 +29,7 @@ export class ApplicationCommandFactory {
     static from(handler: InteractionHandler, APIData: APIApplicationCommandInteraction): ApplicationCommands | null {
       switch(APIData.data.type) {
         case ApplicationCommandType.ChatInput:
-          return new ChatInputInteraction(handler, APIData);
+          return new ChatInputInteraction(handler, APIData as APIChatInputApplicationCommandInteraction);
         case ApplicationCommandType.Message:
           return new MessageCommandInteraction(handler, APIData);
         case ApplicationCommandType.User:
