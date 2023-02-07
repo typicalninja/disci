@@ -28,19 +28,25 @@ client.on('interactionCreate', (interaction) => {
       `Interaction ID: ${interaction.id}, type: Command `,
       interaction.commandType,
       interaction.createdAt,
-      interaction.options
+      interaction.options,
+      interaction.options.getString('auto')
     );
     interaction.respond(`Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
   }
   else if(interaction.isAutoComplete()) {
-    interaction.invalid();
+    interaction.sendChoices([
+      {
+        name: 'hey',
+        value: 'test'
+      }
+    ]);
   }
 });
 
 (async () => {
   try {
     await server.listen({ port: 4000 });
-    console.log(`Sever is Running at http://localhost:3000`);
+    console.log(`Sever is Running at http://localhost:4000`);
   } catch (err) {
     console.error(err);
     process.exit(1);

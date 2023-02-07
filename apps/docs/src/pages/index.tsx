@@ -8,9 +8,15 @@ import styles from './index.module.css';
 
 
 const sampleCodeSnippet = `import { InteractionHandler } from 'disci';
-import fastify, { FastifyReply, FastifyRequest } from "fastify";
+import fastify, /*....*/ from "fastify";
 const server = fastify();
+const client = new InteractionHandler(/*Credentials*/);
+server.post(/*Path*/, 
+  async (req) => 
+  await client.handleRequest(req).responseData
+)
 
+server.listen({ port: /*Server Port*/})
 // replace this when ready
 `
 
