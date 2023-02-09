@@ -6,11 +6,13 @@ import type { URLSearchParams } from "url";
  * 
  * similiar to https://discordjs.dev/docs/packages/rest/1.5.0/RequestData:Interface
  */
-export interface RestAdapterRequestConfig {
+
+export type RouteLike = `/${string}`
+export interface IRestAdapterRequestConfig {
         /**
      * path To request
      */
-    path: string;
+    path: RouteLike;
     /**
      * String of url search params with '?' prefixed
      */
@@ -24,10 +26,11 @@ export interface RestAdapterRequestConfig {
  * Default rest adapter use as a abstraction for api requests
  */
 export interface IRestAdapter {
-    get: <T>(config: RestAdapterRequestConfig) =>  Promise<T>;
-    post:  <T>(config: RestAdapterRequestConfig) =>  Promise<T>;
-    patch: <T>(config: RestAdapterRequestConfig) =>  Promise<T>;
-    delete:  <T>(config: RestAdapterRequestConfig) =>  Promise<T>;
+    get: <T>(config: IRestAdapterRequestConfig) =>  Promise<T>;
+    post:  <T>(config: IRestAdapterRequestConfig) =>  Promise<T>;
+    patch: <T>(config: IRestAdapterRequestConfig) =>  Promise<T>;
+    delete:  <T>(config: IRestAdapterRequestConfig) =>  Promise<T>;
+    put:  <T>(config: IRestAdapterRequestConfig) =>  Promise<T>;
 }
 
 export class DefaultNonImplementedRestAdapter implements IRestAdapter {
@@ -41,6 +44,9 @@ export class DefaultNonImplementedRestAdapter implements IRestAdapter {
         throw new Error(`DefaultRest Adapter cannot do requests`)
     }
     patch<T>(..._: any[]): Promise<T> {
+        throw new Error(`DefaultRest Adapter cannot do requests`)
+    }
+    put<T>(..._: any[]): Promise<T> {
         throw new Error(`DefaultRest Adapter cannot do requests`)
     }
 }

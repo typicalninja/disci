@@ -8,7 +8,6 @@
         "build": "tsc"
     },
     "dependencies": {
-        "disci": "workspace:*",
         "undici": "^5.16.0"
     }
 }
