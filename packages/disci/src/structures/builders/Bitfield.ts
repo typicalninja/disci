@@ -1,4 +1,4 @@
-import { PermissionFlagsBits, UserFlags } from "discord-api-types/v10";
+import { MessageFlags, PermissionFlagsBits, UserFlags } from "discord-api-types/v10";
 import { DisciTypeError } from "../../utils/helpers";
 
 export type BitFieldResolvable = bigint | bigint[] | number | number[];
@@ -96,4 +96,9 @@ export class PermissionsBitField extends BitField {
 
 export class UserFlagsBitField extends BitField {
   static override Flags = UserFlags;
+}
+
+
+export class MessageFlagsBitField extends BitField {
+  static override Flags = MessageFlags
 }

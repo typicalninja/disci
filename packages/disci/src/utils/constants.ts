@@ -3,6 +3,7 @@ import type { ApplicationCommands } from "../structures/ApplicationCommand";
 import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
 import type { EmbedBuilder } from "../structures/builders/Embed";
 import type { IRequest, IResponse } from "./request";
+import RestAdapter from "./RestAdapter";
 //import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
 
 export enum DiscordVerificationHeaders {
@@ -41,6 +42,10 @@ export interface IHandlerOptions {
    * A debug callback function that can be used for debugging
    */
   debug?: (msg: string) => void;
+  /**
+   * Adapter use for rest requests
+   */
+  restAdapter: RestAdapter;
 }
 
 export type MessageReplyOptions = {
@@ -55,6 +60,7 @@ export const defaultOptions: IHandlerOptions = {
   // we assume credentials are in .env files [If provided in options, will be overidden]
   publicKey: process.env.PUBLIC_KEY!,
   token: process.env.TOKEN!,
+  restAdapter: new RestAdapter()
 };
 
 export const debugNameSpace = `disci`;

@@ -17,21 +17,21 @@ import crypto from 'node:crypto'
 // to add typings to events
 import { IRequest, IResponse, ToRequest, toResponse } from "./utils/request";
 import { DisciParseError, DisciValidationError, tryAndValue } from "./utils/helpers";
-import { REST } from '@discordjs/rest';
 import { InteractionFactory } from './utils/Factories';
 
 import EventEmitter from 'node:events';
+import type RestAdapter from './utils/RestAdapter';
 
 export class InteractionHandler extends (EventEmitter as any as new () => TypedEmitter<IClientEvents>)  {
   options: IHandlerOptions;
-  rest: REST;
+  rest: RestAdapter;
   private publicKey: null | crypto.webcrypto.CryptoKey
   constructor(options: Partial<IHandlerOptions>) {
     super()
     this.options = Object.assign({}, defaultOptions, options);
-    if(!this.options.token || !this.options.publicKey) throw new DisciValidationError(`Token & Public key is required`)
-    // Our Rest manager
-    this.rest = new REST({ version: '10' }).setToken(this.options.token);
+    if(!!this.options.publicKey) throw new DisciValidationError(`Public key is required`)
+    // rest manager is provided by the user
+    this.rest = this.options.restAdapter;
     this.publicKey = null;
   }
   /**

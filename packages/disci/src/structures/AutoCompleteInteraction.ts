@@ -12,13 +12,14 @@ export class AutoCompleteInteraction extends BaseInteraction implements IBase {
   /**
    * Sends the autoComplete choices.Set to empty array for "No choices"
    */
-  sendChoices(choices: APIApplicationCommandOptionChoice[]) {
+  sendChoices(choices: (APIApplicationCommandOptionChoice | string)[]) {
     if (!Array.isArray(choices))
       throw new DisciTypeError(`Choices must be a array`);
+    const _choices = this.getChoices(choices);
     this._respond({
       type: InteractionResponseType.ApplicationCommandAutocompleteResult,
       data: {
-        choices,
+       choices: _choices,
       },
     });
     return this;
@@ -28,5 +29,8 @@ export class AutoCompleteInteraction extends BaseInteraction implements IBase {
    */
   invalid() {
     return this.sendChoices([]);
+  }
+  private getChoices(choices: (APIApplicationCommandOptionChoice | string)[]): APIApplicationCommandOptionChoice[] {
+    return choices.map((choice) => typeof choice !== 'string' ? choice : { name: choice, value: choice })
   }
 }

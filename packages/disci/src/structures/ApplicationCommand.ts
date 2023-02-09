@@ -63,6 +63,12 @@ export abstract class ApplicationCommand
   isChatInputInteraction(): this is ChatInputInteraction {
     return this.isSlashCommand()
   }
+
+  /**
+   * Respond to this interaction
+   * @param opts 
+   * @returns this interaction instances.Use fetchReply() to retrieve the message instance
+   */
   respond(opts: string): this;
   respond(opts: MessageReplyOptions | string): this {
     if(this.responded || this.timeout) throw new DisciInteractionError(`This interaction either timed out or already been responded to`)

@@ -31,14 +31,13 @@ client.on('interactionCreate', (interaction) => {
       interaction.options,
       interaction.options.getString('auto')
     );
-    interaction.respond(`Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
+    const int = interaction.respond(`Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
+    int.fetchReply().then((m) => console.log(`Message ${m?.id}`))
   }
   else if(interaction.isAutoComplete()) {
     interaction.sendChoices([
-      {
-        name: 'hey',
-        value: 'test'
-      }
+      'hello',
+      
     ]);
   }
 });

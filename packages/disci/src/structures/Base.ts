@@ -8,5 +8,5 @@ export interface IBase {
     /**
      * The InteractionHandler that initialised this structure
      */
-    handler: InteractionHandler
+    readonly handler: InteractionHandler
 }

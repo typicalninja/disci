@@ -10,6 +10,7 @@ import {
   APIInteractionResponse,
   ApplicationCommandOptionType,
   InteractionType,
+  LocaleString,
 } from "discord-api-types/v10";
 import {
   convertSnowflakeToTimeStamp,
@@ -23,6 +24,7 @@ import Member from "./primitives/Member";
 // Types for different interaction context's
 import type { ApplicationCommand } from './ApplicationCommand'
 import type { AutoCompleteInteraction } from "./AutoCompleteInteraction";
+import Webhook from "./primitives/Webhook";
 
 type TcallbackFn = (data: APIInteractionResponse) => void;
 
@@ -78,23 +80,31 @@ export abstract class BaseInteraction implements IBase {
   member?: Member;
   private _callback!: TcallbackFn;
   /**
+   * Handler than initated this class
+   */
+  handler!: InteractionHandler;
+  guildLocale: LocaleString | null;
+  /**
    *
    * @param handler
    * @param RawInteractionData
    */
   constructor(
-    public handler: InteractionHandler,
+    handler: InteractionHandler,
     readonly RawInteractionData: APIInteraction
   ) {
+    Object.defineProperty(this, 'handler', { value: handler });
     this.id = RawInteractionData.id;
     this.applicationId = RawInteractionData.application_id;
     this.token = RawInteractionData.token;
     this.type = RawInteractionData.type;
     this.version = RawInteractionData.version;
 
+    this.guildLocale = RawInteractionData.guild_locale ?? null;
+
     if (RawInteractionData.guild_id && RawInteractionData.member) {
       // from a guild
-      this.member = new Member(RawInteractionData.member);
+      this.member = new Member(this.handler, RawInteractionData.member);
 
       Reflect.defineProperty(this, "user", {
         get() {
@@ -103,7 +113,7 @@ export abstract class BaseInteraction implements IBase {
       });
     } else if (RawInteractionData.user) {
       // not from a guild
-      this.user = new User(RawInteractionData.user);
+      this.user = new User(this.handler, RawInteractionData.user);
     }
 
     if (RawInteractionData.channel_id)
@@ -167,6 +177,14 @@ export abstract class BaseInteraction implements IBase {
     this._callback(response);
     this.responded = true;
     return this;
+  }
+
+  fetchReply() {
+    return Webhook.prototype.fetchMessage.call({
+      id: this.applicationId,
+      token: this.token,
+      handler: this.handler,
+    }, '@original')
   }
 }
 
