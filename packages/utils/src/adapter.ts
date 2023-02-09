@@ -1,6 +1,8 @@
-import { RestAdapter } from 'disci'
+import { IRestAdapter } from 'disci'
 
 
-export class DJSRestAdapter {
+export class DJSRestAdapter implements IRestAdapter {
+    constructor(token: string) {
 
+    }
 }

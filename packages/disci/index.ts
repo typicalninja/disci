@@ -16,7 +16,7 @@ export type {
   IResponse
 } from "./src/utils/request";
 
-export { IRestAdapter } from "./src/utils/RestAdapter";
+export { IRestAdapter, RestAdapterRequestConfig } from "./src/utils/RestAdapter";
 
 
 export {

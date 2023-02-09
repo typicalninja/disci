@@ -1,4 +1,3 @@
-import { makeURLSearchParams } from "@discordjs/rest";
 import type { Snowflake } from "discord-api-types/globals";
 import { APIMessage, APIWebhook, Routes, WebhookType } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
@@ -51,7 +50,7 @@ export default class Webhook implements IBase {
         if(!this.token) throw new DisciTypeError(`This webook does not contain a Token`)
         const message = await this.handler.rest.get<APIMessage>({
             path: Routes.webhookMessage(this.id, this.token, messageId),
-            query: threadId ? makeURLSearchParams({ thread_id: threadId }) : undefined
+            query: threadId ? new URLSearchParams('') : undefined
         });
         
         return message ? new Message(this.handler, message) : null;
