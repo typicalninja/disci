@@ -20,11 +20,11 @@ import { DisciParseError, DisciValidationError, tryAndValue } from "./utils/help
 import { InteractionFactory } from './utils/Factories';
 
 import EventEmitter from 'node:events';
-import type RestAdapter from './utils/RestAdapter';
+import type {IRestAdapter} from './utils/RestAdapter';
 
 export class InteractionHandler extends (EventEmitter as any as new () => TypedEmitter<IClientEvents>)  {
   options: IHandlerOptions;
-  rest: RestAdapter;
+  rest: IRestAdapter;
   private publicKey: null | crypto.webcrypto.CryptoKey
   constructor(options: Partial<IHandlerOptions>) {
     super()

@@ -49,11 +49,11 @@ export default class Webhook implements IBase {
      */
     async fetchMessage(messageId: string | '@original', { threadId }: { threadId?: string } = {}) {
         if(!this.token) throw new DisciTypeError(`This webook does not contain a Token`)
-        const message = await this.handler.rest.get(Routes.webhookMessage(this.id, this.token, messageId), {
-            auth: false,
+        const message = await this.handler.rest.get<APIMessage>({
+            path: Routes.webhookMessage(this.id, this.token, messageId),
             query: threadId ? makeURLSearchParams({ thread_id: threadId }) : undefined
         });
         
-        return message ? new Message(this.handler, message as APIMessage) : null;
+        return message ? new Message(this.handler, message) : null;
     }
 }

@@ -1,4 +1,5 @@
 {
+  "name": "@discijs/main",
   "private": true,
   "workspaces": [
     "apps/*",

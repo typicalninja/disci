@@ -16,6 +16,9 @@ export type {
   IResponse
 } from "./src/utils/request";
 
+export { IRestAdapter } from "./src/utils/RestAdapter";
+
+
 export {
   BitField,
   BitFieldResolvable,
@@ -27,4 +30,6 @@ export {
 // Builders
 export { EmbedBuilder } from "./src/structures/builders/Embed"; 
 
-export { ChatInputInteraction, ApplicationCommand } from "./src/structures/ApplicationCommand";
+
+
+export { ChatInputInteraction } from "./src/structures/ApplicationCommand";
