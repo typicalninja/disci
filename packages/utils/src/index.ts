@@ -1,0 +1,1 @@
+export { DJSRestAdapter } from './DJSrestAdapter'

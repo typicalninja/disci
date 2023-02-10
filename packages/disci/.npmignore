@@ -1,4 +1,12 @@
-# Per package
+# Stop npm from publishing ts files
+
+# turborepo
 .turbo
-/src
-.yarn
+
+src/*
+
+# Change log is only needed for github/git
+CHANGELOG.md
+
+tsconfig.json
+tsup.config.js

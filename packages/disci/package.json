@@ -6,15 +6,22 @@
   "types": "./dist/index.d.ts",
   "license": "ISC",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "build": "tsup",
+    "dev": "tsup --watch"
   },
   "dependencies": {
     "discord-api-types": "^0.37.22",
-    "tiny-typed-emitter": "^2.1.0",
     "tslib": "^2.4.1"
   },
   "devDependencies": {
-    "@types/node": "^18.11.15"
+    "@types/node": "^18.11.15",
+    "tsup": "^6.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/typicalninja493/disci.git"
+  },
+  "bugs": {
+    "url": "https://github.com/typicalninja493/disci/issues"
   }
 }

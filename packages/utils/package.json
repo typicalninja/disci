@@ -6,14 +6,13 @@
         "build": "tsc"
     },
     "dependencies": {
-        "@discordjs/rest": "^1.5.0",
-        "disci": "^1.0.0"
+        "@discordjs/rest": "^1.5.0"
     },
     "repository": {
         "type": "git",
         "url": "https://github.com/typicalninja493/disci.git"
-      },
-      "bugs": {
+    },
+    "bugs": {
         "url": "https://github.com/typicalninja493/disci/issues"
-      }
+    }
 }
