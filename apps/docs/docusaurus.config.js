@@ -77,13 +77,19 @@ const config = {
             type: 'doc',
             docId: 'intro',
             position: 'left',
-            label: 'Docs',
+            label: 'Guide',
           },
           {
             type: 'doc',
-            docId: 'api/modules',
+            docId: 'disci/index',
             position: 'left',
-            label: 'API docs',
+            label: 'Disci API Docs',
+          },
+          {
+            type: 'doc',
+            docId: 'disci_utils/index',
+            position: 'left',
+            label: '@Discijs/utils API Docs',
           },
         ],
       },
@@ -110,19 +116,32 @@ const config = {
     plugins: [
       [
         'docusaurus-plugin-typedoc',
-  
-        // Plugin / TypeDoc options
         {
-          id: 'Disci',
-          entryPoints: ['../../packages/disci/index.ts', '../../packages/utils/index.ts'],
-          entryPointStrategy: 'packages',
-          tsconfig: '../../tsconfig.json',
+          id: 'disci',
+          entryPoints: ['../../packages/disci/index.ts'],
+          tsconfig: '../../packages/disci/tsconfig.json',
+          out: 'disci',
           sidebar: {
-            categoryLabel: 'API Documentation',
+            categoryLabel: 'Disci.js Api',
             position: 2,
             fullNames: true,
           },
         },
+      ],
+      [
+        'docusaurus-plugin-typedoc',
+        {
+          id: 'disci-utils',
+          entryPoints: ['../../packages/utils/index.ts'],
+          tsconfig: '../../packages/utils/tsconfig.json',
+          out: 'disci_utils',
+          sidebar: {
+            categoryLabel: '@Discijs/utils API',
+            position: 3,
+            fullNames: true,
+          },
+        },
+
       ],
       async function tailwind() {
         return {

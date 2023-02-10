@@ -1,9 +1,10 @@
 {
-    "name": "@disci/forge",
+    "name": "@discijs/forge",
     "description": "A Library for testing a disci server",
     "version": "0.1.0-alpha",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
+    "private": true,
     "scripts": {
         "build": "tsc"
     },

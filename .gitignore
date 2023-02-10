@@ -11,7 +11,9 @@ dist
 .cache-loader
 
 
-apps/docs/docs/api
+apps/docs/docs/disci
+apps/docs/docs/disci_utils
+
 
 build
 

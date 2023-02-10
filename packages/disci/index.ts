@@ -2,7 +2,7 @@
 export { InteractionHandler } from "./src/InteractionHandler";
 
 // context related
-export type {
+export {
   InteractionContext,
   MessageReplyOptions,
   IHandlerOptions,
@@ -11,7 +11,7 @@ export type {
 } from "./src/utils/constants";
 
 // request related
-export type {
+export {
   IRequest,
   IResponse
 } from "./src/utils/request";
@@ -29,7 +29,5 @@ export {
 
 // Builders
 export { EmbedBuilder } from "./src/structures/builders/Embed"; 
-
-
 
 export { ChatInputInteraction } from "./src/structures/ApplicationCommand";

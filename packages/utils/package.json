@@ -1,8 +1,19 @@
 {
     "name": "@discijs/utils",
     "version": "0.0.2",
+    "license": "ISC",
+    "scripts": {
+        "build": "tsc"
+    },
     "dependencies": {
         "@discordjs/rest": "^1.5.0",
-        "disci": "workspace:*"
-    }
+        "disci": "^1.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/typicalninja493/disci.git"
+      },
+      "bugs": {
+        "url": "https://github.com/typicalninja493/disci/issues"
+      }
 }
