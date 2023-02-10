@@ -114,7 +114,8 @@ const config = {
         // Plugin / TypeDoc options
         {
           id: 'Disci',
-          entryPoints: ['../../packages/disci/index.ts'],
+          entryPoints: ['../../packages/disci/index.ts', '../../packages/utils/index.ts'],
+          entryPointStrategy: 'packages',
           tsconfig: '../../tsconfig.json',
           sidebar: {
             categoryLabel: 'API Documentation',

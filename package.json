@@ -8,13 +8,13 @@
   "scripts": {
     "build": "turbo run build",
     "build:disci": "turbo run build --filter=disci",
-    "build:docs": "turbo run build --filter=@disci/docs",
-    "build:forge": "turbo run build --filter=@disci/forge",
+    "build:docs": "turbo run build --filter=@discijs/docs",
+    "build:forge": "turbo run build --filter=@discijs/forge",
     "dev": "turbo run dev --parallel",
     "dev:disci": "turbo run dev --filter=disci",
-    "dev:docs": "turbo run dev --filter=@disci/docs",
-    "dev:example": "turbo run dev --filter=@disci/example",
-    "serve:docs": "turbo run serve --filter=@disci/docs",
+    "dev:docs": "turbo run dev --filter=@discijs/docs",
+    "dev:example": "turbo run dev --filter=@discijs/example",
+    "serve:docs": "turbo run serve --filter=@discijs/docs",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
