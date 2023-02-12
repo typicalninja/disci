@@ -6452,6 +6452,7 @@ __metadata:
     "@types/node": ^18.11.15
     discord-api-types: ^0.37.22
     eslint: ^8.34.0
+    tsconfig: "workspace:*"
     tslib: ^2.4.1
     tsup: ^6.6.0
   languageName: unknown
@@ -15474,6 +15475,12 @@ __metadata:
   checksum: 090adff1302ab20bd3486e6b4799e90f97726ed39e02b39e566f8ab674fd5bd5f727f43615debbfc580d33c6d9d1c6b1b3ce7d8e3cca3e20530a145ffa232c35
   languageName: node
   linkType: hard
+
+"tsconfig@workspace:*, tsconfig@workspace:packages/tsconfig":
+  version: 0.0.0-use.local
+  resolution: "tsconfig@workspace:packages/tsconfig"
+  languageName: unknown
+  linkType: soft
 
 "tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.4.0, tslib@npm:^2.4.1":
   version: 2.5.0
