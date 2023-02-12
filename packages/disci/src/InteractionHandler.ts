@@ -14,7 +14,6 @@ import {
   IClientEvents,
 } from "./utils/constants";
 import crypto from 'node:crypto'
-// to add typings to events
 import { IRequest, IResponse, ToRequest, toResponse } from "./utils/request";
 import { DisciParseError, DisciValidationError, tryAndValue } from "./utils/helpers";
 import { InteractionFactory } from './utils/Factories';
@@ -24,6 +23,9 @@ import type {IRestAdapter} from './utils/RestAdapter';
 
 export class InteractionHandler extends (EventEmitter as any as new () => TypedEmitter<IClientEvents>)  {
   options: IHandlerOptions;
+  /**
+   * Rest Manager, user has to provide one
+   */
   rest: IRestAdapter;
   private publicKey: null | crypto.webcrypto.CryptoKey
   constructor(options: Partial<IHandlerOptions>) {

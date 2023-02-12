@@ -7,7 +7,8 @@
   "license": "ISC",
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch"
+    "dev": "tsup --watch",
+    "lint": "eslint src/**/*.ts"
   },
   "dependencies": {
     "discord-api-types": "^0.37.22",
@@ -15,6 +16,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.11.15",
+    "eslint": "^8.34.0",
     "tsup": "^6.6.0"
   },
   "repository": {
