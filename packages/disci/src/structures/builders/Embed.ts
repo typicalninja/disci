@@ -69,7 +69,7 @@ export class EmbedBuilder {
      * @returns 
      */
     removeFields(name: string | string[]): EmbedBuilder {
-        let removed: string[] = []
+        const removed: string[] = []
         if(!Array.isArray(name)) removed.push(name)
         else removed.concat(name)
 

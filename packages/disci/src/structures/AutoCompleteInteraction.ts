@@ -31,6 +31,7 @@ export class AutoCompleteInteraction extends BaseInteraction implements IBase {
     return this.sendChoices([]);
   }
   private getChoices(choices: (APIApplicationCommandOptionChoice | string)[]): APIApplicationCommandOptionChoice[] {
+    // string or obj can be present
     return choices.map((choice) => typeof choice !== 'string' ? choice : { name: choice, value: choice })
   }
 }

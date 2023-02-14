@@ -54,26 +54,30 @@ export class InteractionHandler extends (EventEmitter as any as new () => TypedE
    * @param Request the request from the server to handle
    * @returns A Object containing Response Object.Does not reject
    */
-  handleRequest(
+  async handleRequest(
     req: unknown,
   ): Promise<IResponse> {
-    return new Promise((resolve) => {
       const receivedRequest = ToRequest(req);
       const verifyFn = typeof this.options.verifyRequest === 'function' ? this.options.verifyRequest : this.verifyRequest.bind(this) as () => Promise<boolean>;
-      const requestVerified = verifyFn(receivedRequest);
-      // verify if its a valid request
-      void verifyFn(req).then((verified) => {
-          // if not verified, resolve as unauthed
-          this.debug(`New Request ${verified ? 'Passed Verification' : 'Failed verification'}`)
-          if(!verified) return resolve(toResponse(EResponseErrorMessages.Unauthorized, 401));
-          // process the request
-          this.processRequest(req).then(resolve).catch((err: unknown) => {
-            this.emit('error', err);
-            this.debug(`Error occurred while processing an Interaction > ${err}`)
-            resolve(toResponse(EResponseErrorMessages.InternalError, 500))
-          });
+      const requestVerified = await verifyFn(receivedRequest).catch((vErr) => {
+        this.debug(`Error occurred while verifying request: [${String(vErr)}]`);
+        return false;
       });
-    });
+
+      if(!requestVerified) /* Auth failed */ return toResponse(EResponseErrorMessages.Unauthorized, 400)
+
+      // process the request
+      try {
+        return await this.processRequest(receivedRequest);
+      }
+      catch(pErr) {
+        // emit error
+        this.emit('error', pErr);
+        this.debug(`Error occurred while processing an Interaction: [${String(pErr)}]`);
+
+        // close the request
+        return toResponse(EResponseErrorMessages.InternalError, 500);
+      }
   } 
   /**
    * Process a request and return a response according to the request

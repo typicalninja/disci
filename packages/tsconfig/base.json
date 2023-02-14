@@ -22,6 +22,7 @@
          "noUncheckedIndexedAccess": true,
          "noImplicitOverride": true,
          "noUnusedLocals": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "noImplicitThis": true
     }
 }

@@ -107,8 +107,8 @@ export abstract class BaseInteraction implements IBase {
       this.member = new Member(this.handler, RawInteractionData.member);
 
       Reflect.defineProperty(this, "user", {
-        get() {
-          return this.member.user;
+        get: () => {
+          return this.member?.user;
         },
       });
     } else if (RawInteractionData.user) {
@@ -215,7 +215,7 @@ export class InteractionOptions {
    * @returns The name of the selected subcommand, or null if not set and not required.
    */
   getSubCommand(required: true): string;
-  getSubCommand(required: boolean = false): string | null {
+  getSubCommand(required = false): string | null {
     if(required && !this.subCommand) throw new DisciTypeError(`SubCommandOption Not found`, { methodName: 'getSubCommand' })
     return this.subCommand ?? null;
   }
@@ -225,7 +225,7 @@ export class InteractionOptions {
    * @returns The name of the selected subcommand group, or null if not set and not required.
    */
   getSubCommandGroup(required: true): string;
-  getSubCommandGroup(required: boolean = false): string | null {
+  getSubCommandGroup(required = false): string | null {
     if(required && !this.group) throw new DisciTypeError(`No SubCommandGroup found`);
     return this.group ?? null
   }
@@ -262,7 +262,7 @@ export class InteractionOptions {
    */
   getString(name: string, required: true): string;
   getString(name: string, required?: boolean): string | null;
-  getString(name: string, required: boolean = false) {
+  getString(name: string, required = false) {
     return this._getType(name, [ApplicationCommandOptionType.String], ['value'], required)?.value ?? null;
   }
 
@@ -273,7 +273,7 @@ export class InteractionOptions {
    */
   getBoolean(name: string, required: true): boolean;
   getBoolean(name: string, required?: boolean): boolean | null;
-  getBoolean(name: string, required: boolean = false) {
+  getBoolean(name: string, required = false) {
     return this._getType(name, [ApplicationCommandOptionType.Boolean], ['value'], required)?.value ?? null;
   }
 
@@ -284,7 +284,7 @@ export class InteractionOptions {
    */
    getNumber(name: string, required: true): number;
    getNumber(name: string, required?: boolean): number | null;
-   getNumber(name: string, required: boolean = false) {
+   getNumber(name: string, required = false) {
      return this._getType(name, [ApplicationCommandOptionType.Number], ['value'], required)?.value ?? null;
    }
 
@@ -295,7 +295,7 @@ export class InteractionOptions {
    */
     getInteger(name: string, required: true): number;
     getInteger(name: string, required?: boolean): number | null;
-    getInteger(name: string, required: boolean = false) {
+    getInteger(name: string, required = false) {
       return this._getType(name, [ApplicationCommandOptionType.Integer], ['value'], required)?.value ?? null;
     }
 
@@ -306,7 +306,7 @@ export class InteractionOptions {
    */
     getUserId(name: string, required: true): string;
     getUserId(name: string, required?: boolean): string | null;
-    getUserId(name: string, required: boolean = false) {
+    getUserId(name: string, required = false) {
       return this._getType(name, [ApplicationCommandOptionType.User], ['value'], required)?.value ?? null;
     }
 
@@ -317,7 +317,7 @@ export class InteractionOptions {
    */
     getChannelId(name: string, required: true): string;
     getChannelId(name: string, required?: boolean): string | null;
-    getChannelId(name: string, required: boolean = false) {
+    getChannelId(name: string, required = false) {
       return this._getType(name, [ApplicationCommandOptionType.Channel], ['value'], required)?.value ?? null;
     }
 
@@ -328,7 +328,7 @@ export class InteractionOptions {
    */
      getRolelId(name: string, required: true): string;
      getRolelId(name: string, required?: boolean): string | null;
-     getRolelId(name: string, required: boolean = false) {
+     getRolelId(name: string, required = false) {
        return this._getType(name, [ApplicationCommandOptionType.Role], ['value'], required)?.value ?? null;
      }
 
@@ -339,7 +339,7 @@ export class InteractionOptions {
    */
      getMentionable(name: string, required: true): string;
      getMentionable(name: string, required?: boolean): string | null;
-     getMentionable(name: string, required: boolean = false) {
+     getMentionable(name: string, required = false) {
        return this._getType(name, [ApplicationCommandOptionType.Mentionable], ['value'], required)?.value ?? null;
      }
 

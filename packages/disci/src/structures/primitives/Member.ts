@@ -14,7 +14,7 @@ export default class Member implements IBase {
     user: User
     constructor(handler: InteractionHandler, apiMember: APIGuildMember) {
         Object.defineProperty(this, 'handler', { value: handler });
-        this.user = new User(handler, apiMember.user!)
+        this.user = new User(handler, apiMember.user)
     }
     toString() {
         return `<@${this.user.id}>`

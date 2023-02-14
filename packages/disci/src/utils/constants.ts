@@ -92,5 +92,5 @@ export interface IClientEvents {
    * @param err
    * @returns
    */
-  error: (err: Error) => void;
+  error: (err: unknown) => void;
 }
