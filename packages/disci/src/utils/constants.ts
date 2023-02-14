@@ -58,12 +58,10 @@ export const defaultOptions: IHandlerOptions = {
   replyTimeout: 2600,
   deferOnTimeout: true,
   // we assume credentials are in .env files [If provided in options, will be overidden]
-  publicKey: process.env.PUBLIC_KEY!,
-  token: process.env.TOKEN!,
+  publicKey: process.env.PUBLIC_KEY ?? '',
+  token: process.env.TOKEN ?? '',
   restAdapter: new DefaultNonImplementedRestAdapter()
 };
-
-export const debugNameSpace = `disci`;
 
 /**
  * Error Messages Returned in HttpErrors

@@ -1,6 +1,7 @@
 // utilities to extract common fields from requests
 
 import type { APIInteractionResponse } from "discord-api-types/v10"
+import { DisciError, ErrorCodes } from "./errors";
 import { DisciTypeError } from "./helpers";
 
 /**
@@ -19,7 +20,7 @@ export interface IRequest {
     headers: Record<string, string>;
 }
 
-const getBody = (rawRequest: Record<string, any>) => {
+const getBody = (rawRequest: IRequest & { rawBody?: Buffer | string }) => {
     return rawRequest.rawBody ? 
             // if there is a raw body
                     typeof rawRequest.rawBody === 'string' ? rawRequest.rawBody : JSON.stringify(rawRequest.rawBody)
@@ -29,12 +30,13 @@ const getBody = (rawRequest: Record<string, any>) => {
                     : null;
 }
 
-export function ToRequest(rawRequest: Record<string, any>): IRequest {
+export function ToRequest(rawRequest: unknown): IRequest {
+    if(typeof rawRequest == 'string') throw new DisciError()
     const body = getBody(rawRequest);
     if(!body) throw new DisciTypeError(`Invalid Request, cannot parse body`)
     return {
         body,
-        headers: rawRequest.headers ?? {}
+        headers: (rawRequest.headers ?? {})
     }
 }
   
@@ -59,7 +61,7 @@ export interface IResponse {
    responseHeaders?: Record<string, string>
 }
 
-export function toResponse(data: string | APIInteractionResponse, status: number = 200): IResponse {
+export function toResponse(data: string | APIInteractionResponse, status = 200): IResponse {
     return {
         responseData:  typeof data === 'string' ? { data } : data,
         statusCode: status,

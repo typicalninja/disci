@@ -34,19 +34,19 @@ export interface IRestAdapter {
 }
 
 export class DefaultNonImplementedRestAdapter implements IRestAdapter {
-    get<T>(..._: any[]): Promise<T> {
+    get<T>(): Promise<T> {
         throw new Error(`DefaultRest Adapter cannot do requests`)
     }
-    post<T>(..._: any[]): Promise<T> {
+    post<T>(): Promise<T> {
         throw new Error(`DefaultRest Adapter cannot do requests`)
     }
-    delete<T>(..._: any[]): Promise<T> {
+    delete<T>(): Promise<T> {
         throw new Error(`DefaultRest Adapter cannot do requests`)
     }
-    patch<T>(..._: any[]): Promise<T> {
+    patch<T>(): Promise<T> {
         throw new Error(`DefaultRest Adapter cannot do requests`)
     }
-    put<T>(..._: any[]): Promise<T> {
+    put<T>(): Promise<T> {
         throw new Error(`DefaultRest Adapter cannot do requests`)
     }
 }

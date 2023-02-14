@@ -31,7 +31,7 @@ export class InteractionHandler extends (EventEmitter as any as new () => TypedE
   constructor(options: Partial<IHandlerOptions>) {
     super()
     this.options = Object.assign({}, defaultOptions, options);
-    if(!!this.options.publicKey) throw new DisciValidationError(`Public key is required`)
+    if(!this.options.publicKey) throw new DisciValidationError(`Public key is required`)
     // rest manager is provided by the user
     this.rest = this.options.restAdapter;
     this.publicKey = null;
@@ -55,17 +55,19 @@ export class InteractionHandler extends (EventEmitter as any as new () => TypedE
    * @returns A Object containing Response Object.Does not reject
    */
   handleRequest(
-    req: IRequest,
+    req: unknown,
   ): Promise<IResponse> {
     return new Promise((resolve) => {
-      req = ToRequest(req)
+      const receivedRequest = ToRequest(req);
+      const verifyFn = typeof this.options.verifyRequest === 'function' ? this.options.verifyRequest : this.verifyRequest.bind(this) as () => Promise<boolean>;
+      const requestVerified = verifyFn(receivedRequest);
       // verify if its a valid request
-      return (this.options.verifyRequest || this.verifyRequest.bind(this))(req).then((verified) => {
+      void verifyFn(req).then((verified) => {
           // if not verified, resolve as unauthed
           this.debug(`New Request ${verified ? 'Passed Verification' : 'Failed verification'}`)
           if(!verified) return resolve(toResponse(EResponseErrorMessages.Unauthorized, 401));
           // process the request
-          this.processRequest(req).then(resolve).catch((err) => {
+          this.processRequest(req).then(resolve).catch((err: unknown) => {
             this.emit('error', err);
             this.debug(`Error occurred while processing an Interaction > ${err}`)
             resolve(toResponse(EResponseErrorMessages.InternalError, 500))
@@ -82,7 +84,7 @@ export class InteractionHandler extends (EventEmitter as any as new () => TypedE
   processRequest(req: IRequest): Promise<IResponse> {
     return new Promise((resolve, reject) => {
         // parse the request body
-        const rawInteraction = tryAndValue<APIInteraction>(() => JSON.parse(req.body));
+        const rawInteraction = tryAndValue<APIInteraction>(() => JSON.parse(req.body) as unknown);
         if(!rawInteraction) return reject(new DisciParseError(`Failed to parse rawBody into a valid ApiInteraction`));
         
         // convert rawInteraction -> interaction
@@ -141,10 +143,10 @@ export class InteractionHandler extends (EventEmitter as any as new () => TypedE
       }
       const timestamp = req.headers[
         DiscordVerificationHeaders.TimeStamp
-      ] as string;
+      ];
       const signature = req.headers[
         DiscordVerificationHeaders.Signature
-      ] as string;
+      ];
       const { body } = req;
       if (!timestamp || !signature || !body) return false;
       try {

@@ -23,9 +23,9 @@ export interface TypedEmitter<Events> {
     /** @hidden */
     eventNames(): (keyof Events | string | symbol)[];
     /** @hidden */
-    rawListeners<E extends keyof Events>(event: E): Function[];
+    rawListeners<E extends keyof Events>(event: E): (() => void)[];
     /** @hidden */
-    listeners<E extends keyof Events>(event: E): Function[];
+    listeners<E extends keyof Events>(event: E): (() => void)[];
     /** @hidden */
     listenerCount<E extends keyof Events>(event: E): number;
   
@@ -36,5 +36,5 @@ export interface TypedEmitter<Events> {
   }
   
   /** @hidden */
-  export type Arguments<T> = [T] extends [(...args: infer U) => any] ? U : [T] extends [void] ? [] : [T];
+  export type Arguments<T> = [T] extends [(...args: infer U) => unknown] ? U : [T] extends [void] ? [] : [T];
 
