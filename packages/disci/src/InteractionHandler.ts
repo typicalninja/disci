@@ -88,7 +88,7 @@ export class InteractionHandler extends (EventEmitter as any as new () => TypedE
   processRequest(req: IRequest): Promise<IResponse> {
     return new Promise((resolve, reject) => {
         // parse the request body
-        const rawInteraction = tryAndValue<APIInteraction>(() => JSON.parse(req.body) as unknown);
+        const rawInteraction = tryAndValue<APIInteraction>(() => JSON.parse(req.body) as APIInteraction);
         if(!rawInteraction) return reject(new DisciParseError(`Failed to parse rawBody into a valid ApiInteraction`));
         
         // convert rawInteraction -> interaction
@@ -142,7 +142,7 @@ export class InteractionHandler extends (EventEmitter as any as new () => TypedE
           Buffer.from(this.options.publicKey, "hex"),
           'Ed25519',
           true,
-		      ['verify'],
+          ['verify'],
           )
       }
       const timestamp = req.headers[
