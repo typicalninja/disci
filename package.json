@@ -17,11 +17,10 @@
     "dev:example": "turbo run dev --filter=@discijs/example",
     "serve:docs": "turbo run serve --filter=@discijs/docs",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "turbo run format"
   },
   "devDependencies": {
     "eslint-config": "*",
-    "prettier": "latest",
     "tsup": "^6.6.0",
     "turbo": "latest",
     "typescript": "4.9.4"

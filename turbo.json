@@ -11,8 +11,7 @@
     "serve": {
       "cache": false
     },
-    "lint": {
-      
-    }
+    "lint": {},
+    "format": {}
   }
 }

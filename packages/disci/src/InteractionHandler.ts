@@ -21,12 +21,15 @@ import { InteractionFactory } from './utils/Factories';
 import EventEmitter from 'node:events';
 import type {IRestAdapter} from './utils/RestAdapter';
 
-export class InteractionHandler extends (EventEmitter as any as new () => TypedEmitter<IClientEvents>)  {
+export class InteractionHandler extends (EventEmitter as unknown as new () => TypedEmitter<IClientEvents>)  {
   options: IHandlerOptions;
   /**
    * Rest Manager, user has to provide one
    */
   rest: IRestAdapter;
+  /**
+   * Public key as a cryptokey for request verification
+   */
   private publicKey: null | crypto.webcrypto.CryptoKey
   constructor(options: Partial<IHandlerOptions>) {
     super()
@@ -34,6 +37,7 @@ export class InteractionHandler extends (EventEmitter as any as new () => TypedE
     if(!this.options.publicKey) throw new DisciValidationError(`Public key is required`)
     // rest manager is provided by the user
     this.rest = this.options.restAdapter;
+    // publickey is generated on first request or if generatePublicKey is called
     this.publicKey = null;
   }
   /**
@@ -61,6 +65,7 @@ export class InteractionHandler extends (EventEmitter as any as new () => TypedE
       const verifyFn = typeof this.options.verifyRequest === 'function' ? this.options.verifyRequest : this.verifyRequest.bind(this) as () => Promise<boolean>;
       const requestVerified = await verifyFn(receivedRequest).catch((vErr) => {
         this.debug(`Error occurred while verifying request: [${String(vErr)}]`);
+        // return false to trigger the unauthorized error
         return false;
       });
 
@@ -80,10 +85,12 @@ export class InteractionHandler extends (EventEmitter as any as new () => TypedE
       }
   } 
   /**
-   * Process a request and return a response according to the request
+   * Process a request and return a response according to the request.
+   * You must use the respctive method of returning a response to the client of your framework and return the Response back.
    * this does not verify if request is valid or not
    * @param req 
    * @param res 
+   * @returns a Response Object containing data to be responded with
    */
   processRequest(req: IRequest): Promise<IResponse> {
     return new Promise((resolve, reject) => {
@@ -120,10 +127,12 @@ export class InteractionHandler extends (EventEmitter as any as new () => TypedE
           // finally emit the event
           return this.emit('interactionCreate', interaction);
         }
-        // a ping
-        else if(rawInteraction.type === InteractionType.Ping) return resolve(toResponse({
-          type: InteractionResponseType.Pong,
-        }))
+        // a ping event
+        else if(rawInteraction.type === InteractionType.Ping) {
+          return resolve(toResponse({
+            type: InteractionResponseType.Pong,
+          }));
+        }
         else {
           this.debug(`Unsupported Interaction type of ${rawInteraction.type} was received`);
           return resolve(toResponse(EResponseErrorMessages.NotSupported, 500));
@@ -131,20 +140,27 @@ export class InteractionHandler extends (EventEmitter as any as new () => TypedE
       });
   }
   /**
+   * Generate a cryptokey for the public key provided in the options.
+   * Run this at startup if you want to pre create a publicKey before any interaction requests.
+   * If not, on first interaction request this will be called.
+   */
+  async generatePublicKey() {
+    if(this.publicKey) return this.publicKey;
+    this.publicKey = await crypto.subtle.importKey(
+      'raw', 
+      Buffer.from(this.options.publicKey, "hex"),
+      'Ed25519',
+      true,
+      ['verify'],
+      );
+     return this.publicKey
+  }
+  /**
    * Used to validate if a request originated from discord
    * https://discord.com/developers/docs/interactions/receiving-and-responding#security-and-authorization
    */
   async verifyRequest(req: IRequest): Promise<boolean> {
-      // no public key yet (maybe first run)
-      if (!this.publicKey) {
-        this.publicKey = await crypto.subtle.importKey(
-          'raw', 
-          Buffer.from(this.options.publicKey, "hex"),
-          'Ed25519',
-          true,
-          ['verify'],
-          )
-      }
+      const publicKey = await this.generatePublicKey()
       const timestamp = req.headers[
         DiscordVerificationHeaders.TimeStamp
       ];
@@ -156,7 +172,7 @@ export class InteractionHandler extends (EventEmitter as any as new () => TypedE
       try {
         return crypto.subtle.verify(
           'Ed25519', 
-          this.publicKey,
+          publicKey,
           Buffer.from(signature, "hex"),
           Buffer.from(timestamp + body)
           );
