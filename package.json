@@ -17,7 +17,10 @@
     "dev:example": "turbo run dev --filter=@discijs/example",
     "serve:docs": "turbo run serve --filter=@discijs/docs",
     "lint": "turbo run lint",
-    "format": "turbo run format"
+    "format": "turbo run format",
+    "release": "yarn run lint && yarn run build && yarn run dev:publish",
+    "dev:publish": "yarn changesets publish --tag dev",
+    "dev:version": "yarn changeset version --snapshot dev"
   },
   "devDependencies": {
     "eslint-config": "*",
