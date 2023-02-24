@@ -3,10 +3,12 @@
     "version": "0.0.2",
     "license": "Apache-2.0",
     "scripts": {
-        "build": "tsc"
+        "build": "tsup",
+        "dev": "tsup --watch"
     },
     "dependencies": {
-        "@discordjs/rest": "^1.5.0"
+        "@discordjs/rest": "^1.5.0",
+        "tsup": "^6.6.3"
     },
     "devDependencies": {
         "tsconfig": "workspace:*"

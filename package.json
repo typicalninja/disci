@@ -18,9 +18,9 @@
     "serve:docs": "turbo run serve --filter=@discijs/docs",
     "lint": "turbo run lint",
     "format": "turbo run format",
-    "release": "yarn run lint && yarn run build && yarn run dev:publish",
-    "dev:publish": "yarn changesets publish --tag dev",
-    "dev:version": "yarn changeset version --snapshot dev"
+    "release": "yarn run lint && yarn run build && yarn run alpha:publish",
+    "alpha:publish": "yarn changesets publish --tag alpha",
+    "alpha:version": "yarn changeset version --snapshot alpha"
   },
   "devDependencies": {
     "eslint-config": "*",

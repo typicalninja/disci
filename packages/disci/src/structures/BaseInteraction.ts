@@ -14,9 +14,8 @@ import {
 } from "discord-api-types/v10";
 import {
   convertSnowflakeToTimeStamp,
-  DisciError,
-  DisciTypeError,
 } from "../utils/helpers";
+
 
 import User from "./primitives/User";
 import Member from "./primitives/Member";
@@ -25,6 +24,7 @@ import Member from "./primitives/Member";
 import type { ApplicationCommand } from './ApplicationCommand'
 import type { AutoCompleteInteraction } from "./AutoCompleteInteraction";
 import Webhook from "./primitives/Webhook";
+import { DisciError, DisciTypeError, TypeErrorsMessages } from "../utils/errors";
 
 type TcallbackFn = (data: APIInteractionResponse) => void;
 
@@ -216,7 +216,7 @@ export class InteractionOptions {
    */
   getSubCommand(required: true): string;
   getSubCommand(required = false): string | null {
-    if(required && !this.subCommand) throw new DisciTypeError(`SubCommandOption Not found`, { methodName: 'getSubCommand' })
+    if(required && !this.subCommand) throw new DisciTypeError(TypeErrorsMessages.PropertyNotFound('subCommand'))
     return this.subCommand ?? null;
   }
   /**
@@ -226,7 +226,7 @@ export class InteractionOptions {
    */
   getSubCommandGroup(required: true): string;
   getSubCommandGroup(required = false): string | null {
-    if(required && !this.group) throw new DisciTypeError(`No SubCommandGroup found`);
+    if(required && !this.group) throw new DisciTypeError(TypeErrorsMessages.PropertyNotFound(`subCommandGroup`));
     return this.group ?? null
   }
   /**
@@ -247,8 +247,8 @@ export class InteractionOptions {
     const option = this.get(name, required);
 
     if(!option) return null;
-    if(!expectedtTypes.includes(option.type)) throw new DisciTypeError(`Expected Type of option to be [${expectedtTypes.join(" ")}] Received ${option.type}`);
-    if(required &&  properties.every((prop) => option[prop] == null || typeof option[prop] == 'undefined')) throw new DisciTypeError(`Expected Value to be available`);
+    if(!expectedtTypes.includes(option.type)) throw new DisciTypeError(`Expected Type of option to be ${expectedtTypes.join(" ")} Received ${option.type}`);
+    if(required && properties.every((prop) => option[prop] == null || typeof option[prop] == 'undefined')) throw new DisciTypeError(`Expected Value to be available`);
 
     return option;
   }
@@ -346,7 +346,7 @@ export class InteractionOptions {
      getFocused(full: true): APIApplicationCommandInteractionDataBasicOption;
      getFocused(full: false): APIApplicationCommandInteractionDataBasicOption['value'];
      getFocused(full: boolean) {
-      const focusedOption = this._options.find((option: any) => option.focused) as APIApplicationCommandInteractionDataBasicOption;
+      const focusedOption = this._options.find((option) => (option as { focused?: boolean }).focused) as APIApplicationCommandInteractionDataBasicOption;
       if (!focusedOption) throw new DisciTypeError(`No Focused option found`)
       return full ? focusedOption : focusedOption.value;
      }

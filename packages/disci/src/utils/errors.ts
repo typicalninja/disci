@@ -1,23 +1,24 @@
-export const ErrorCodes = {
-    1001: `Error occurred when trying to parse a request`,
-    4000: `Could not Retrieve Error type`,
+/**
+ * Type errors
+ */
+export const TypeErrorsMessages = {
+    ExpectedParameter: (value: string, expected: string, received?: string) => `Expected ${value} as ${expected} ${received ? `but received ${received}` : ''}`,
+    ParameterRequired: (parameter: string) => `Parameter ${parameter} is required and must not be null/undefined`,
+    PropertyNotFound: (prop: string) => `No ${prop} Found`
 }
+
 
 // utility to create custom errorClasses
 function createError(errorName: string) {
     return class CustomError extends Error {
-        constructor(errorCode: keyof typeof ErrorCodes, data?: Record<string, unknown>) {
+        constructor(errorMessage: string, data?: ErrorOptions) {
             // Need to pass `options` as the second parameter to install the "cause" property.
-            super(ErrorCodes[errorCode]);
-            this.name = `[Disci${errorName}#${errorCode}]`
-            if(data) {
-                Object.keys(data).forEach((errKey) => {
-                    Reflect.defineProperty(this, errKey, { value: data[errKey], enumerable: true, writable: true })
-                })
-            }
+            super(errorMessage, data);
+            this.name = `[Disci${errorName}]`
             Error.captureStackTrace(this, CustomError)
           }
     }
 }
 
-export const DisciError = createError(`Error`)
+export const DisciError = createError(`Error`);
+export const DisciTypeError = createError('TypeError');

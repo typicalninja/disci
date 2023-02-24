@@ -5,17 +5,18 @@
 **NOTE**: Current build is more of a placeholder than a alpha project please do not use.
 # Name
 
-**NOTE**: Project is still in ALPHA stage and may undergo a rebranding
+**NOTE**: Project is still in ALPHA stage 
 
 > Disci -> Disc = Discord | i = interactions
 > Disci = Discord interactions
 
 # Development
 
-Development is done in /dev branch and on each new version, dev will be merged with main
+* Development is done in /dev branch and on each new version, dev will be merged with main
 GH action will deploy docs if there is anything is pushed to /main
 
-> Until dev period is over docs will be built for pushes in /dev
+* dev snapshot releases will be published to @dev tag to npm using snapshot release workflow
+
 
 
 # License
@@ -24,5 +25,4 @@ This repository and the code inside it is licensed under the ISC License. Read [
 
 # Inspiration
 
-    [Biscuit](https://github.com/oasisjs/biscuit/) 
-    [Discord.js]
+* [Biscuit](https://github.com/oasisjs/biscuit/) 

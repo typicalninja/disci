@@ -7,7 +7,7 @@ import {
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
 import type { MessageReplyOptions } from "../utils/constants";
-import { DisciInteractionError, DisciTypeError } from "../utils/helpers";
+import {  DisciError, DisciTypeError } from "../utils/errors";
 import type { IBase } from "./Base";
 import { BaseInteraction, InteractionOptions } from "./BaseInteraction";
 import { EmbedBuilder } from "./builders/Embed";
@@ -71,7 +71,7 @@ export abstract class ApplicationCommand
    */
   respond(opts: string): this;
   respond(opts: MessageReplyOptions | string): this {
-    if(this.responded || this.timeout) throw new DisciInteractionError(`This interaction either timed out or already been responded to`)
+    if(this.responded || this.timeout) throw new DisciError(`This interaction either timed out or already been responded to`)
     const APIResponse = {
       type: InteractionResponseType.ChannelMessageWithSource,
       data: {
@@ -139,12 +139,8 @@ export abstract class ApplicationCommand
    * Send a defer type response, gives you extra time to reply.User sees a loading state
    */
    deferResponse() {
-    if (this.timeout)
-      throw new DisciInteractionError(`This Interaction already timed out`);
-    if (this.responded)
-      throw new DisciInteractionError(
-        `This interaction has already been responded to.`
-      );
+    if (this.timeout || this.responded)
+      throw new DisciError(`This Interaction already timed out or has been replied to`);
     return this._respond({
       type: InteractionResponseType.DeferredChannelMessageWithSource
     });

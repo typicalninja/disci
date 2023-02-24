@@ -2,7 +2,7 @@ import {
   APIApplicationCommandOptionChoice,
   InteractionResponseType,
 } from "discord-api-types/v10";
-import { DisciTypeError } from "../utils/helpers";
+import { TypeErrorsMessages, DisciTypeError } from "../utils/errors";
 import type { IBase } from "./Base";
 import { BaseInteraction } from "./BaseInteraction";
 
@@ -14,7 +14,7 @@ export class AutoCompleteInteraction extends BaseInteraction implements IBase {
    */
   sendChoices(choices: (APIApplicationCommandOptionChoice | string)[]) {
     if (!Array.isArray(choices))
-      throw new DisciTypeError(`Choices must be a array`);
+      throw new DisciTypeError(TypeErrorsMessages.ExpectedParameter(`choices`, 'array', typeof choices));
     const _choices = this.getChoices(choices);
     this._respond({
       type: InteractionResponseType.ApplicationCommandAutocompleteResult,

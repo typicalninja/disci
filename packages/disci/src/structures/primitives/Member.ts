@@ -1,4 +1,4 @@
-import type { APIGuildMember } from 'discord-api-types/v10'
+import type { APIGuildMember, APIUser } from 'discord-api-types/v10'
 import type { InteractionHandler } from '../../InteractionHandler'
 import type { IBase } from '../Base'
 import User from './User'
@@ -13,8 +13,8 @@ export default class Member implements IBase {
      */
     user: User
     constructor(handler: InteractionHandler, apiMember: APIGuildMember) {
-        Object.defineProperty(this, 'handler', { value: handler });
-        this.user = new User(handler, apiMember.user)
+        Reflect.defineProperty(this, 'handler', { value: handler });
+        this.user = new User(handler, apiMember.user as APIUser)
     }
     toString() {
         return `<@${this.user.id}>`

@@ -1,5 +1,5 @@
 import type { APIEmbed } from "discord-api-types/v10";
-import { DisciTypeError } from "../../utils/helpers";
+import { DisciTypeError } from "../../utils/errors";
 
 /**
  * Interface for a Embed footer

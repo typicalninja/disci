@@ -1,8 +1,8 @@
 // utilities to extract common fields from requests
 
 import type { APIInteractionResponse } from "discord-api-types/v10"
-import { DisciError, ErrorCodes } from "./errors";
-import { DisciTypeError } from "./helpers";
+import { DisciTypeError, TypeErrorsMessages } from "./errors";
+
 
 /**
  * Common Request type containing required parts for our scripts
@@ -30,10 +30,10 @@ const getBody = (rawRequest: IRequest & { rawBody?: Buffer | string }) => {
                     : null;
 }
 
-export function ToRequest(rawRequest: unknown): IRequest {
-    if(typeof rawRequest == 'string') throw new DisciError()
+export function ToRequest(rawRequest: IRequest): IRequest {
+    if(typeof rawRequest !== 'object') throw new DisciTypeError(TypeErrorsMessages.ExpectedParameter('rawRequest', 'object', typeof rawRequest))
     const body = getBody(rawRequest);
-    if(!body) throw new DisciTypeError(`Invalid Request, cannot parse body`)
+    if(!body) throw new DisciTypeError(TypeErrorsMessages.ExpectedParameter(`rawRequest.body`, 'object'))
     return {
         body,
         headers: (rawRequest.headers ?? {})

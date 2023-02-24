@@ -1975,6 +1975,7 @@ __metadata:
   dependencies:
     "@discordjs/rest": ^1.5.0
     tsconfig: "workspace:*"
+    tsup: ^6.6.3
   languageName: unknown
   linkType: soft
 
@@ -15677,6 +15678,42 @@ __metadata:
     tsup: dist/cli-default.js
     tsup-node: dist/cli-node.js
   checksum: 202ed7a6b607190f47dd7503994e8e62ce672a35ff3ecaf4c1dc4c8a9590b99f91ce8c1303e28781b5a089450140492729a41d93874e87936aed94e205155551
+  languageName: node
+  linkType: hard
+
+"tsup@npm:^6.6.3":
+  version: 6.6.3
+  resolution: "tsup@npm:6.6.3"
+  dependencies:
+    bundle-require: ^4.0.0
+    cac: ^6.7.12
+    chokidar: ^3.5.1
+    debug: ^4.3.1
+    esbuild: ^0.17.6
+    execa: ^5.0.0
+    globby: ^11.0.3
+    joycon: ^3.0.1
+    postcss-load-config: ^3.0.1
+    resolve-from: ^5.0.0
+    rollup: ^3.2.5
+    source-map: 0.8.0-beta.0
+    sucrase: ^3.20.3
+    tree-kill: ^1.2.2
+  peerDependencies:
+    "@swc/core": ^1
+    postcss: ^8.4.12
+    typescript: ^4.1.0
+  peerDependenciesMeta:
+    "@swc/core":
+      optional: true
+    postcss:
+      optional: true
+    typescript:
+      optional: true
+  bin:
+    tsup: dist/cli-default.js
+    tsup-node: dist/cli-node.js
+  checksum: 4fa45fd7493971e5bf1f142a2590eabc1de536dc251d4b90bfce7dfaf1d7f40e19ef04ee541f9d2ab6a55841b72d265b7ddd3ea70c6371d746b5aed782f08094
   languageName: node
   linkType: hard
 

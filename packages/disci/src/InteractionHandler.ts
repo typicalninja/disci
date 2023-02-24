@@ -15,7 +15,8 @@ import {
 } from "./utils/constants";
 import crypto from 'node:crypto'
 import { IRequest, IResponse, ToRequest, toResponse } from "./utils/request";
-import { DisciParseError, DisciValidationError, tryAndValue } from "./utils/helpers";
+import { tryAndValue } from "./utils/helpers";
+import { DisciTypeError, TypeErrorsMessages } from './utils/errors';
 import { InteractionFactory } from './utils/Factories';
 
 import EventEmitter from 'node:events';
@@ -34,7 +35,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
   constructor(options: Partial<IHandlerOptions>) {
     super()
     this.options = Object.assign({}, defaultOptions, options);
-    if(!this.options.publicKey) throw new DisciValidationError(`Public key is required`)
+    if(!this.options.publicKey) throw new DisciTypeError(TypeErrorsMessages.ParameterRequired('options.publicKey'))
     // rest manager is provided by the user
     this.rest = this.options.restAdapter;
     // publickey is generated on first request or if generatePublicKey is called
@@ -61,7 +62,8 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
   async handleRequest(
     req: unknown,
   ): Promise<IResponse> {
-      const receivedRequest = ToRequest(req);
+      // type this as Irequest for typescript
+      const receivedRequest = ToRequest(req as IRequest);
       const verifyFn = typeof this.options.verifyRequest === 'function' ? this.options.verifyRequest : this.verifyRequest.bind(this) as () => Promise<boolean>;
       const requestVerified = await verifyFn(receivedRequest).catch((vErr) => {
         this.debug(`Error occurred while verifying request: [${String(vErr)}]`);
@@ -96,7 +98,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
     return new Promise((resolve, reject) => {
         // parse the request body
         const rawInteraction = tryAndValue<APIInteraction>(() => JSON.parse(req.body) as APIInteraction);
-        if(!rawInteraction) return reject(new DisciParseError(`Failed to parse rawBody into a valid ApiInteraction`));
+        if(!rawInteraction) return reject(new DisciTypeError(`Failed to parse rawBody into a valid ApiInteraction`));
         
         // convert rawInteraction -> interaction
         const interaction = InteractionFactory.from(this, rawInteraction)

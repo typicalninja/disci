@@ -1,7 +1,7 @@
 import type { Snowflake } from "discord-api-types/globals";
 import { APIMessage, APIWebhook, Routes, WebhookType } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
-import { DisciTypeError } from "../../utils/helpers";
+import { DisciTypeError } from "../../utils/errors";
 import type { IBase } from "../Base";
 import Message from "./Message";
 import User from "./User";

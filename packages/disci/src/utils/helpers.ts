@@ -40,24 +40,3 @@ export const getResponseCallback = (
     }
 }
 
-// utility to create custom errorClasses
-function createError(errorName: string) {
-    return class CustomError extends Error {
-        constructor(message: string, { methodName }: { methodName?: string } = {}) {
-            // Need to pass `options` as the second parameter to install the "cause" property.
-            super(message);
-            this.name = `[Disci${errorName}]`
-            if(methodName) this.name += ` ${methodName}()`
-            Error.captureStackTrace(this, CustomError)
-          }
-    }
-}
-
-
-
-
-export const DisciParseError = createError("ParseError");
-export const DisciValidationError = createError("ValidationError");
-export const DisciInteractionError = createError("InteractionError");
-export const DisciTypeError = createError('TypeError');
-export const DisciError = createError('Error')
