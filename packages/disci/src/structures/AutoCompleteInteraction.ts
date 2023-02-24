@@ -25,7 +25,7 @@ export class AutoCompleteInteraction extends BaseInteraction implements IBase {
     return this;
   }
   /**
-   * Shows a No choice" (invalid query) screen for user.Alias to doing sendChoices with empty ([]) choices.
+   * Shows a "No choice" (invalid query) screen for user.Alias to doing sendChoices with empty ([]) choices.
    */
   invalid() {
     return this.sendChoices([]);
