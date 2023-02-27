@@ -1,6 +1,6 @@
 import type { InteractionHandler } from "../InteractionHandler";
 import type { IBase } from "./Base";
-import { PermissionsBitField } from "./builders/Bitfield";
+import { PermissionsBitField } from "./Bitfield";
 
 import type { Snowflake } from "discord-api-types/globals";
 import {

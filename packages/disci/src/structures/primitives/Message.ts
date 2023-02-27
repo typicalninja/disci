@@ -1,7 +1,7 @@
 import type { APIMessage, Snowflake } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
 import type { IBase } from "../Base";
-import { EmbedBuilder } from "../builders/Embed";
+import { Embed } from "../Embed";
 import User from "./User";
 
 export default class Message implements IBase {
@@ -10,7 +10,7 @@ export default class Message implements IBase {
      * Id of this message
      */
     id: Snowflake;
-    embeds: EmbedBuilder[];
+    embeds: Embed[];
     content?: string;
     author: User;
     constructor(handler: InteractionHandler, APIdata: APIMessage) {
@@ -21,7 +21,7 @@ export default class Message implements IBase {
         if(APIdata.content) {
             this.content = APIdata.content;
         }
-        this.embeds = APIdata.embeds?.map((apiEmbed) => new EmbedBuilder(apiEmbed)) ?? [];
+        this.embeds = APIdata.embeds?.map((apiEmbed) => new Embed(apiEmbed)) ?? [];
         this.author = new User(this.handler, APIdata.author)
     }
 }

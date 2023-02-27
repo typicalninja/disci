@@ -24,10 +24,10 @@ export {
   BitFieldResolvable,
   PermissionsBitField,
   UserFlagsBitField,
-} from "./structures/builders/Bitfield";
+} from "./structures/Bitfield";
 
 
 // Builders
-export { EmbedBuilder } from "./structures/builders/Embed"; 
+export { Embed as EmbedBuilder } from "./structures/Embed"; 
 
 export { ChatInputInteraction } from "./structures/ApplicationCommand";

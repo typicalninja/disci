@@ -1,5 +1,5 @@
 import type { APIEmbed } from "discord-api-types/v10";
-import { DisciTypeError } from "../../utils/errors";
+import { DisciTypeError } from "../utils/errors";
 
 /**
  * Interface for a Embed footer
@@ -30,7 +30,7 @@ export interface IEmbedField {
 /**
  * Utility to create a Embed
  */
-export class EmbedBuilder {
+export class Embed {
     constructor(public baseEmbed: APIEmbed) {
        
     }
@@ -41,7 +41,7 @@ export class EmbedBuilder {
      * @param inline 
      * @returns 
      */
-    addField(name: string, value: string, inline?: boolean): EmbedBuilder {
+    addField(name: string, value: string, inline?: boolean): Embed {
         if(!this.baseEmbed.fields) this.baseEmbed.fields = []
         if(this.baseEmbed.fields.length > 25) throw new DisciTypeError(`Total EmbedFields length must be below or equal to 25.`)
         this.baseEmbed.fields.push({
@@ -56,7 +56,7 @@ export class EmbedBuilder {
      * @param fields 
      * @returns 
      */
-    addFields(fields: { name: string, value: string, inline?: boolean }[]): EmbedBuilder {
+    addFields(fields: { name: string, value: string, inline?: boolean }[]): Embed {
         if((fields.length + (this.baseEmbed.fields?.length || 0)) > 25) throw new DisciTypeError(`Total EmbedFields length must be below or equal to 25. Received ${fields.length} Fields with ${this.baseEmbed.fields?.length || 0} already Added`)
         for(const field of fields) {
             this.addField(field.name, field.value, field.inline)
@@ -68,7 +68,7 @@ export class EmbedBuilder {
      * @param name 
      * @returns 
      */
-    removeFields(name: string | string[]): EmbedBuilder {
+    removeFields(name: string | string[]): Embed {
         const removed: string[] = []
         if(!Array.isArray(name)) removed.push(name)
         else removed.concat(name)
@@ -81,13 +81,17 @@ export class EmbedBuilder {
      * @param description - Description to set, null to remove
      * @returns 
      */
-    setDescription(description: string | null): EmbedBuilder {
+    setDescription(description: string | null): Embed {
         if(typeof description !== 'string' && description !== null) throw new DisciTypeError(`Description must be a string. Received ${typeof description}`);
         this.baseEmbed.description = description ?? undefined;
         return this;
     }
-    setFooter(footerOpts: IEmbedFooter) {
-        if(footerOpts.text && typeof footerOpts.text !== 'string') throw new DisciTypeError(`Footer Text must be a string.`)
+    setFooter(footerOpts: Partial<IEmbedFooter>) {
+        if(!footerOpts.text || typeof footerOpts.text !== 'string') throw new DisciTypeError(`Footer Text must be a string.`)
+        this.baseEmbed.footer = {
+            text: footerOpts.text,
+            icon_url: footerOpts.iconURL
+        }
     }
     /**
      * Convert a Embed into APIEmbed

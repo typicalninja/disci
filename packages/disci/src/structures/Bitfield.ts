@@ -1,5 +1,5 @@
 import { MessageFlags, PermissionFlagsBits, UserFlags } from "discord-api-types/v10";
-import { DisciTypeError, TypeErrorsMessages } from "../../utils/errors";
+import { DisciTypeError, TypeErrorsMessages } from "../utils/errors";
 
 export type BitFieldResolvable = bigint | bigint[] | number | number[];
 

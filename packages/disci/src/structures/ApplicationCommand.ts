@@ -10,7 +10,8 @@ import type { MessageReplyOptions } from "../utils/constants";
 import {  DisciError, DisciTypeError } from "../utils/errors";
 import type { IBase } from "./Base";
 import { BaseInteraction, InteractionOptions } from "./BaseInteraction";
-import { EmbedBuilder } from "./builders/Embed";
+import { Embed } from "./Embed";
+import type Message from "./primitives/Message";
 export abstract class ApplicationCommand
   extends BaseInteraction
   implements IBase
@@ -70,7 +71,9 @@ export abstract class ApplicationCommand
    * @returns this interaction instances.Use fetchReply() to retrieve the message instance
    */
   respond(opts: string): this;
-  respond(opts: MessageReplyOptions | string): this {
+  respond(opts: MessageReplyOptions): this;
+  respond(opts: MessageReplyOptions & { fetchReply: true }): Promise<Message>
+  respond(opts: (MessageReplyOptions & { fetchReply?: boolean }) | string): this | Promise<Message> {
     if(this.responded || this.timeout) throw new DisciError(`This interaction either timed out or already been responded to`)
     const APIResponse = {
       type: InteractionResponseType.ChannelMessageWithSource,
@@ -94,7 +97,7 @@ export abstract class ApplicationCommand
         opts.content = new String(opts.content).toString()
       }
 
-      if(opts.embed && opts.embed instanceof EmbedBuilder) {
+      if(opts.embed && opts.embed instanceof Embed) {
           if(opts.embeds && Array.isArray(opts.embed)) {
             opts.embeds.push(opts.embed)
           }
@@ -104,7 +107,7 @@ export abstract class ApplicationCommand
       if(opts.embeds && Array.isArray(opts.embeds)) {
         // convert embed builders to apiEmbeds
         opts.embeds = opts.embeds.map(embed => {
-          if(embed instanceof EmbedBuilder) {
+          if(embed instanceof Embed) {
             return embed.toJSON()
           }
           return embed;
@@ -131,6 +134,7 @@ export abstract class ApplicationCommand
 
 
     this._respond(APIResponse);
+    if(typeof opts !== 'string' && opts.fetchReply === true) return this.fetchReply() as Promise<Message>;
     return this;
   }
   // custom methods
@@ -138,12 +142,13 @@ export abstract class ApplicationCommand
    /**
    * Send a defer type response, gives you extra time to reply.User sees a loading state
    */
-   deferResponse() {
+   deferResponse(): this {
     if (this.timeout || this.responded)
       throw new DisciError(`This Interaction already timed out or has been replied to`);
-    return this._respond({
+    this._respond({
       type: InteractionResponseType.DeferredChannelMessageWithSource
     });
+    return this;
    }
 }
 
