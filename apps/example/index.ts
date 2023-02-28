@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { InteractionHandler } from 'disci';
+import { InteractionHandler, VerificationStratergy } from 'disci';
 
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 const server = fastify();
@@ -7,20 +7,22 @@ const server = fastify();
 // by default will use .env
 const client = new InteractionHandler({
   debug: (msg:string) => console.log(msg),
+  verificationStratergy: new VerificationStratergy.NativeVerificationStratergy(process.env.PUBLIC_KEY)
 });
-
 
 // attach a route for /interaction
 server.post(
   "/interactions",
   async (req: FastifyRequest, res: FastifyReply) => {
-    // @ts-expect-error
+   
     const response = await client.handleRequest(req);
     console.log(`Resolved: ${JSON.stringify(response)}`)
     res.statusCode = response.statusCode || 200;
     return response.responseData;
   }
 );
+
+client.on('error', (e) => console.log(`Err:`, e))
 
 client.on('interactionCreate', (interaction) => {
   if (interaction.isCommand() && interaction.isChatInputInteraction()) {

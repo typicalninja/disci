@@ -1,1 +1,0 @@
-export { InteractionForge } from './src/Forge';

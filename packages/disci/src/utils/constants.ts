@@ -1,8 +1,9 @@
 import type { APIEmbed } from "discord-api-types/v10";
+import { NativeVerificationStratergy, verificationStratergy } from "../verification";
 import type { ApplicationCommands } from "../structures/ApplicationCommand";
 import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
 import type { Embed } from "../structures/Embed";
-import type { IRequest, IResponse } from "./request";
+import type { IResponse } from "./request";
 import { DefaultNonImplementedRestAdapter , IRestAdapter } from "./RestAdapter";
 //import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
 
@@ -25,23 +26,19 @@ export interface IHandlerOptions {
    */
   deferOnTimeout: boolean;
   /**
-   * PublicKey for authorization
-   */
-  publicKey: string;
-  /**
    * Token for authorization on rest requsts
    */
   token: string;
   /**
-   * Used to validate if a request originated from discord
-   * @param req - The request from the server to verify
-   * @returns boolean indicating wether this is a verified request or not
-   */
-  verifyRequest?: (req: IRequest) => Promise<boolean>;
-  /**
    * A debug callback function that can be used for debugging
    */
   debug?: (msg: string) => void;
+  /**
+   * verification stratergy used for validating incoming requests,
+   * do no specify for default and specify null for allow all requests
+   * specify a string (your public key) for default stratergy will use that instead of process.env.PUBLIC_KEY
+   */
+  verificationStratergy: verificationStratergy | null | string;
   /**
    * Adapter use for rest requests
    */
@@ -57,10 +54,9 @@ export type MessageReplyOptions = {
 export const defaultOptions: IHandlerOptions = {
   replyTimeout: 2600,
   deferOnTimeout: true,
-  // we assume credentials are in .env files [If provided in options, will be overidden]
-  publicKey: process.env.PUBLIC_KEY ?? '',
   token: process.env.TOKEN ?? '',
-  restAdapter: new DefaultNonImplementedRestAdapter()
+  restAdapter: new DefaultNonImplementedRestAdapter(),
+  verificationStratergy: new NativeVerificationStratergy()
 };
 
 /**

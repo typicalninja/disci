@@ -9,18 +9,17 @@ import {
 import {
   IHandlerOptions,
   defaultOptions,
-  DiscordVerificationHeaders,
   EResponseErrorMessages,
   IClientEvents,
 } from "./utils/constants";
-import crypto from 'node:crypto'
 import { IRequest, IResponse, ToRequest, toResponse } from "./utils/request";
 import { tryAndValue } from "./utils/helpers";
-import { DisciTypeError, TypeErrorsMessages } from './utils/errors';
+import { DisciTypeError } from './utils/errors';
 import { InteractionFactory } from './utils/Factories';
 
 import EventEmitter from 'node:events';
 import type {IRestAdapter} from './utils/RestAdapter';
+import { NativeVerificationStratergy, NoLimitVerificationStratergy, verificationStratergy, } from './verification';
 
 export class InteractionHandler extends (EventEmitter as unknown as new () => TypedEmitter<IClientEvents>)  {
   options: IHandlerOptions;
@@ -29,17 +28,22 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
    */
   rest: IRestAdapter;
   /**
-   * Public key as a cryptokey for request verification
+   * Verifiction stratergy for request verification
    */
-  private publicKey: null | crypto.webcrypto.CryptoKey
+  private verificationStratergy: verificationStratergy;
   constructor(options: Partial<IHandlerOptions>) {
     super()
     this.options = Object.assign({}, defaultOptions, options);
-    if(!this.options.publicKey) throw new DisciTypeError(TypeErrorsMessages.ParameterRequired('options.publicKey'))
+    this.verificationStratergy = this.getVerificationStratergy(this.options.verificationStratergy);
     // rest manager is provided by the user
     this.rest = this.options.restAdapter;
-    // publickey is generated on first request or if generatePublicKey is called
-    this.publicKey = null;
+  }
+  private getVerificationStratergy(receivedStrat: verificationStratergy | null | string): verificationStratergy {
+    // null means access=all verification stratergy
+    if(receivedStrat === null) return new NoLimitVerificationStratergy();
+    // probably provided publicKey as the verification stratergy
+    else if(typeof receivedStrat === 'string') return new NativeVerificationStratergy(receivedStrat);
+    else return receivedStrat;
   }
   /**
    * Internal function for debugging conditionally
@@ -64,12 +68,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
   ): Promise<IResponse> {
       // type this as Irequest for typescript
       const receivedRequest = ToRequest(req as IRequest);
-      const verifyFn = typeof this.options.verifyRequest === 'function' ? this.options.verifyRequest : this.verifyRequest.bind(this) as () => Promise<boolean>;
-      const requestVerified = await verifyFn(receivedRequest).catch((vErr) => {
-        this.debug(`Error occurred while verifying request: [${String(vErr)}]`);
-        // return false to trigger the unauthorized error
-        return false;
-      });
+      const requestVerified = await this.verificationStratergy.verifyRequest(receivedRequest)
 
       if(!requestVerified) /* Auth failed */ return toResponse(EResponseErrorMessages.Unauthorized, 400)
 
@@ -140,46 +139,5 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
           return resolve(toResponse(EResponseErrorMessages.NotSupported, 500));
         }
       });
-  }
-  /**
-   * Generate a cryptokey for the public key provided in the options.
-   * Run this at startup if you want to pre create a publicKey before any interaction requests.
-   * If not, on first interaction request this will be called.
-   */
-  async generatePublicKey() {
-    if(this.publicKey) return this.publicKey;
-    this.publicKey = await crypto.subtle.importKey(
-      'raw', 
-      Buffer.from(this.options.publicKey, "hex"),
-      'Ed25519',
-      true,
-      ['verify'],
-      );
-     return this.publicKey
-  }
-  /**
-   * Used to validate if a request originated from discord
-   * https://discord.com/developers/docs/interactions/receiving-and-responding#security-and-authorization
-   */
-  async verifyRequest(req: IRequest): Promise<boolean> {
-      const publicKey = await this.generatePublicKey()
-      const timestamp = req.headers[
-        DiscordVerificationHeaders.TimeStamp
-      ];
-      const signature = req.headers[
-        DiscordVerificationHeaders.Signature
-      ];
-      const { body } = req;
-      if (!timestamp || !signature || !body) return false;
-      try {
-        return crypto.subtle.verify(
-          'Ed25519', 
-          publicKey,
-          Buffer.from(signature, "hex"),
-          Buffer.from(timestamp + body)
-          );
-      } catch {
-        return false;
-      }
   }
 }
