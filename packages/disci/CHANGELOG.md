@@ -1,5 +1,12 @@
 # disci
 
+## 0.0.0-alpha-20230228104655
+
+### Patch Changes
+
+- 2e17843: Better error handling, and custom errors
+- 7bf98b3: Added Verification stratergies
+
 ## 1.0.1
 
 ### Patch Changes
