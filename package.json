@@ -1,10 +1,6 @@
 {
   "name": "@discijs/main",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
     "build": "turbo run build",
     "build:packages": "yarn run build:disci",
@@ -20,8 +16,8 @@
     "lint": "turbo run lint",
     "format": "turbo run format",
     "release": "yarn run build:packages && yarn run alpha:publish",
-    "alpha:publish": "yarn changesets publish --tag alpha",
-    "alpha:version": "yarn changeset version --snapshot alpha"
+    "alpha:publish": "changesets publish --tag alpha",
+    "alpha:version": "changeset version --snapshot alpha"
   },
   "devDependencies": {
     "eslint-config": "*",
@@ -32,7 +28,6 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "packageManager": "yarn@3.3.0",
   "dependencies": {
     "@changesets/cli": "^2.26.0"
   }
