@@ -7,6 +7,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "build:packages": "yarn run build:disci",
     "build:disci": "turbo run build --filter=disci",
     "build:docs": "turbo run build --filter=@discijs/docs",
     "build:forge": "turbo run build --filter=@discijs/forge",
@@ -18,7 +19,7 @@
     "serve:docs": "turbo run serve --filter=@discijs/docs",
     "lint": "turbo run lint",
     "format": "turbo run format",
-    "release": "yarn run lint && yarn run build && yarn run alpha:publish",
+    "release": "yarn run build:packages && yarn run alpha:publish",
     "alpha:publish": "yarn changesets publish --tag alpha",
     "alpha:version": "yarn changeset version --snapshot alpha"
   },
