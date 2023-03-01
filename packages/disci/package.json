@@ -42,5 +42,6 @@
   },
   "bugs": {
     "url": "https://github.com/typicalninja493/disci/issues"
-  }
+  },
+  "packageManager": "yarn@3.3.0"
 }

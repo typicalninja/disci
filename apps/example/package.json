@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "yarn@3.3.0",
   "dependencies": {
-    "disci": "workspace:*",
+    "disci": "0.0.0-alpha-20230228104655",
     "discord-api-types": "^0.37.23",
     "dotenv": "^16.0.3",
     "fastify": "^4.10.2",
