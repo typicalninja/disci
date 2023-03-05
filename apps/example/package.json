@@ -1,9 +1,8 @@
 {
   "name": "@discijs/example",
   "private": true,
-  "packageManager": "yarn@3.3.0",
   "dependencies": {
-    "disci": "workspace:*",
+    "disci": "workspace:^",
     "discord-api-types": "^0.37.23",
     "dotenv": "^16.0.3",
     "fastify": "^4.10.2",

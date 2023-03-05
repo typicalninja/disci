@@ -1,9 +1,11 @@
-name: Deploying Docs to Github Pages
+name: Docs & Guide build and deployment
 
 on:
   push:
     branches:
       - main
+      # until out of alpha, build dev docs too
+      - dev
 
   workflow_dispatch:
 
@@ -13,16 +15,25 @@ jobs:
     name: Deploy Docs to GitHub Pages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
+      - name: Setting up node v18.x
+        uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: yarn
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn install
-      - name: Build website
-        run: yarn run build:docs
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Docs using docusaurus
+        run: pnpm run build:docs
 
       # Popular action to deploy to GitHub Pages:
       # Docs: https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-docusaurus

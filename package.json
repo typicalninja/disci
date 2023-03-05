@@ -15,7 +15,7 @@
     "serve:docs": "turbo run serve --filter=@discijs/docs",
     "lint": "turbo run lint",
     "format": "turbo run format",
-    "release": "yarn run build:packages && yarn run alpha:publish",
+    "release": "pnpm run build:packages && pnpm run alpha:publish",
     "alpha:publish": "changesets publish --tag alpha",
     "alpha:version": "changeset version --snapshot alpha"
   },
