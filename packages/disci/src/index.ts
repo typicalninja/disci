@@ -1,7 +1,7 @@
 // main
 export { InteractionHandler } from "./InteractionHandler";
 
-// context related
+// constants/types
 export {
   InteractionContext,
   MessageReplyOptions,
@@ -10,13 +10,11 @@ export {
   IClientEvents
 } from "./utils/constants";
 
-// request related
+// request related types
 export {
   IRequest,
   IResponse
 } from "./utils/request";
-
-export { IRestAdapter, IRestAdapterRequestConfig } from "./utils/RestAdapter";
 
 
 export {
@@ -32,6 +30,7 @@ export { Embed as EmbedBuilder } from "./structures/Embed";
 
 export { ChatInputInteraction } from "./structures/ApplicationCommand";
 
+export { Rest, RouteLike, RESTCommonOptions } from './utils/REST'
 
 // auth/security stratergy for incoming requests
 export * as VerificationStratergy from './verification';

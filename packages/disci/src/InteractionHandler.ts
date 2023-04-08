@@ -12,21 +12,21 @@ import {
   EResponseErrorMessages,
   IClientEvents,
 } from "./utils/constants";
-import { IRequest, IResponse, ToRequest, toResponse } from "./utils/request";
+import { IRequest, IResponse, ValidateRequest, toResponse } from "./utils/request";
 import { tryAndValue } from "./utils/helpers";
 import { DisciTypeError } from './utils/errors';
 import { InteractionFactory } from './utils/Factories';
 
 import EventEmitter from 'node:events';
-import type {IRestAdapter} from './utils/RestAdapter';
 import { NativeVerificationStratergy, NoLimitVerificationStratergy, verificationStratergy, } from './verification';
+
 
 export class InteractionHandler extends (EventEmitter as unknown as new () => TypedEmitter<IClientEvents>)  {
   options: IHandlerOptions;
   /**
-   * Rest Manager, user has to provide one
+   * Rest Manager
    */
-  rest: IRestAdapter;
+  api: IRestAdapter;
   /**
    * Verifiction stratergy for request verification
    */
@@ -36,7 +36,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
     this.options = Object.assign({}, defaultOptions, options);
     this.verificationStratergy = this.getVerificationStratergy(this.options.verificationStratergy);
     // rest manager is provided by the user
-    this.rest = this.options.restAdapter;
+    this.api = new REST();
   }
   private getVerificationStratergy(receivedStrat: verificationStratergy | null | string): verificationStratergy {
     // null means access=all verification stratergy
@@ -67,7 +67,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
     req: unknown,
   ): Promise<IResponse> {
       // type this as Irequest for typescript
-      const receivedRequest = ToRequest(req as IRequest);
+      const receivedRequest = ValidateRequest(req as IRequest);
       const requestVerified = await this.verificationStratergy.verifyRequest(receivedRequest)
 
       if(!requestVerified) /* Auth failed */ return toResponse(EResponseErrorMessages.Unauthorized, 400)

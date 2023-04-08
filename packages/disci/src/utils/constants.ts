@@ -4,7 +4,6 @@ import type { ApplicationCommands } from "../structures/ApplicationCommand";
 import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
 import type { Embed } from "../structures/Embed";
 import type { IResponse } from "./request";
-import { DefaultNonImplementedRestAdapter , IRestAdapter } from "./RestAdapter";
 //import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
 
 export enum DiscordVerificationHeaders {
@@ -39,10 +38,6 @@ export interface IHandlerOptions {
    * specify a string (your public key) for default stratergy will use that instead of process.env.PUBLIC_KEY
    */
   verificationStratergy: verificationStratergy | null | string;
-  /**
-   * Adapter use for rest requests
-   */
-  restAdapter: IRestAdapter;
 }
 
 export type MessageReplyOptions = {
@@ -55,7 +50,7 @@ export const defaultOptions: IHandlerOptions = {
   replyTimeout: 2600,
   deferOnTimeout: true,
   token: process.env.TOKEN ?? '',
-  restAdapter: new DefaultNonImplementedRestAdapter(),
+  
   verificationStratergy: new NativeVerificationStratergy()
 };
 

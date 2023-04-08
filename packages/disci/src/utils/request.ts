@@ -20,6 +20,7 @@ export interface IRequest {
     headers: Record<string, string>;
 }
 
+
 const getBody = (rawRequest: IRequest & { rawBody?: Buffer | string }) => {
     return rawRequest.rawBody ? 
             // if there is a raw body
@@ -30,7 +31,10 @@ const getBody = (rawRequest: IRequest & { rawBody?: Buffer | string }) => {
                     : null;
 }
 
-export function ToRequest(rawRequest: IRequest): IRequest {
+/**
+ * Validates and retrieves Body/headers of a received request
+ */
+export function ValidateRequest(rawRequest: IRequest): IRequest {
     if(typeof rawRequest !== 'object') throw new DisciTypeError(TypeErrorsMessages.ExpectedParameter('rawRequest', 'object', typeof rawRequest))
     const body = getBody(rawRequest);
     if(!body) throw new DisciTypeError(TypeErrorsMessages.ExpectedParameter(`rawRequest.body`, 'object'))

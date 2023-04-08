@@ -18,9 +18,9 @@
     "format": "prettier --write \"**/*.{ts}\""
   },
   "dependencies": {
-    "@discordjs/rest": "^1.5.0",
     "discord-api-types": "^0.37.22",
-    "tslib": "^2.4.1"
+    "tslib": "^2.4.1",
+    "undici": "^5.20.0"
   },
   "devDependencies": {
     "@types/node": "^18.11.15",
