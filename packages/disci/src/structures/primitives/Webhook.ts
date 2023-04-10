@@ -46,7 +46,7 @@ export default class Webhook implements IBase {
     /**
      * Gets a message that was sent by this webhook.
      */
-    async fetchMessage(messageId: string | '@original', { threadId }: { threadId?: string } = {}) {
+    async fetchMessage(messageId: string | '@original', { threadId }: { threadId?: string } = {}): Promise<Message> {
         if(!this.token) throw new DisciTypeError(`This webook does not contain a Token`)
         let query: { threadId?: string } = {};
         if(threadId) query.threadId = threadId;
@@ -54,6 +54,6 @@ export default class Webhook implements IBase {
             query
         });
         
-        return message ? new Message(this.handler, message) : null;
+        return new Message(this.handler, message);
     }
 }

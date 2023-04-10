@@ -9,7 +9,7 @@ const client = new InteractionHandler({
   debug: (msg:string) => console.log(msg),
   verificationStratergy: new VerificationStratergy.NativeVerificationStratergy(process.env.PUBLIC_KEY),
   rest: {
-    token: process.env.TOKEN!
+    token: process.env.TOKEN!,
   }
 });
 
@@ -37,13 +37,21 @@ client.on('interactionCreate', (interaction) => {
       interaction.options.getString('auto')
     );
     const int = interaction.respond(`Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
-    int.fetchReply().then((m) => console.log(`Message ${m?.id} ${m?.content}`))
+    int.fetchReply().then((m) => {
+      console.log(`Message ${m?.id} ${m?.content}`);
+
+
+      setTimeout(async () => {
+       await m.addReaction('👍');
+       await m.addReaction('👎');
+      }, 2000)
+    })
   }
   else if(interaction.isAutoComplete()) {
     interaction.sendChoices([
       '1choice',
       '2choice'
-    ]);
+    ])
   }
 });
 

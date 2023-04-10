@@ -172,14 +172,18 @@ export abstract class BaseInteraction implements IBase {
   _respond(
     response: APIInteractionResponse,
   ) {
-    if (this.timeout) throw new DisciError(`This Interaction has timed out`);
+    if (this.timeout) throw new DisciError(`This Interaction has timed out.`);
     if (this.responded) throw new DisciError(`This interaction has already been responded to.`);
     this._callback(response);
     this.responded = true;
     return this;
   }
-
+  /**
+   * Fetch the Message that belong to your reply
+   * @returns Message
+   */
   fetchReply() {
+    if(!this.responded) throw new DisciError(`Please Respond to this interaction before fetching it.`)
     return Webhook.prototype.fetchMessage.call({
       id: this.applicationId,
       token: this.token,

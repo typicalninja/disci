@@ -27,20 +27,21 @@ export class Rest implements RestClient {
     authToken: string;
     rootUrl: string;
     constructor(_opts: RESTClientOptions) {
-        this.authPrefix = _opts.authPrefix || 'bot';
+        this.authPrefix = _opts.authPrefix || 'Bot';
         this.authToken = _opts.token;
         this.rootUrl = (_opts.rootUrl ? (_opts.rootUrl.endsWith('/') ? _opts.rootUrl.slice(0, _opts.rootUrl.length - 1) : _opts.rootUrl) : URLS.DiscordApi);
     }
     async makeRequest<T>(method: string, path: string, opts?: RESTCommonOptions): Promise<T> {
+        console.log(`Using auth: ${this.authheader}`)
         const req = await fetch(this.getUrl(path, opts?.query), {
             method,
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: this.authheader,
+                'Authorization': this.authheader,
                 ...opts?.headers
             },
             body: JSON.stringify(opts?.body)
-        });
+        })
 
         if (req.status >= 400) {
 			throw new Error(`Request to [${method}:${path}] returned ${req.status} [${req.statusText}]`);
@@ -62,6 +63,9 @@ export class Rest implements RestClient {
     }
     patch<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
         return this.makeRequest<T>('GET', path, opts)
+    }
+    delete<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
+        return this.makeRequest<T>('DELETE', path, opts)
     }
     private getUrl(path: string, queryParams?: Record<string, string>) {
         let url: string;
