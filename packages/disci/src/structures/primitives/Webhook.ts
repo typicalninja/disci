@@ -14,22 +14,29 @@ export class WebhookPartial implements IBase {
     /**
      * Id of a webhook if accessing data about particular webhook
      */
-    id?: string;
-    constructor(handler: InteractionHandler, data: { id?: string; }) {
+    readonly id: string;
+    constructor(handler: InteractionHandler, data: { id: string; }) {
         Object.defineProperty(this, 'handler', { value: handler })
-       if(data.id) this.id = data.id;
+       this.id = data.id;
+    }
+    /**
+     * Fetch the webhook this id belongs to
+     */
+    async fetch(): Promise<Webhook> {
+       
+       const webhook = await this.handler.api.get<APIWebhook>(Routes.webhook(this.id));
+       return new Webhook(this.handler, webhook);
     }
    /* createWebhook({ reason, channelId }: { reason?: string; channelId: string }) {
        // const createdWebhook = this.handler.api.post(Routes.channelWebhooks(channelId))
     }*/
 }
 
-export default class Webhook implements IBase {
-    handler!: InteractionHandler;
+export default class Webhook extends WebhookPartial {
     /**
      * The id of the webhook
      */
-    readonly id: Snowflake;
+    override readonly id: Snowflake;
     /**
      * The secure token of the webhook
      */
@@ -50,6 +57,9 @@ export default class Webhook implements IBase {
      */
     applicationId: string | null;
     constructor(handler: InteractionHandler, data: APIWebhook) {
+        super(handler, { id: data.id });
+
+
         Object.defineProperty(this, 'handler', { value: handler })
 
         this.id = data.id;
