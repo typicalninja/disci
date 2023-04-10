@@ -4,7 +4,6 @@ import { URLSearchParams } from 'node:url';
 
 export interface RestClient {
     makeRequest: <T>(method: string, path: string, opts: RESTCommonOptions) => Promise<T>;
-    resolveHeaders: (headers: Record<string, string>) => Record<string, string>,
     authToken: string;
     rootUrl: string;
 }
@@ -12,11 +11,8 @@ export interface RestClient {
 export interface RESTClientOptions {
     token: string;
     authPrefix?: 'bot';
-    baseUrl?: string;
     rootUrl?: string
 }
-
-export type RouteLike<> = `/${string}`
 export interface RESTCommonOptions {
   headers?: Record<string, string>;
   body?: Record<string, string>
@@ -33,38 +29,53 @@ export class Rest implements RestClient {
     constructor(_opts: RESTClientOptions) {
         this.authPrefix = _opts.authPrefix || 'bot';
         this.authToken = _opts.token;
-        this.rootUrl = _opts.rootUrl || URLS.DiscordApi;
+        this.rootUrl = (_opts.rootUrl ? (_opts.rootUrl.endsWith('/') ? _opts.rootUrl.slice(0, _opts.rootUrl.length - 1) : _opts.rootUrl) : URLS.DiscordApi);
     }
-    async makeRequest<T>(method: string, path: string, opts: RESTCommonOptions): Promise<T> {
-        const req = await fetch(this.getUrl(path, opts.query), {
+    async makeRequest<T>(method: string, path: string, opts?: RESTCommonOptions): Promise<T> {
+        const req = await fetch(this.getUrl(path, opts?.query), {
             method,
-            
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: this.authheader,
+                ...opts?.headers
+            },
+            body: JSON.stringify(opts?.body)
         });
 
-        if(!req.ok) throw new Error(`Request [${method}:${path}] Returned ${req.status} [${req.statusText}]`);
-        if(req.status === 200) return await req.json() as T
+        if (req.status >= 400) {
+			throw new Error(`Request to [${method}:${path}] returned ${req.status} [${req.statusText}]`);
+		}
+        // get the returned content type
+        const contentType = req.headers.get('content-type')
+        // if a json response returned
+        if(contentType && contentType.includes('application/json')) return await req.json() as T
         else return await req.arrayBuffer() as T
     }
-    get<T>(path: string, opts: RESTCommonOptions): Promise<T> {
+    get<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
         return this.makeRequest<T>('GET', path, opts)
     }
-    post<T>(path: string, opts: RESTCommonOptions): Promise<T> {
+    post<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
         return this.makeRequest<T>('GET', path, opts)
     }
-    patch<T>(path: string, opts: RESTCommonOptions): Promise<T> {
-        return this.makeRequest<T>('GET', path, opts)
+    put<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
+        return this.makeRequest<T>('put', path, opts)
     }
-    resolveHeaders(givenOpts: RESTCommonOptions) {
-        const finalHeaders: Record<string, string> = {};
-        if(givenOpts.authHeader && givenOpts.authHeader === true) {
-            Object.defineProperty(finalHeaders, 'Authorization', { value: this.authheader, enumerable: true, writable: false })
-        }
-
-        return finalHeaders;
+    patch<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
+        return this.makeRequest<T>('GET', path, opts)
     }
     private getUrl(path: string, queryParams?: Record<string, string>) {
-        const formattedPath = path.startsWith('/') ? path.slice(1) : path;
-        let url = `${this.rootUrl}${formattedPath}`;
+        let url: string;
+        if(path.startsWith('/')) {
+            url = `${this.rootUrl}${path}`
+        }
+        else if(path.startsWith('https://') || path.startsWith('http://')) {
+            // its a regular url
+          url = path;
+        }
+        else {
+            url = `${this.rootUrl}/${path}`
+        }
+       
         if(queryParams) {
             url = `${url}?${new URLSearchParams(queryParams).toString()}`
         }
@@ -74,10 +85,3 @@ export class Rest implements RestClient {
         return `${this.authPrefix} ${this.authToken}`
     }
 }
-
-
-const r = new Rest('')
-
-r.get({
-    path: '/test'
-})

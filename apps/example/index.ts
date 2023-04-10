@@ -7,7 +7,10 @@ const server = fastify();
 // by default will use .env
 const client = new InteractionHandler({
   debug: (msg:string) => console.log(msg),
-  verificationStratergy: new VerificationStratergy.NativeVerificationStratergy(process.env.PUBLIC_KEY)
+  verificationStratergy: new VerificationStratergy.NativeVerificationStratergy(process.env.PUBLIC_KEY),
+  rest: {
+    token: process.env.TOKEN!
+  }
 });
 
 // attach a route for /interaction
@@ -34,12 +37,12 @@ client.on('interactionCreate', (interaction) => {
       interaction.options.getString('auto')
     );
     const int = interaction.respond(`Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
-    int.fetchReply().then((m) => console.log(`Message ${m?.id}`))
+    int.fetchReply().then((m) => console.log(`Message ${m?.id} ${m?.content}`))
   }
   else if(interaction.isAutoComplete()) {
     interaction.sendChoices([
-      'hello',
-      
+      '1choice',
+      '2choice'
     ]);
   }
 });

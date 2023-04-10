@@ -26,7 +26,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
   /**
    * Rest Manager
    */
-  private api: Rest;
+  api: Rest;
   /**
    * Verifiction stratergy for request verification
    */
@@ -36,7 +36,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
     this.options = Object.assign({}, defaultOptions, options);
     this.verificationStratergy = this.getVerificationStratergy(this.options.verificationStratergy);
     // rest manager is provided by the user
-    this.api = new Rest();
+    this.api = new Rest(this.options.rest);
   }
   private getVerificationStratergy(receivedStrat: verificationStratergy | null | string): verificationStratergy {
     // null means access=all verification stratergy

@@ -4,6 +4,7 @@ import type { ApplicationCommands } from "../structures/ApplicationCommand";
 import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
 import type { Embed } from "../structures/Embed";
 import type { IResponse } from "./request";
+import type { RESTClientOptions } from "./REST";
 //import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
 
 export enum DiscordVerificationHeaders {
@@ -25,19 +26,19 @@ export interface IHandlerOptions {
    */
   deferOnTimeout: boolean;
   /**
-   * Token for authorization on rest requsts
-   */
-  token: string;
-  /**
    * A debug callback function that can be used for debugging
    */
   debug?: (msg: string) => void;
   /**
-   * verification stratergy used for validating incoming requests,
+   * Verification stratergy used for validating incoming requests,
    * do no specify for default and specify null for allow all requests
    * specify a string (your public key) for default stratergy will use that instead of process.env.PUBLIC_KEY
    */
   verificationStratergy: verificationStratergy | null | string;
+  /**
+   * Options for built in rest client
+   */
+  rest: RESTClientOptions;
 }
 
 export type MessageReplyOptions = {
@@ -49,9 +50,10 @@ export type MessageReplyOptions = {
 export const defaultOptions: IHandlerOptions = {
   replyTimeout: 2600,
   deferOnTimeout: true,
-  token: process.env.TOKEN ?? '',
-  
-  verificationStratergy: new NativeVerificationStratergy()
+  verificationStratergy: new NativeVerificationStratergy(),
+  rest: {
+    token: process.env.TOKEN ?? '',
+  }
 };
 
 /**
@@ -70,7 +72,7 @@ export type TRespondCallback = (
 ) => IResponse | Promise<IResponse>;
 
 export enum URLS {
-  DiscordApi = "https://discord.com/api/"
+  DiscordApi = "https://discord.com/api"
 }
 
 /**

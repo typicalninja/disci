@@ -30,7 +30,7 @@ export { Embed as EmbedBuilder } from "./structures/Embed";
 
 export { ChatInputInteraction } from "./structures/ApplicationCommand";
 
-export { Rest, RouteLike, RESTCommonOptions } from './utils/REST'
+export { Rest, RESTCommonOptions } from './utils/REST'
 
 // auth/security stratergy for incoming requests
 export * as VerificationStratergy from './verification';
