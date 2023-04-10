@@ -24,7 +24,7 @@
     "eslint-config": "*",
     "tsup": "^6.6.0",
     "turbo": "latest",
-    "typescript": "4.9.4"
+    "typescript": "5.0.4"
   },
   "engines": {
     "node": ">=14.0.0"
