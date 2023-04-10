@@ -1,8 +1,6 @@
-import type { APIEmbed } from "discord-api-types/v10";
 import { NativeVerificationStratergy, verificationStratergy } from "../verification";
 import type { ApplicationCommands } from "../structures/ApplicationCommand";
 import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
-import type { Embed } from "../structures/Embed";
 import type { IResponse } from "./request";
 import type { RESTClientOptions } from "./REST";
 //import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
@@ -41,11 +39,6 @@ export interface IHandlerOptions {
   rest: RESTClientOptions;
 }
 
-export type MessageReplyOptions = {
-  embeds?: APIEmbed[] | Embed[];
-  embed: Embed;
-  content: string;
-};
 
 export const defaultOptions: IHandlerOptions = {
   replyTimeout: 2600,
@@ -91,3 +84,4 @@ export interface IClientEvents {
    */
   error: (err: unknown) => void;
 }
+

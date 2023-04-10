@@ -6,6 +6,16 @@ import type { IBase } from "../Base";
 import Message from "./Message";
 import User from "./User";
 
+/**
+ * Partial Class for accessing Discord Api with minimal data
+ */
+export class WebhookPartial implements IBase {
+    handler!: InteractionHandler;
+    constructor(handler: InteractionHandler, data: { id: string; }) {
+        Object.defineProperty(this, 'handler', { value: handler })
+    }
+}
+
 export default class Webhook implements IBase {
     handler!: InteractionHandler;
     /**

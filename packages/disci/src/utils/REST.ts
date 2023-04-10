@@ -2,6 +2,9 @@ import { fetch } from 'undici'
 import { URLS } from './constants';
 import { URLSearchParams } from 'node:url';
 
+// userAgent used in requests
+const UserAgent = `DiscordBot (https://github.com/typicalninja493/disci, 0.0.1)`.trim()
+
 export interface RestClient {
     makeRequest: <T>(method: string, path: string, opts: RESTCommonOptions) => Promise<T>;
     authToken: string;
@@ -38,6 +41,7 @@ export class Rest implements RestClient {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': this.authheader,
+                'User-Agent': UserAgent,
                 ...opts?.headers
             },
             body: JSON.stringify(opts?.body)
