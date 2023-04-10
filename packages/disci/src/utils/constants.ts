@@ -69,6 +69,10 @@ export type TRespondCallback = (
   interaction: InteractionContext
 ) => IResponse | Promise<IResponse>;
 
+export enum URLS {
+  DiscordApi = "https://discord.com/api/"
+}
+
 /**
  * Events fired by the handler
  */

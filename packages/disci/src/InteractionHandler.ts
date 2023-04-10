@@ -17,16 +17,16 @@ import { tryAndValue } from "./utils/helpers";
 import { DisciTypeError } from './utils/errors';
 import { InteractionFactory } from './utils/Factories';
 
-import EventEmitter from 'node:events';
+import { EventEmitter } from 'node:events';
 import { NativeVerificationStratergy, NoLimitVerificationStratergy, verificationStratergy, } from './verification';
-
+import { Rest } from './utils/REST';
 
 export class InteractionHandler extends (EventEmitter as unknown as new () => TypedEmitter<IClientEvents>)  {
   options: IHandlerOptions;
   /**
    * Rest Manager
    */
-  api: IRestAdapter;
+  private api: Rest;
   /**
    * Verifiction stratergy for request verification
    */
@@ -36,7 +36,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
     this.options = Object.assign({}, defaultOptions, options);
     this.verificationStratergy = this.getVerificationStratergy(this.options.verificationStratergy);
     // rest manager is provided by the user
-    this.api = new REST();
+    this.api = new Rest();
   }
   private getVerificationStratergy(receivedStrat: verificationStratergy | null | string): verificationStratergy {
     // null means access=all verification stratergy
