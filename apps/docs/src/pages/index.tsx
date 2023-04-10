@@ -1,10 +1,9 @@
 import React from 'react';
+import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import CodeBlock from '@theme/CodeBlock';
-
-import styles from './index.module.css';
 
 
 const sampleCodeSnippet = `import { InteractionHandler } from 'disci';
@@ -19,7 +18,6 @@ server.post(/*Path*/,
 server.listen({ port: /*Server Port*/})
 // replace this when ready
 `
-
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
   return (

@@ -1,17 +1,16 @@
 import {
   APIApplicationCommandInteraction,
   APIChatInputApplicationCommandInteraction,
-  APIInteractionResponseChannelMessageWithSource,
+  //APIInteractionResponseChannelMessageWithSource,
   ApplicationCommandType,
   InteractionResponseType,
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
-import type { MessageReplyOptions } from "../utils/constants";
-import {  DisciError, DisciTypeError } from "../utils/errors";
+import {  DisciError,  } from "../utils/errors";
 import type { IBase } from "./Base";
 import { BaseInteraction, InteractionOptions } from "./BaseInteraction";
-import { Embed } from "./Embed";
-import type Message from "./primitives/Message";
+//import { Embed } from "./Embed";
+//import type Message from "./primitives/Message";
 export abstract class ApplicationCommand
   extends BaseInteraction
   implements IBase
@@ -70,7 +69,7 @@ export abstract class ApplicationCommand
    * @param opts 
    * @returns this interaction instances.Use fetchReply() to retrieve the message instance
    */
-  respond(opts: string): this;
+ /* respond(opts: string): this;
   respond(opts: MessageReplyOptions): this;
   respond(opts: MessageReplyOptions & { fetchReply: true }): Promise<Message>
   respond(opts: (MessageReplyOptions & { fetchReply?: boolean }) | string): this | Promise<Message> {
@@ -136,7 +135,7 @@ export abstract class ApplicationCommand
     this._respond(APIResponse);
     if(typeof opts !== 'string' && opts.fetchReply === true) return this.fetchReply() as Promise<Message>;
     return this;
-  }
+  }*/
   // custom methods
 
    /**

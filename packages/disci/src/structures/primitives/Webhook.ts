@@ -11,9 +11,17 @@ import User from "./User";
  */
 export class WebhookPartial implements IBase {
     handler!: InteractionHandler;
-    constructor(handler: InteractionHandler, data: { id: string; }) {
+    /**
+     * Id of a webhook if accessing data about particular webhook
+     */
+    id?: string;
+    constructor(handler: InteractionHandler, data: { id?: string; }) {
         Object.defineProperty(this, 'handler', { value: handler })
+       if(data.id) this.id = data.id;
     }
+   /* createWebhook({ reason, channelId }: { reason?: string; channelId: string }) {
+       // const createdWebhook = this.handler.api.post(Routes.channelWebhooks(channelId))
+    }*/
 }
 
 export default class Webhook implements IBase {

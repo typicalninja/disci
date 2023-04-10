@@ -4,7 +4,6 @@ export { InteractionHandler } from "./InteractionHandler";
 // constants/types
 export {
   InteractionContext,
-  MessageReplyOptions,
   IHandlerOptions,
   TRespondCallback,
   IClientEvents

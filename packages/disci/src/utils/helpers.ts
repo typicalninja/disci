@@ -22,21 +22,3 @@ export function tryAndValue<ReturnType> (fn: () => ReturnType) {
         return null;
     }
 }
-
-
-
-export type callBackFunction = (data: IResponse) => void;
-export const getResponseCallback = (
-    resolve: (responseData: IResponse) => void,
-    timeout: number,
-    timeoutFunction: () => IResponse
-    ): callBackFunction => {
-        const timer = setTimeout(() => {
-            return resolve(timeoutFunction())
-        }, timeout);
-    return (data: IResponse) => {
-        clearTimeout(timer);
-        return resolve(data);
-    }
-}
-
