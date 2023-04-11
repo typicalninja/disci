@@ -8,10 +8,12 @@
 
 ### Installation
 
+> Install `@dev` version until full release
+
 ```bash
-npm i disci
+npm i disci@dev
 # or yarn
-yarn add disci
+yarn add disci@dev
 ```
 
 ### Features 
