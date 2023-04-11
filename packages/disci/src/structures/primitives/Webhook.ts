@@ -16,14 +16,13 @@ export class WebhookPartial implements IBase {
      */
     readonly id: string;
     constructor(handler: InteractionHandler, data: { id: string; }) {
-        Object.defineProperty(this, 'handler', { value: handler })
+       Object.defineProperty(this, 'handler', { value: handler })
        this.id = data.id;
     }
     /**
      * Fetch the webhook this id belongs to
      */
     async fetch(): Promise<Webhook> {
-       
        const webhook = await this.handler.api.get<APIWebhook>(Routes.webhook(this.id));
        return new Webhook(this.handler, webhook);
     }
@@ -83,5 +82,8 @@ export default class Webhook extends WebhookPartial {
         });
         
         return new Message(this.handler, message);
+    }
+    async execute() {
+        
     }
 }

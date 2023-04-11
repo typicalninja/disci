@@ -1,16 +1,18 @@
 import {
   APIApplicationCommandInteraction,
   APIChatInputApplicationCommandInteraction,
-  //APIInteractionResponseChannelMessageWithSource,
+  APIInteractionResponseChannelMessageWithSource,
   ApplicationCommandType,
   InteractionResponseType,
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
-import {  DisciError,  } from "../utils/errors";
+import {  DisciError, DisciTypeError  } from "../utils/errors";
 import type { IBase } from "./Base";
 import { BaseInteraction, InteractionOptions } from "./BaseInteraction";
-//import { Embed } from "./Embed";
-//import type Message from "./primitives/Message";
+import type Message from "./primitives/Message";
+import type { CreateMessageParams } from "./primitives/Message";
+import { Embed } from "./Embed";
+
 export abstract class ApplicationCommand
   extends BaseInteraction
   implements IBase
@@ -69,15 +71,14 @@ export abstract class ApplicationCommand
    * @param opts 
    * @returns this interaction instances.Use fetchReply() to retrieve the message instance
    */
- /* respond(opts: string): this;
-  respond(opts: MessageReplyOptions): this;
-  respond(opts: MessageReplyOptions & { fetchReply: true }): Promise<Message>
-  respond(opts: (MessageReplyOptions & { fetchReply?: boolean }) | string): this | Promise<Message> {
+  respond(opts: string): this;
+  respond(opts: CreateMessageParams): this;
+  respond(opts: CreateMessageParams & { fetchReply: true }): Promise<Message>
+  respond(opts: (CreateMessageParams & { fetchReply?: boolean }) | string): this | Promise<Message> {
     if(this.responded || this.timeout) throw new DisciError(`This interaction either timed out or already been responded to`)
     const APIResponse = {
       type: InteractionResponseType.ChannelMessageWithSource,
-      data: {
-      }
+      data: {}
     } as APIInteractionResponseChannelMessageWithSource
 
 
@@ -94,13 +95,6 @@ export abstract class ApplicationCommand
       // if content is there but not a string, try converting it to one
       if(opts.content && typeof opts.content !== 'string') {
         opts.content = new String(opts.content).toString()
-      }
-
-      if(opts.embed && opts.embed instanceof Embed) {
-          if(opts.embeds && Array.isArray(opts.embed)) {
-            opts.embeds.push(opts.embed)
-          }
-          else opts.embeds = [opts.embed];
       }
 
       if(opts.embeds && Array.isArray(opts.embeds)) {
@@ -130,12 +124,10 @@ export abstract class ApplicationCommand
       }
     }
     else throw new DisciTypeError(`Respond Options must be either a string or object of messageReplyOptions`)
-
-
     this._respond(APIResponse);
     if(typeof opts !== 'string' && opts.fetchReply === true) return this.fetchReply() as Promise<Message>;
     return this;
-  }*/
+  }
   // custom methods
 
    /**

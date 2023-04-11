@@ -1,11 +1,56 @@
-import { APIMessage, Routes, Snowflake } from "discord-api-types/v10";
+import { APIEmbed, APIMessage, AllowedMentionsTypes, Routes, Snowflake } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
 import type { IBase } from "../Base";
 import { Embed } from "../Embed";
 import User from "./User";
 import { convertSnowflakeToTimeStamp } from "../../utils/helpers";
 
-export type EmojiResolvable = string | { name: string, id: string }
+export type EmojiResolvable = string | { name: string, id: string };
+
+
+/**
+ * @link https://discord.com/developers/docs/resources/channel#allowed-mentions-object
+ */
+export interface AllowedMentions {
+	parse?: AllowedMentionsTypes[];
+	repliedUser?: boolean;
+	roles?: Snowflake[];
+	users?: Snowflake[];
+}
+
+/**
+ * @link https://discord.com/developers/docs/resources/channel#message-reference-object-message-reference-structure
+ * channel_id is optional when creating a reply, but will always be present when receiving an event/response that includes this data model.
+ */ 
+export interface MessageReference {
+	messageId: Snowflake;
+	channelId?: Snowflake;
+	guildId?: Snowflake;
+	failIfNotExists?: boolean;
+}
+
+/**
+ * @link https://discord.com/developers/docs/resources/channel#create-message-jsonform-params
+ * Params used for sending of Messages
+ */
+export interface CreateMessageParams {
+    /**
+     * Message contents (up to 2000 characters)
+     */
+    content?: string;
+    /**
+     * Array of Embeds (max 10)
+     */
+    embeds?: APIEmbed[];
+    /**
+     *  Allowed mentions for the message
+     */
+    allowedMentions?: AllowedMentions;
+    /**
+     * Include to make your message a reply
+     */
+    messageReference?: MessageReference
+}
 
 export default class Message implements IBase {
     readonly handler!: InteractionHandler;
@@ -39,6 +84,7 @@ export default class Message implements IBase {
         }
         else if(apiData.author.discriminator === '0000') {
             // from webhook
+            console.log('webhook:', apiData.author, 'id:', apiData.webhook_id)
            this.webhhok = {
                 id: apiData.webhook_id!,
 				username: apiData.author.username,
@@ -93,4 +139,20 @@ export default class Message implements IBase {
         const e = typeof emoji === 'string' ? emoji : `${emoji.name}:${emoji.id}`;
         await this.handler.api.put<void>(Routes.channelMessageOwnReaction(this.channelId, this.id, e))
     }
+    /**
+	 * Pins this message
+	 */
+	async pin(): Promise<void> {
+		await this.handler.api.put<void>(
+            Routes.channelPin(this.channelId, this.id)
+        )
+	}
+    /**
+	 * Unpin this message
+	 */
+	async unpin(): Promise<void> {
+		await this.handler.api.delete<void>(
+            Routes.channelPin(this.channelId, this.id)
+        )
+	}
 }

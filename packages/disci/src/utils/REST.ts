@@ -1,6 +1,8 @@
 import { fetch } from 'undici'
 import { URLS } from './constants';
 import { URLSearchParams } from 'node:url';
+import { DisciRestError } from './errors';
+import { tryAndValue } from './helpers';
 
 // userAgent used in requests
 const UserAgent = `DiscordBot (https://github.com/typicalninja493/disci, 0.0.1)`.trim()
@@ -35,7 +37,6 @@ export class Rest implements RestClient {
         this.rootUrl = (_opts.rootUrl ? (_opts.rootUrl.endsWith('/') ? _opts.rootUrl.slice(0, _opts.rootUrl.length - 1) : _opts.rootUrl) : URLS.DiscordApi);
     }
     async makeRequest<T>(method: string, path: string, opts?: RESTCommonOptions): Promise<T> {
-        console.log(`Using auth: ${this.authheader}`)
         const req = await fetch(this.getUrl(path, opts?.query), {
             method,
             headers: {
@@ -48,7 +49,10 @@ export class Rest implements RestClient {
         })
 
         if (req.status >= 400) {
-			throw new Error(`Request to [${method}:${path}] returned ${req.status} [${req.statusText}]`);
+            const errors = await req.json()
+			throw new DisciRestError(`Request to [${method}:${path}] returned ${req.status} [${req.statusText}]`, {
+                cause: errors
+            });
 		}
         // get the returned content type
         const contentType = req.headers.get('content-type')

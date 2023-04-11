@@ -22,3 +22,4 @@ function createError(errorName: string) {
 
 export const DisciError = createError(`Error`);
 export const DisciTypeError = createError('TypeError');
+export const DisciRestError = createError(`RestError`)

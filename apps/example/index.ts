@@ -27,7 +27,7 @@ server.post(
 
 client.on('error', (e) => console.log(`Err:`, e))
 
-client.on('interactionCreate', (interaction) => {
+client.on('interactionCreate', async (interaction) => {
   if (interaction.isCommand() && interaction.isChatInputInteraction()) {
     console.log(
       `Interaction ID: ${interaction.id}, type: Command `,
@@ -36,8 +36,17 @@ client.on('interactionCreate', (interaction) => {
       interaction.options,
       interaction.options.getString('auto')
     );
-    const int = interaction.respond(`Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`);
-    int.fetchReply().then((m) => {
+    const int = await interaction.respond({
+      content: `Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`,
+      fetchReply: true
+    });
+    console.log(`${int.id}`)
+    await int.pin()
+
+    setTimeout(async () => {
+      await int.unpin()
+    })
+    /*int.fetchReply().then((m) => {
       console.log(`Message ${m?.id} ${m?.content}`);
 
 
@@ -45,7 +54,7 @@ client.on('interactionCreate', (interaction) => {
        await m.addReaction('👍');
        await m.addReaction('👎');
       }, 2000)
-    })
+    })*/
   }
   else if(interaction.isAutoComplete()) {
     interaction.sendChoices([
