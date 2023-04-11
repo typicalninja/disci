@@ -2,7 +2,7 @@ import { fetch } from 'undici'
 import { URLS } from './constants';
 import { URLSearchParams } from 'node:url';
 import { DisciRestError } from './errors';
-import { tryAndValue } from './helpers';
+
 
 // userAgent used in requests
 const UserAgent = `DiscordBot (https://github.com/typicalninja493/disci, 0.0.1)`.trim()

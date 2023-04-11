@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { InteractionHandler, VerificationStratergy } from 'disci';
+import { InteractionHandler, NativeVerificationStratergy, } from 'disci';
 
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 const server = fastify();
@@ -7,7 +7,7 @@ const server = fastify();
 // by default will use .env
 const client = new InteractionHandler({
   debug: (msg:string) => console.log(msg),
-  verificationStratergy: new VerificationStratergy.NativeVerificationStratergy(process.env.PUBLIC_KEY),
+  verificationStratergy: new NativeVerificationStratergy(process.env.PUBLIC_KEY),
   rest: {
     token: process.env.TOKEN!,
   }
@@ -44,7 +44,7 @@ client.on('interactionCreate', async (interaction) => {
     await int.pin()
 
     setTimeout(async () => {
-      await int.unpin()
+      await int.unpin();
     })
     /*int.fetchReply().then((m) => {
       console.log(`Message ${m?.id} ${m?.content}`);
