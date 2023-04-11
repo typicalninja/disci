@@ -4,16 +4,16 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
-const { version: DisciVersion } = require('../../packages/disci/package.json')
+const path = require('path')
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Disci JS',
-  tagline: 'Serverless Discord bots...Imagine',
+  tagline: 'A Simple module to create discord bots',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-test-site.com',
+  url: 'https://disci.typical.gq/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -71,30 +71,22 @@ const config = {
       image: 'img/disci.png',
       navbar: {
         hideOnScroll: true,
-        title: 'Disci',
-        logo: {
-          alt: '',
-          src: 'img/disci.png',
-          width: 40,
-          height: 32,
-        },
+        title: 'DisciJS',
         items: [
-         
+          {
+            to: 'docs/home/intro',
+            label: 'Guide',
+            position: 'left',
+          },
+          {
+            to: 'api',
+            label: 'API',
+            position: 'left',
+          },
         ],
       },
       footer: {
-       // style: 'dark',
-        links: [
-          {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Tutorial',
-                to: '/docs/intro',
-              },
-            ],
-          },
-        ],
+        links: [],
         copyright: `Copyright © ${new Date().getFullYear()} Typicalninja.`,
       },
       prism: {
@@ -113,14 +105,12 @@ const config = {
         };
       },
       [
-        'docusaurus-plugin-typedoc',
+        'docusaurus-plugin-typedoc-api',
         {
-          id: 'disci',
-          entryPoints: ['../../packages/disci'],
-          entryPointStrategy: 'packages',
-          sidebar: {
-            fullNames: true,
-          },
+          projectRoot: path.join(__dirname, '../..'),
+          tsconfigName: 'tsconfig.base.json',
+          // Monorepo
+          packages: ['./packages/disci/'],
         },
       ],
     ]

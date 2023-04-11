@@ -1,4 +1,4 @@
-import type { APIChannelBase, APIPartialChannel, ChannelType, Snowflake } from "discord-api-types/v10";
+import type { APIPartialChannel, ChannelType, Snowflake } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
 import type { IBase } from "../Base";
 /**

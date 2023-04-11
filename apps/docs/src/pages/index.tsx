@@ -33,7 +33,7 @@ function HomepageHeader() {
               style={{
                 textDecoration: "none"
               }}
-              to="/docs/intro">
+              to="/docs/home/intro">
               Start Listening!
             </Link>
           </div>
