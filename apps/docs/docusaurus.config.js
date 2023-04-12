@@ -108,7 +108,7 @@ const config = {
         'docusaurus-plugin-typedoc-api',
         {
           projectRoot: path.join(__dirname, '../..'),
-          tsconfigName: 'tsconfig.base.json',
+          tsconfigName: 'tsconfig.json',
           // Monorepo
           packages: ['./packages/disci/'],
         },
