@@ -26,10 +26,10 @@ function HomepageHeader() {
         <CodeBlock className="language-ts">{sampleCodeSnippet}</CodeBlock>
         <div>
           <h1 className="hero_title">{siteConfig.title}</h1>
-          <p className="text-md">{siteConfig.tagline}</p>
+          <p className="text-md font-semibold">{siteConfig.tagline}</p>
           <div>
             <Link
-              className="btn btn-secondary no-underline"
+              className="btn btn-primary no-underline hover:text-white"
               style={{
                 textDecoration: "none"
               }}
