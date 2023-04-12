@@ -6,4 +6,3 @@ module.exports = {
         project: ["./tsconfig.json", "./tsconfig.eslint.json"],
     },
 };
-// './tsconfig.eslint.json', 
