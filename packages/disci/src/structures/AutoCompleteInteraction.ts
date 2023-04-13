@@ -6,7 +6,6 @@ import { TypeErrorsMessages, DisciTypeError } from "../utils/errors";
 import type { IBase } from "./Base";
 import { BaseInteraction } from "./BaseInteraction";
 
-// TODO
 export class AutoCompleteInteraction extends BaseInteraction implements IBase {
 
   /**

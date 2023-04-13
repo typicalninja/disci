@@ -75,7 +75,7 @@ export default class Webhook extends WebhookPartial {
      */
     async fetchMessage(messageId: string | '@original', { threadId }: { threadId?: string } = {}): Promise<Message> {
         if(!this.token) throw new DisciTypeError(`This webook does not contain a Token`)
-        let query: { threadId?: string } = {};
+        const query: { threadId?: string } = {};
         if(threadId) query.threadId = threadId;
         const message = await this.handler.api.get<APIMessage>(Routes.webhookMessage(this.id, this.token, messageId), {
             query

@@ -28,10 +28,10 @@ export interface IEmbedField {
 }
 
 /**
- * Utility to create a Embed
+ * Utility to create a Embed and manipulate already existing embeds
  */
 export class Embed {
-    constructor(public baseEmbed: APIEmbed) {
+    constructor(public baseEmbed: APIEmbed = {}) {
        
     }
     /**

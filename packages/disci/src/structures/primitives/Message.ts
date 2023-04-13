@@ -1,4 +1,4 @@
-import { APIEmbed, APIMessage, AllowedMentionsTypes, Routes, Snowflake } from "discord-api-types/v10";
+import { APIActionRowComponent, APIActionRowComponentTypes, APIEmbed, APIMessage, AllowedMentionsTypes, Routes, Snowflake } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
 import type { IBase } from "../Base";
 import { Embed } from "../Embed";
@@ -49,7 +49,8 @@ export interface CreateMessageParams {
     /**
      * Include to make your message a reply
      */
-    messageReference?: MessageReference
+    messageReference?: MessageReference;
+    components?: APIActionRowComponent<APIActionRowComponentTypes>[]
 }
 
 export default class Message implements IBase {
@@ -86,7 +87,7 @@ export default class Message implements IBase {
             // from webhook
             console.log('webhook:', apiData.author, 'id:', apiData.webhook_id)
            this.webhhok = {
-                id: apiData.webhook_id!,
+                id: apiData.webhook_id,
 				username: apiData.author.username,
 				discriminator: apiData.author.discriminator,
 				avatar: apiData.author.avatar ? apiData.author.avatar : undefined,

@@ -125,7 +125,7 @@ export abstract class ApplicationCommand
     }
     else throw new DisciTypeError(`Respond Options must be either a string or object of messageReplyOptions`)
     this._respond(APIResponse);
-    if(typeof opts !== 'string' && opts.fetchReply === true) return this.fetchReply() as Promise<Message>;
+    if(typeof opts !== 'string' && opts.fetchReply === true) return this.fetchReply();
     return this;
   }
   // custom methods

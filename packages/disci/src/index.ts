@@ -22,7 +22,8 @@ export * from "./structures/Bitfield";
 // Builders
 export { Embed as EmbedBuilder } from "./structures/Embed"; 
 
-export { ChatInputInteraction } from "./structures/ApplicationCommand";
+export * from "./structures/ApplicationCommand";
+export * from "./structures/BaseInteraction";
 
 export * from './utils/REST'
 
