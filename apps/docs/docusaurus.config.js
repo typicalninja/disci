@@ -1,10 +1,10 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 const path = require('path')
+const versions = require('./versions.json');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -73,6 +73,23 @@ const config = {
         title: 'DisciJS',
         items: [
           {
+            type: 'docsVersionDropdown',
+            label: 'version',
+            position: 'right',
+          },
+          {
+            type: 'dropdown',
+            label: 'API Version',
+            position: 'right',
+            items: [
+              { label: 'Next', to: 'api/next' },
+              ...versions.map((version, i) => ({
+                label: version,
+                to: i === 0 ? 'api' : `api/${version}`,
+              })),
+            ],
+          },
+          {
             to: 'docs/home/intro',
             label: 'Guide',
             position: 'left',
@@ -120,6 +137,7 @@ const config = {
           tsconfigName: 'tsconfig.json',
           // Monorepo
           packages: ['./packages/disci/'],
+          changelogs: true,
         },
       ],
     ]

@@ -7,7 +7,6 @@ import { convertSnowflakeToTimeStamp } from "../../utils/helpers";
 
 export type EmojiResolvable = string | { name: string, id: string };
 
-
 /**
  * @link https://discord.com/developers/docs/resources/channel#allowed-mentions-object
  */
@@ -41,7 +40,7 @@ export interface CreateMessageParams {
     /**
      * Array of Embeds (max 10)
      */
-    embeds?: APIEmbed[];
+    embeds?: (APIEmbed | Embed)[];
     /**
      *  Allowed mentions for the message
      */

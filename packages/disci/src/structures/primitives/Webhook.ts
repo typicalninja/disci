@@ -83,7 +83,5 @@ export default class Webhook extends WebhookPartial {
         
         return new Message(this.handler, message);
     }
-    async execute() {
-        
-    }
+   
 }

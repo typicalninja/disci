@@ -165,7 +165,7 @@ export abstract class BaseInteraction implements IBase {
     return this.type === InteractionType.ApplicationCommandAutocomplete;
   }
   /**
-   * Respond to this interaction
+   * Respond to this interaction, Raw method
    * @returns
    * @private
    */

@@ -69,12 +69,11 @@ export abstract class ApplicationCommand
   /**
    * Respond to this interaction
    * @param opts 
-   * @returns this interaction instances.Use fetchReply() to retrieve the message instance
+   * @returns this interaction instance or the message instance after responding if fetchReply is true
    */
-  respond(opts: string): this;
   respond(opts: CreateMessageParams): this;
   respond(opts: CreateMessageParams & { fetchReply: true }): Promise<Message>
-  respond(opts: (CreateMessageParams & { fetchReply?: boolean }) | string): this | Promise<Message> {
+  respond(opts: (CreateMessageParams & { fetchReply?: boolean })): this | Promise<Message> {
     if(this.responded || this.timeout) throw new DisciError(`This interaction either timed out or already been responded to`)
     const APIResponse = {
       type: InteractionResponseType.ChannelMessageWithSource,
@@ -82,19 +81,17 @@ export abstract class ApplicationCommand
     } as APIInteractionResponseChannelMessageWithSource
 
 
-    if(typeof opts === 'string') {
-      Reflect.defineProperty(APIResponse.data, 'content', {
-        value: opts,
-        enumerable: true,
-        configurable: true,
-      })
-    }
-    else if(opts) {
+    if(opts) {
       if((!opts.content) && !Array.isArray(opts.embeds)) throw new DisciTypeError(`Content or Embeds is needed`)
       
       // if content is there but not a string, try converting it to one
-      if(opts.content && typeof opts.content !== 'string') {
-        opts.content = new String(opts.content).toString()
+      if(opts.content) {
+        if(typeof opts.content !== 'string') opts.content = new String(opts.content).toString();
+        Reflect.defineProperty(APIResponse.data, 'content', {
+          value: opts.content,
+          enumerable: true,
+          configurable: true,
+        })
       }
 
       if(opts.embeds && Array.isArray(opts.embeds)) {
@@ -105,17 +102,7 @@ export abstract class ApplicationCommand
           }
           return embed;
         })
-      }
-    
-      if(opts.content) {
-        Reflect.defineProperty(APIResponse.data, 'content', {
-          value: opts.content,
-          enumerable: true,
-          configurable: true,
-        })
-      }
 
-      if(opts.embeds) {
         Reflect.defineProperty(APIResponse.data, 'embeds', {
           value: opts.embeds,
           enumerable: true,
@@ -123,9 +110,11 @@ export abstract class ApplicationCommand
         })
       }
     }
-    else throw new DisciTypeError(`Respond Options must be either a string or object of messageReplyOptions`)
+    else throw new DisciTypeError(`CreateMessage Options are required`)
+    
+  
     this._respond(APIResponse);
-    if(typeof opts !== 'string' && opts.fetchReply === true) return this.fetchReply();
+    if(opts.fetchReply === true) return this.fetchReply();
     return this;
   }
   // custom methods
