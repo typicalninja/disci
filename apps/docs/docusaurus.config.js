@@ -96,6 +96,11 @@ const config = {
       prism: {
         theme: darkCodeTheme,
       },
+      colorMode: {
+        defaultMode: 'dark',
+        disableSwitch: false,
+        respectPrefersColorScheme: false,
+      },
     }),
     plugins: [
       async function tailwind() {

@@ -21,15 +21,15 @@ server.listen({ port: /*Server Port*/})
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
   return (
-    <div className={'hero min-h-screen bg-base-200'}>
-      <div className="hero-content flex-row-reverse">
+    <div className={'min-h-screen'}>
+      <div className="flex justify-center h-screen gap-3 items-center flex-row-reverse">
         <CodeBlock className="language-ts">{sampleCodeSnippet}</CodeBlock>
         <div>
           <h1 className="hero_title">{siteConfig.title}</h1>
           <p className="text-md font-semibold">{siteConfig.tagline}</p>
           <div>
             <Link
-              className="btn btn-primary no-underline hover:text-white"
+              className="px-6 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-600 rounded-lg hover:bg-blue-500 hover:text-white"
               style={{
                 textDecoration: "none"
               }}
