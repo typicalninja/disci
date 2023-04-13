@@ -1,5 +1,5 @@
-import { PermissionFlagsBits, UserFlags } from "discord-api-types/v10";
-import { DisciTypeError } from "../../utils/helpers";
+import { MessageFlags, PermissionFlagsBits, UserFlags } from "discord-api-types/v10";
+import { DisciTypeError, TypeErrorsMessages } from "../utils/errors";
 
 export type BitFieldResolvable = bigint | bigint[] | number | number[];
 
@@ -7,7 +7,7 @@ export type BitFieldResolvable = bigint | bigint[] | number | number[];
  * Utility structure to help with bitfield creation and manipulation
  */
 export abstract class BitField {
-  static Flags: any = {};
+  static Flags: unknown = {};
   static None = 0n;
   bitfield: bigint;
   /**
@@ -73,9 +73,7 @@ export abstract class BitField {
             .map((b) => BitField.resolve(b))
             .reduce((prev, cur) => prev | cur, BitField.None);
         } else
-          throw new DisciTypeError(
-            `Cannot Resolve Bitfield Bit: ${bit} [Not Expected type]`
-          );
+          throw new DisciTypeError(TypeErrorsMessages.ExpectedParameter('bit', 'bitFieldResolvable', typeof bit));
     }
   }
 }
@@ -96,4 +94,9 @@ export class PermissionsBitField extends BitField {
 
 export class UserFlagsBitField extends BitField {
   static override Flags = UserFlags;
+}
+
+
+export class MessageFlagsBitField extends BitField {
+  static override Flags = MessageFlags
 }

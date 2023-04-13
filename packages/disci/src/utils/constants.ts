@@ -1,7 +1,8 @@
-import type { APIEmbed } from "discord-api-types/v10";
-import type { ChatInputInteraction } from "../structures/ApplicationCommand";
-import type { Embed } from "../structures/builders/Embed";
-import type { IRequest, IResponse } from "./request";
+import { NativeVerificationStratergy, verificationStratergy } from "../verification";
+import type { ApplicationCommands } from "../structures/ApplicationCommand";
+import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
+import type { IResponse } from "./request";
+import type { RESTClientOptions } from "./REST";
 //import type { ChatInputCommandContext } from "../structures/context/ChatInputCommandContext";
 
 export enum DiscordVerificationHeaders {
@@ -10,7 +11,7 @@ export enum DiscordVerificationHeaders {
 }
 
 // Common type for interactions
-export type InteractionContext = ChatInputInteraction;
+export type InteractionContext = ApplicationCommands | AutoCompleteInteraction;
 
 export interface IHandlerOptions {
   /**
@@ -23,38 +24,29 @@ export interface IHandlerOptions {
    */
   deferOnTimeout: boolean;
   /**
-   * PublicKey for authorization
+   * A debug callback function that can be used for debugging
    */
-  publicKey: string;
+  debug?: (msg: string) => void;
   /**
-   * Token for authorization on rest requsts
+   * Verification stratergy used for validating incoming requests,
+   * do no specify for default and specify null for allow all requests
+   * specify a string (your public key) for default stratergy will use that instead of process.env.PUBLIC_KEY
    */
-  token: string;
+  verificationStratergy: verificationStratergy | null | string;
   /**
-   * Used to validate if a request originated from discord
-   * @param req - The request from the server to verify
-   * @returns boolean indicating wether this is a verified request or not
+   * Options for built in rest client
    */
-  verifyRequest?: (req: IRequest) => Promise<boolean>
+  rest: RESTClientOptions;
 }
 
-export type MessageReplyOptions = {
-  embeds?: APIEmbed[] | Embed[];
-  content: string;
-};
 
 export const defaultOptions: IHandlerOptions = {
-  replyTimeout: 2900,
+  replyTimeout: 2600,
   deferOnTimeout: true,
-  // we assume credentials are in .env files [If provided in options, will be overidden]
-  publicKey: process.env.PUBLIC_KEY!,
-  token: process.env.TOKEN!,
-};
-
-export const debugNameSpace = `disci`;
-
-export const ErrorMessages = {
-  ResponseTimedOut: "The response to this Interaction timed out",
+  verificationStratergy: new NativeVerificationStratergy(),
+  rest: {
+    token: process.env.TOKEN ?? '',
+  }
 };
 
 /**
@@ -64,12 +56,17 @@ export enum EResponseErrorMessages {
   Unauthorized = "Unable to Authorize. Check your headers",
   NotSupported = "This Feature is not yet supported",
   TimedOut = "Response Timed Out",
-  InternalError = "Internal Server Error occurred."
+  InternalError = "Internal Server Error occurred.",
 }
 
-
 /** Type used to represent the respond callback function */
-export type TRespondCallback = (interaction: InteractionContext) => IResponse | Promise<IResponse>;
+export type TRespondCallback = (
+  interaction: InteractionContext
+) => IResponse | Promise<IResponse>;
+
+export enum URLS {
+  DiscordApi = "https://discord.com/api"
+}
 
 /**
  * Events fired by the handler
@@ -79,11 +76,12 @@ export interface IClientEvents {
    * Fired when a interaction is received
    * @param interaction - Interaction contact
    */
-  'interactionCreate': (interaction: InteractionContext) => void;
+  interactionCreate: (interaction: InteractionContext) => void;
   /**
-   * Fired when there is a error 
-   * @param err 
-   * @returns 
+   * Fired when there is a error
+   * @param err
+   * @returns
    */
-  'error': (err: Error) => void;
+  error: (err: unknown) => void;
 }
+

@@ -1,9 +1,12 @@
 import type { APIUser, Snowflake } from "discord-api-types/v10";
+import type { InteractionHandler } from "../../InteractionHandler";
+import type { IBase } from "../Base";
 
 /**
+ * Represents a Discord user
  * https://discord.com/developers/docs/resources/user#user-object
  */
-export default class User {
+export default class User implements IBase {
     /**
      * The user's id
      */
@@ -16,12 +19,19 @@ export default class User {
      * The user's 4-digit discord-tag
      */
     discriminator: string;
-
+    /**
+     * The handler than initiated this class
+     */
+    handler!: InteractionHandler
     /**
      * Create a new user from discord data
      * @param apiData - data from discord api
      */
-    constructor(public apiData: APIUser) {
+    constructor(handler: InteractionHandler, public apiData: APIUser) {
+        // assign the handler
+        Object.defineProperty(this, 'handler', { value: handler });
+
+        
         this.id = apiData.id;
         this.discriminator = apiData.discriminator;
         this.username = apiData.username;
@@ -33,7 +43,7 @@ export default class User {
         return `${this.username}#${this.discriminator}`
     }
     
-    get [Symbol.toStringTag] () {
+    toString() {
         return `<@${this.id}>`
     }
 }

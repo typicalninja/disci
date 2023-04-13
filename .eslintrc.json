@@ -1,0 +1,11 @@
+{
+	"root": true,
+	"extends": ["turbo", "prettier"],
+	"parserOptions": {
+		"project": "./tsconfig.eslint.json"
+	},
+	"rules": {
+		"@typescript-eslint/consistent-type-definitions": ["error", "interface"]
+	},
+	"ignorePatterns": ["**/dist/*"]
+}

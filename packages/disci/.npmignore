@@ -1,0 +1,15 @@
+# turborepo
+.turbo
+
+# Stop npm from publishing ts files
+src/*
+
+# Change log is only needed for github/git
+CHANGELOG.md
+
+tsconfig.json
+tsconfig.eslint.json
+tsup.config.js
+
+# stop eslint files from being published
+.eslintrc.js

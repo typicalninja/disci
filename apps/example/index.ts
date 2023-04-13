@@ -1,50 +1,75 @@
-import { InteractionHandler } from "disci";
-//import { InteractionResponseType } from "discord-api-types/v10";
-//import { InteractionType, ApplicationCommandType, InteractionResponseType } from 'discord-api-types/v10'
+import 'dotenv/config'
+import { InteractionHandler, NativeVerificationStratergy, } from 'disci';
+
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 const server = fastify();
 
+// by default will use .env
 const client = new InteractionHandler({
-  publicKey: "a0a9e3f5bef2c0426ddfb3ba462491a0281ddc271c3f503ddbe69dfced3e3785",
-  token: "ODIzNDQ4ODE0MTg2Mzk3Njk2.GfAtkd.VWeUkALvYs-qF9lVpxO-TBXl-Nn3GujFoD3N24",
+  debug: (msg:string) => console.log(msg),
+  verificationStratergy: new NativeVerificationStratergy(process.env.PUBLIC_KEY),
+  rest: {
+    token: process.env.TOKEN!,
+  }
 });
 
-const start = async () => {
-  try {
-    server.post(
-      "/interactions",
-      async (req: FastifyRequest, res: FastifyReply) => {
-        // @ts-expect-error
-        const d = await client.handleRequest(req);
-        if(!d) {
-          res.statusCode = 400;
-          return {
-            'message': 'Unauth'
-          }
-        }
-        console.log(`Returning: ${JSON.stringify(d)}`)
-        res.statusCode = d.statusCode || 200;
-        return d.responseData;
-      });
+// attach a route for /interaction
+server.post(
+  "/interactions",
+  async (req: FastifyRequest, res: FastifyReply) => {
+   
+    const response = await client.handleRequest(req);
+    console.log(`Resolved: ${JSON.stringify(response)}`)
+    res.statusCode = response.statusCode || 200;
+    return response.responseData;
+  }
+);
 
-      client.on('interactionCreate', (interaction) => {
-        if (interaction.isCommand()) {
-          console.log(
-            `Interaction ID: ${interaction.id}, type: Command `,
-            interaction.commandType,
-            interaction.createdAt,
-          );
-          /*interaction.respond(InteractionResponseType.ChannelMessageWithSource, {
-            content: "test",
-          }).catch(() => null);*/
-      console.log(`Req: ${d}`)
-        }
+client.on('error', (e) => console.log(`Err:`, e))
+
+client.on('interactionCreate', async (interaction) => {
+  if (interaction.isCommand() && interaction.isChatInputInteraction()) {
+    console.log(
+      `Interaction ID: ${interaction.id}, type: Command `,
+      interaction.commandType,
+      interaction.createdAt,
+      interaction.options,
+      interaction.options.getString('auto')
+    );
+    const int = await interaction.respond({
+      content: `Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`,
+      fetchReply: true
+    });
+    console.log(`${int.id}`)
+    await int.pin()
+
+    setTimeout(async () => {
+      await int.unpin();
     })
-    await server.listen({ port: 3000 });
-    console.log(`Sever is Running`);
+    /*int.fetchReply().then((m) => {
+      console.log(`Message ${m?.id} ${m?.content}`);
+
+
+      setTimeout(async () => {
+       await m.addReaction('👍');
+       await m.addReaction('👎');
+      }, 2000)
+    })*/
+  }
+  else if(interaction.isAutoComplete()) {
+    interaction.sendChoices([
+      '1choice',
+      '2choice'
+    ])
+  }
+});
+
+(async () => {
+  try {
+    await server.listen({ port: 4000 });
+    console.log(`Sever is Running at http://localhost:4000`);
   } catch (err) {
     console.error(err);
     process.exit(1);
   }
-};
-start();
+})()

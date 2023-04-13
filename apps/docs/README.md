@@ -1,7 +1,5 @@
-# Disci website
+# DisciJs Docs & Guide
 
-The docs and guide for disci
-
-# Website
-
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+The Docs and guide for disciJS.
+This website is built using [Docusaurus 2](https://docusaurus.io/).
+And Published to gh-pages using a action

@@ -6,7 +6,13 @@
       "outputs": ["dist/**", "build/*"]
     },
     "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "serve": {
       "cache": false
-    }
+    },
+    "lint": {},
+    "format": {}
   }
 }

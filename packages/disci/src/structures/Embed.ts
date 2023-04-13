@@ -1,5 +1,5 @@
 import type { APIEmbed } from "discord-api-types/v10";
-import { DisciTypeError } from "../../utils/helpers";
+import { DisciTypeError } from "../utils/errors";
 
 /**
  * Interface for a Embed footer
@@ -69,7 +69,7 @@ export class Embed {
      * @returns 
      */
     removeFields(name: string | string[]): Embed {
-        let removed: string[] = []
+        const removed: string[] = []
         if(!Array.isArray(name)) removed.push(name)
         else removed.concat(name)
 
@@ -86,8 +86,12 @@ export class Embed {
         this.baseEmbed.description = description ?? undefined;
         return this;
     }
-    setFooter(footerOpts: IEmbedFooter) {
-        if(footerOpts.text && typeof footerOpts.text !== 'string') throw new DisciTypeError(`Footer Text must be a string.`)
+    setFooter(footerOpts: Partial<IEmbedFooter>) {
+        if(!footerOpts.text || typeof footerOpts.text !== 'string') throw new DisciTypeError(`Footer Text must be a string.`)
+        this.baseEmbed.footer = {
+            text: footerOpts.text,
+            icon_url: footerOpts.iconURL
+        }
     }
     /**
      * Convert a Embed into APIEmbed

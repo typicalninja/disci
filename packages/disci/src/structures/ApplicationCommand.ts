@@ -1,10 +1,17 @@
 import {
   APIApplicationCommandInteraction,
+  APIChatInputApplicationCommandInteraction,
+  APIInteractionResponseChannelMessageWithSource,
   ApplicationCommandType,
+  InteractionResponseType,
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
+import {  DisciError, DisciTypeError  } from "../utils/errors";
 import type { IBase } from "./Base";
-import { BaseInteraction } from "./BaseInteraction";
+import { BaseInteraction, InteractionOptions } from "./BaseInteraction";
+import type Message from "./primitives/Message";
+import type { CreateMessageParams } from "./primitives/Message";
+import { Embed } from "./Embed";
 
 export abstract class ApplicationCommand
   extends BaseInteraction
@@ -51,9 +58,105 @@ export abstract class ApplicationCommand
   isSlashCommand(): this is ChatInputInteraction {
     return this.commandType === ApplicationCommandType.ChatInput;
   }
+
+  /**
+   * Alias to isSlashCommand
+   */
+  isChatInputInteraction(): this is ChatInputInteraction {
+    return this.isSlashCommand()
+  }
+
+  /**
+   * Respond to this interaction
+   * @param opts 
+   * @returns this interaction instances.Use fetchReply() to retrieve the message instance
+   */
+  respond(opts: string): this;
+  respond(opts: CreateMessageParams): this;
+  respond(opts: CreateMessageParams & { fetchReply: true }): Promise<Message>
+  respond(opts: (CreateMessageParams & { fetchReply?: boolean }) | string): this | Promise<Message> {
+    if(this.responded || this.timeout) throw new DisciError(`This interaction either timed out or already been responded to`)
+    const APIResponse = {
+      type: InteractionResponseType.ChannelMessageWithSource,
+      data: {}
+    } as APIInteractionResponseChannelMessageWithSource
+
+
+    if(typeof opts === 'string') {
+      Reflect.defineProperty(APIResponse.data, 'content', {
+        value: opts,
+        enumerable: true,
+        configurable: true,
+      })
+    }
+    else if(opts) {
+      if((!opts.content) && !Array.isArray(opts.embeds)) throw new DisciTypeError(`Content or Embeds is needed`)
+      
+      // if content is there but not a string, try converting it to one
+      if(opts.content && typeof opts.content !== 'string') {
+        opts.content = new String(opts.content).toString()
+      }
+
+      if(opts.embeds && Array.isArray(opts.embeds)) {
+        // convert embed builders to apiEmbeds
+        opts.embeds = opts.embeds.map(embed => {
+          if(embed instanceof Embed) {
+            return embed.toJSON()
+          }
+          return embed;
+        })
+      }
+    
+      if(opts.content) {
+        Reflect.defineProperty(APIResponse.data, 'content', {
+          value: opts.content,
+          enumerable: true,
+          configurable: true,
+        })
+      }
+
+      if(opts.embeds) {
+        Reflect.defineProperty(APIResponse.data, 'embeds', {
+          value: opts.embeds,
+          enumerable: true,
+          configurable: true,
+        })
+      }
+    }
+    else throw new DisciTypeError(`Respond Options must be either a string or object of messageReplyOptions`)
+    this._respond(APIResponse);
+    if(typeof opts !== 'string' && opts.fetchReply === true) return this.fetchReply() as Promise<Message>;
+    return this;
+  }
+  // custom methods
+
+   /**
+   * Send a defer type response, gives you extra time to reply.User sees a loading state
+   */
+   deferResponse(): this {
+    if (this.timeout || this.responded)
+      throw new DisciError(`This Interaction already timed out or has been replied to`);
+    this._respond({
+      type: InteractionResponseType.DeferredChannelMessageWithSource
+    });
+    return this;
+   }
 }
 
-export class ChatInputInteraction extends ApplicationCommand {}
-
+// dummy for now
+export class ChatInputInteraction extends ApplicationCommand {
+  options: InteractionOptions;
+  constructor(
+    handler: InteractionHandler,
+    rawData: APIChatInputApplicationCommandInteraction,
+  ) {
+    super(handler, rawData)
+    this.options = new InteractionOptions(rawData.data.options ?? [])
+  }
+}
 export class MessageCommandInteraction extends ApplicationCommand {}
 export class UserCommandInteraction extends ApplicationCommand {}
+
+
+
+export type ApplicationCommands = ChatInputInteraction | MessageCommandInteraction | UserCommandInteraction
