@@ -1,6 +1,6 @@
 import type { Snowflake } from "discord-api-types/globals";
+import { DiscordEpoch } from "./constants";
 
-export const DiscordEpoch = 14200704e5;
 /**
  * Converts a discord id to a timestamp
  * @param id - SnowFlake id
@@ -21,3 +21,8 @@ export function tryAndValue<ReturnType> (fn: () => ReturnType) {
         return null;
     }
 }
+
+/**
+ * Checks if a value is a object
+ */
+export const isObject = (value: unknown) => value !== null && typeof value === 'object' && !Array.isArray(value);

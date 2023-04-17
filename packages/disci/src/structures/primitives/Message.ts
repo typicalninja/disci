@@ -1,4 +1,4 @@
-import { APIActionRowComponent, APIActionRowComponentTypes, APIEmbed, APIMessage, AllowedMentionsTypes, Routes, Snowflake } from "discord-api-types/v10";
+import { APIEmbed, APIMessage, AllowedMentionsTypes, Routes, Snowflake } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
 import type { IBase } from "../Base";
 import { Embed } from "../Embed";
@@ -49,7 +49,11 @@ export interface CreateMessageParams {
      * Include to make your message a reply
      */
     messageReference?: MessageReference;
-    components?: APIActionRowComponent<APIActionRowComponentTypes>[]
+    /**
+     * The components belonging to this message
+     * Typed as unknown to support builders from packages like @discordjs/builders
+     */
+    components?: unknown
 }
 
 export default class Message implements IBase {

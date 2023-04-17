@@ -1,8 +1,9 @@
 import 'dotenv/config'
 import { InteractionHandler, NativeVerificationStratergy, } from 'disci';
-
+import { ButtonStyle } from 'discord-api-types/v10'
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 const server = fastify();
+import { ActionRowBuilder, ButtonBuilder } from '@discordjs/builders'
 
 // by default will use .env
 const client = new InteractionHandler({
@@ -36,25 +37,24 @@ client.on('interactionCreate', async (interaction) => {
       interaction.options,
       interaction.options.getString('auto')
     );
-    const int = await interaction.respond({
+
+    	const confirm = new ButtonBuilder()
+			.setCustomId('confirm')
+			.setLabel('Confirm Ban')
+			.setStyle(ButtonStyle.Danger);
+
+		const cancel = new ButtonBuilder()
+			.setCustomId('cancel')
+			.setLabel('Cancel')
+			.setStyle(ButtonStyle.Secondary);
+
+    const components = new ActionRowBuilder<ButtonBuilder>().addComponents(cancel, confirm);
+    await interaction.respond({
       content: `Hello ${interaction.member} (${interaction.user?.id}) (${interaction.user?.tag}) you used command ${interaction.commandName}`,
-      fetchReply: true
+      fetchReply: false,
+      components: components
     });
-    console.log(`${int.id}`)
-    await int.pin()
-
-    setTimeout(async () => {
-      await int.unpin();
-    })
-    /*int.fetchReply().then((m) => {
-      console.log(`Message ${m?.id} ${m?.content}`);
-
-
-      setTimeout(async () => {
-       await m.addReaction('👍');
-       await m.addReaction('👎');
-      }, 2000)
-    })*/
+   
   }
   else if(interaction.isAutoComplete()) {
     interaction.sendChoices([

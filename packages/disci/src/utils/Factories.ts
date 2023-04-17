@@ -1,4 +1,4 @@
-// factorie pattern 
+// factory pattern - takes data from the api and returns thier respective classes from disci
 // fixes a circular dep bug due to old factories being in thier respective files?
 import { type APIInteraction, InteractionType, APIApplicationCommandInteraction, ApplicationCommandType, APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
@@ -38,4 +38,5 @@ export class ApplicationCommandFactory {
           return null;
       }
     }
-  }
+}
+

@@ -2,8 +2,9 @@
   "name": "@discijs/example",
   "private": true,
   "dependencies": {
+    "@discordjs/builders": "^1.6.1",
     "disci": "workspace:^",
-    "discord-api-types": "^0.37.23",
+    "discord-api-types": "^0.37.35",
     "dotenv": "^16.0.3",
     "fastify": "^4.10.2",
     "fastify-raw-body": "^4.2.0"

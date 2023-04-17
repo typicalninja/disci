@@ -42,10 +42,12 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           showLastUpdateTime: true,
+          showLastUpdateAuthor: false,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/typicalninja493/disci',
         },
+        blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -85,6 +87,7 @@ const config = {
               { label: 'Next', to: 'api/next' },
               ...versions.map((version, i) => ({
                 label: version,
+                activeBaseRegex: `api/(${version})/*`,
                 to: i === 0 ? 'api' : `api/${version}`,
               })),
             ],
@@ -138,6 +141,7 @@ const config = {
           // Monorepo
           packages: ['./packages/disci/'],
           changelogs: true,
+          minimal: true
         },
       ],
     ]

@@ -2,6 +2,7 @@ import {
   APIApplicationCommandInteraction,
   APIChatInputApplicationCommandInteraction,
   APIInteractionResponseChannelMessageWithSource,
+  APIMessageComponent,
   ApplicationCommandType,
   InteractionResponseType,
 } from "discord-api-types/v10";
@@ -12,6 +13,7 @@ import { BaseInteraction, InteractionOptions } from "./BaseInteraction";
 import type Message from "./primitives/Message";
 import type { CreateMessageParams } from "./primitives/Message";
 import { Embed } from "./Embed";
+import { ResolveComponents } from "./Components";
 
 export abstract class ApplicationCommand
   extends BaseInteraction
@@ -71,7 +73,7 @@ export abstract class ApplicationCommand
    * @param opts 
    * @returns this interaction instance or the message instance after responding if fetchReply is true
    */
-  respond(opts: CreateMessageParams): this;
+  respond(opts: CreateMessageParams & { fetchReply?: false }): this;
   respond(opts: CreateMessageParams & { fetchReply: true }): Promise<Message>
   respond(opts: (CreateMessageParams & { fetchReply?: boolean })): this | Promise<Message> {
     if(this.responded || this.timeout) throw new DisciError(`This interaction either timed out or already been responded to`)
@@ -107,6 +109,14 @@ export abstract class ApplicationCommand
           value: opts.embeds,
           enumerable: true,
           configurable: true,
+        })
+      }
+
+      if(opts.components) {
+        const components = ResolveComponents<APIMessageComponent[]>(opts.components)
+        Reflect.defineProperty(APIResponse.data, 'components', {
+          value: components,
+          enumerable: true
         })
       }
     }
