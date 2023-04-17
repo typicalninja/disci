@@ -7,5 +7,9 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": [
+    "@discijs/example",
+    "@discijs/docs",
+    "eslint-config-custom"
+  ]
 }
