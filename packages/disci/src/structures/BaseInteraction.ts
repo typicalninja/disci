@@ -204,10 +204,9 @@ export abstract class BaseInteraction implements IBase {
     );
   }
   /**
-   * Send a defer type response, gives you extra time to reply.User sees a loading state
-   * Can only use if not already responded
+   * Defers the reply to the interaction.
    * @param options options for defer reply
-   * @param options.fetchReply wether to fetch the response or not
+   * @param options.fetchReply Whether to fetch the reply that was sent
    * @param options.ephemeral send a ephemeral defer 
    */
   deferResponse(options?: { fetchReply?: true, ephemeral?: boolean }): Promise<Message>
