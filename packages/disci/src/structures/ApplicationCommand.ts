@@ -6,6 +6,7 @@ import {
   ApplicationCommandType,
   InteractionResponseType,
   InteractionType,
+  Snowflake,
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
 import {  DisciError, DisciTypeError  } from "../utils/errors";
@@ -15,6 +16,16 @@ import type Message from "./primitives/Message";
 import type { CreateMessageParams } from "./primitives/Message";
 import { Embed } from "./Embed";
 import { ResolveComponents } from "./Components";
+
+/**
+ * Represents the resolved data of a received command interaction.
+ */
+export interface CommandInteractionResolvedData {
+	users: Map<Snowflake, User>;
+	members: Map<Snowflake, Member>;
+	roles: Map<Snowflake, Role>;
+	messages: Map<Snowflake, Message>;;
+}
 
 export abstract class ApplicationCommand
   extends BaseInteraction
@@ -34,6 +45,10 @@ export abstract class ApplicationCommand
    * Id Of **The Application command** (not interaction)
    */
   commandId: string;
+  /**
+   * Resolved Data of this interaction
+   */
+  resolved: CommandInteractionResolvedData;
   constructor(
     handler: InteractionHandler,
     rawData: APIApplicationCommandInteraction,
@@ -43,6 +58,13 @@ export abstract class ApplicationCommand
     this.commandType = data.type;
     this.commandName = data.name;
     this.commandId = data.id;
+
+    this.resolved = {
+      users: new Map(),
+      members: new Map(),
+      roles: new Map(),
+      messages: new Map()
+    }
   }
   /**
    * If this is a Message Context menu
@@ -144,7 +166,6 @@ export abstract class ApplicationCommand
    }
 }
 
-// dummy for now
 export class ChatInputInteraction extends ApplicationCommand {
   options: InteractionOptions;
   override commandType = ApplicationCommandType.ChatInput

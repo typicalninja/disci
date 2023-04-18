@@ -347,7 +347,11 @@ export class InteractionOptions {
      getMentionable(name: string, required = false) {
        return this._getType(name, [ApplicationCommandOptionType.Mentionable], ['value'], required)?.value ?? null;
      }
-
+     /**
+      * Retreive the currently Focused option, for AutoCompleteInteractions
+      * @param full Whether to get the full option object
+      * @returns The value of the option, or the whole option if full is true
+      */
      getFocused(full: true): APIApplicationCommandInteractionDataBasicOption;
      getFocused(full: false): APIApplicationCommandInteractionDataBasicOption['value'];
      getFocused(full: boolean) {
