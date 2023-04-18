@@ -5,6 +5,7 @@ import {
   APIMessageComponent,
   ApplicationCommandType,
   InteractionResponseType,
+  InteractionType,
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
 import {  DisciError, DisciTypeError  } from "../utils/errors";
@@ -19,6 +20,7 @@ export abstract class ApplicationCommand
   extends BaseInteraction
   implements IBase
 {
+  override type = InteractionType.ApplicationCommand
   /**
    * Type of this command
    * https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-types
@@ -145,6 +147,7 @@ export abstract class ApplicationCommand
 // dummy for now
 export class ChatInputInteraction extends ApplicationCommand {
   options: InteractionOptions;
+  override commandType = ApplicationCommandType.ChatInput
   constructor(
     handler: InteractionHandler,
     rawData: APIChatInputApplicationCommandInteraction,
@@ -153,8 +156,12 @@ export class ChatInputInteraction extends ApplicationCommand {
     this.options = new InteractionOptions(rawData.data.options ?? [])
   }
 }
-export class MessageCommandInteraction extends ApplicationCommand {}
-export class UserCommandInteraction extends ApplicationCommand {}
+export class MessageCommandInteraction extends ApplicationCommand {
+  override commandType = ApplicationCommandType.Message
+}
+export class UserCommandInteraction extends ApplicationCommand {
+  override commandType = ApplicationCommandType.User
+}
 
 
 
