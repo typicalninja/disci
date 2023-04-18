@@ -62,6 +62,9 @@ client.on('interactionCreate', async (interaction) => {
   }
   else if(interaction.isComponent()) {
     console.log(`Received ComponentInteraction`, interaction)
+    await interaction.respond({
+      content: `Responded to button ${interaction.customId}`
+    })
   }
 });
 

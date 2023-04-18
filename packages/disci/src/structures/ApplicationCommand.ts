@@ -1,20 +1,14 @@
 import {
   APIApplicationCommandInteraction,
   APIChatInputApplicationCommandInteraction,
-  APIInteractionResponseChannelMessageWithSource,
-  APIMessageComponent,
   ApplicationCommandType,
-  InteractionResponseType,
   InteractionType,
   Snowflake,
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
-import {  DisciError, DisciTypeError  } from "../utils/errors";
 import type { IBase } from "./Base";
 import { BaseInteraction, InteractionOptions } from "./BaseInteraction";
-import type { CreateMessageParams, default as Message } from "./primitives/Message";
-import { Embed } from "./Embed";
-import { ResolveComponents } from "./Components";
+import type { default as Message } from "./primitives/Message";
 import type User from "./primitives/User";
 import type Member from "./primitives/Member";
 
@@ -91,66 +85,6 @@ export abstract class ApplicationCommand
    */
   isChatInputInteraction(): this is ChatInputInteraction {
     return this.isSlashCommand()
-  }
-
-  /**
-   * Respond to this interaction
-   * @param opts 
-   * @returns this interaction instance or the message instance after responding if fetchReply is true
-   */
-  respond(opts: CreateMessageParams & { fetchReply?: false }): this;
-  respond(opts: CreateMessageParams & { fetchReply: true }): Promise<Message>
-  respond(opts: (CreateMessageParams & { fetchReply?: boolean })): this | Promise<Message> {
-    if(this.responded) throw new DisciError(`This interaction either timed out or already been responded to`)
-    const APIResponse = {
-      type: InteractionResponseType.ChannelMessageWithSource,
-      data: {}
-    } as APIInteractionResponseChannelMessageWithSource
-
-
-    if(opts) {
-      if((!opts.content) && !Array.isArray(opts.embeds)) throw new DisciTypeError(`Content or Embeds is needed`)
-      
-      // if content is there but not a string, try converting it to one
-      if(opts.content) {
-        if(typeof opts.content !== 'string') opts.content = new String(opts.content).toString();
-        Reflect.defineProperty(APIResponse.data, 'content', {
-          value: opts.content,
-          enumerable: true,
-          configurable: true,
-        })
-      }
-
-      if(opts.embeds && Array.isArray(opts.embeds)) {
-        // convert embed builders to apiEmbeds
-        opts.embeds = opts.embeds.map(embed => {
-          if(embed instanceof Embed) {
-            return embed.toJSON()
-          }
-          return embed;
-        })
-
-        Reflect.defineProperty(APIResponse.data, 'embeds', {
-          value: opts.embeds,
-          enumerable: true,
-          configurable: true,
-        })
-      }
-
-      if(opts.components) {
-        const components = ResolveComponents<APIMessageComponent[]>(opts.components)
-        Reflect.defineProperty(APIResponse.data, 'components', {
-          value: components,
-          enumerable: true
-        })
-      }
-    }
-    else throw new DisciTypeError(`CreateMessage Options are required`)
-    
-  
-    this._respond(APIResponse);
-    if(opts.fetchReply === true) return this.fetchReply();
-    return this;
   }
 }
 
