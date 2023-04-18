@@ -116,11 +116,11 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
               // check if option is turned on
               if(this.options.deferOnTimeout && !interaction.isAutoComplete()) {
                 this.debug(`Interaction of id ${interaction.id} was auto defered`)
-                return interaction.deferResponse();
+                interaction.deferResponse();
               }
               else {
                 interaction.timeout = true;
-                return resolve(toResponse(EResponseErrorMessages.TimedOut, 504))
+                resolve(toResponse(EResponseErrorMessages.TimedOut, 504))
               }
             }
           }, this.options.replyTimeout)

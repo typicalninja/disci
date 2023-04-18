@@ -5,6 +5,7 @@ import type { InteractionHandler } from "../InteractionHandler";
 import { type ApplicationCommands, ChatInputInteraction, MessageCommandInteraction, UserCommandInteraction } from "../structures/ApplicationCommand";
 import { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
 import type { InteractionContext } from "./constants";
+import { ComponentInteraction } from "../structures/ComponentInteraction";
 
 /**
  * Factory for all base Interactions
@@ -16,10 +17,21 @@ export class InteractionFactory {
                return ApplicationCommandFactory.from(handler, APIData);
             case InteractionType.ApplicationCommandAutocomplete:
               return new AutoCompleteInteraction(handler, APIData);
+            case InteractionType.MessageComponent:
+              return ComponentInteractionFactory.from(handler, APIData)
             default:
                 return null;
         }
     }
+}
+
+/**
+ * Factory for components
+ */
+export class ComponentInteractionFactory {
+  static from(handler: InteractionHandler, apiData: APIInteraction) {
+    return new ComponentInteraction(handler, apiData)
+  }
 }
 
 /**

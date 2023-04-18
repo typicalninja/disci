@@ -57,10 +57,13 @@ client.on('interactionCreate', async (interaction) => {
    
   }
   else if(interaction.isAutoComplete()) {
-    interaction.sendChoices([
+    interaction.respondWithChoices([
       '1choice',
       '2choice'
     ])
+  }
+  else if(interaction.isComponent()) {
+    console.log(`Received ComponentInteraction`, interaction)
   }
 });
 

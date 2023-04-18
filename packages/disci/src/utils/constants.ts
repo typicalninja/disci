@@ -3,6 +3,7 @@ import type { ApplicationCommands } from "../structures/ApplicationCommand";
 import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
 import type { IResponse } from "./request";
 import type { RESTClientOptions } from "./REST";
+import type { ComponentInteraction } from "../structures/ComponentInteraction";
 
 export enum DiscordVerificationHeaders {
   Signature = "x-signature-ed25519",
@@ -12,7 +13,7 @@ export enum DiscordVerificationHeaders {
 export const DiscordEpoch = 14200704e5;
 
 // Common type for interactions
-export type InteractionContext = ApplicationCommands | AutoCompleteInteraction ;
+export type InteractionContext = ApplicationCommands | AutoCompleteInteraction | ComponentInteraction ;
 
 export interface IHandlerOptions {
   /**

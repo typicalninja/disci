@@ -12,10 +12,11 @@ import type { InteractionHandler } from "../InteractionHandler";
 import {  DisciError, DisciTypeError  } from "../utils/errors";
 import type { IBase } from "./Base";
 import { BaseInteraction, InteractionOptions } from "./BaseInteraction";
-import type Message from "./primitives/Message";
-import type { CreateMessageParams } from "./primitives/Message";
+import type { CreateMessageParams, default as Message } from "./primitives/Message";
 import { Embed } from "./Embed";
 import { ResolveComponents } from "./Components";
+import type User from "./primitives/User";
+import type Member from "./primitives/Member";
 
 /**
  * Represents the resolved data of a received command interaction.
@@ -23,8 +24,8 @@ import { ResolveComponents } from "./Components";
 export interface CommandInteractionResolvedData {
 	users: Map<Snowflake, User>;
 	members: Map<Snowflake, Member>;
-	roles: Map<Snowflake, Role>;
-	messages: Map<Snowflake, Message>;;
+	roles: Map<Snowflake, unknown>;
+	messages: Map<Snowflake, Message>;
 }
 
 export abstract class ApplicationCommand
@@ -151,19 +152,6 @@ export abstract class ApplicationCommand
     if(opts.fetchReply === true) return this.fetchReply();
     return this;
   }
-  // custom methods
-
-   /**
-   * Send a defer type response, gives you extra time to reply.User sees a loading state
-   */
-   deferResponse(): this {
-    if (this.timeout || this.responded)
-      throw new DisciError(`This Interaction already timed out or has been replied to`);
-    this._respond({
-      type: InteractionResponseType.DeferredChannelMessageWithSource
-    });
-    return this;
-   }
 }
 
 export class ChatInputInteraction extends ApplicationCommand {
