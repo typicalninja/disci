@@ -29,6 +29,7 @@ import {
   TypeErrorsMessages,
 } from "../utils/errors";
 import type { ComponentInteraction } from "./ComponentInteraction";
+import type Message from "./primitives/Message";
 
 type TcallbackFn = (data: APIInteractionResponse) => void;
 
@@ -215,7 +216,8 @@ export abstract class BaseInteraction implements IBase {
    * @param options.fetchReply wether to fetch the response or not
    * @param options.ephemeral send a ephemeral defer 
    */
-  deferResponse({ fetchReply = false, ephemeral = false }): this {
+  deferResponse(options?: { fetchReply?: true, ephemeral?: boolean }): Promise<Message>
+  deferResponse({ fetchReply = false, ephemeral = false }= {}): Promise<this> | Promise<Message> {
     if (this.timeout || this.responded)
       throw new DisciError(
         `This Interaction already timed out or has been replied to`
@@ -228,7 +230,10 @@ export abstract class BaseInteraction implements IBase {
       }
     });
     
-    return this;
+    if(fetchReply) {
+      return this.fetchReply()
+    }
+    return Promise.resolve(this);
   }
 }
 

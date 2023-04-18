@@ -1,6 +1,6 @@
 // factory pattern - takes data from the api and returns thier respective classes from disci
 // fixes a circular dep bug due to old factories being in thier respective files?
-import { type APIInteraction, InteractionType, APIApplicationCommandInteraction, ApplicationCommandType, APIChatInputApplicationCommandInteraction } from "discord-api-types/v10";
+import { type APIInteraction, InteractionType, APIApplicationCommandInteraction, ApplicationCommandType, APIChatInputApplicationCommandInteraction, APIMessageComponentBaseInteractionData } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
 import { type ApplicationCommands, ChatInputInteraction, MessageCommandInteraction, UserCommandInteraction } from "../structures/ApplicationCommand";
 import { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
@@ -29,7 +29,7 @@ export class InteractionFactory {
  * Factory for components
  */
 export class ComponentInteractionFactory {
-  static from(handler: InteractionHandler, apiData: APIInteraction) {
+  static from(handler: InteractionHandler, apiData: APIMessageComponentBaseInteractionData) {
     return new ComponentInteraction(handler, apiData)
   }
 }
