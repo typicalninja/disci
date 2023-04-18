@@ -9,6 +9,7 @@ import {
   APIInteraction,
   APIInteractionResponse,
   ApplicationCommandOptionType,
+  InteractionResponseType,
   InteractionType,
   LocaleString,
 } from "discord-api-types/v10";
