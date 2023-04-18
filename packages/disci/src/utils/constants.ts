@@ -17,15 +17,6 @@ export type InteractionContext = ApplicationCommands | AutoCompleteInteraction |
 
 export interface IHandlerOptions {
   /**
-   * After this, the request will be considered stale
-   */
-  replyTimeout: number;
-  /**
-   * Instead of request getting marked as stale, respond to it with a "defer" if timed out
-   * Allows you to have more time to reply
-   */
-  deferOnTimeout: boolean;
-  /**
    * A debug callback function that can be used for debugging
    */
   debug?: (msg: string) => void;
@@ -43,8 +34,6 @@ export interface IHandlerOptions {
 
 
 export const defaultOptions: IHandlerOptions = {
-  replyTimeout: 2600,
-  deferOnTimeout: true,
   verificationStratergy: new NativeVerificationStratergy(),
   rest: {
     token: process.env.TOKEN ?? '',

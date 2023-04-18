@@ -101,7 +101,7 @@ export abstract class ApplicationCommand
   respond(opts: CreateMessageParams & { fetchReply?: false }): this;
   respond(opts: CreateMessageParams & { fetchReply: true }): Promise<Message>
   respond(opts: (CreateMessageParams & { fetchReply?: boolean })): this | Promise<Message> {
-    if(this.responded || this.timeout) throw new DisciError(`This interaction either timed out or already been responded to`)
+    if(this.responded) throw new DisciError(`This interaction either timed out or already been responded to`)
     const APIResponse = {
       type: InteractionResponseType.ChannelMessageWithSource,
       data: {}

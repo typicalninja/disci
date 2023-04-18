@@ -108,23 +108,6 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
             this.debug(`Resolving Interaction with ${JSON.stringify(response)} `)
             return resolve(toResponse(response))
           });
-
-          // timeout after specified time out duration, usually below 3s
-          setTimeout(() => {
-            if(interaction && !interaction.responded) {
-              this.debug(`Interaction of id ${interaction.id} timed out`)
-              // check if option is turned on
-              if(this.options.deferOnTimeout && !interaction.isAutoComplete()) {
-                this.debug(`Interaction of id ${interaction.id} was auto defered`)
-                interaction.deferResponse();
-              }
-              else {
-                interaction.timeout = true;
-                resolve(toResponse(EResponseErrorMessages.TimedOut, 504))
-              }
-            }
-          }, this.options.replyTimeout)
-
           // finally emit the event
           return this.emit('interactionCreate', interaction);
         }

@@ -72,10 +72,6 @@ export abstract class BaseInteraction implements IBase {
    */
   responded: boolean;
   /**
-   * If this interaction timed out (3s)
-   */
-  timeout: boolean;
-  /**
    * The user who invoked this interaction
    */
   user?: User;
@@ -132,7 +128,6 @@ export abstract class BaseInteraction implements IBase {
 
     // properties to keep track of this Interaction
     this.responded = false;
-    this.timeout = false;
   }
   /**
    * Internal function. define the function used to respond the interaction
@@ -184,7 +179,6 @@ export abstract class BaseInteraction implements IBase {
    * @private
    */
   _respond(response: APIInteractionResponse) {
-    if (this.timeout) throw new DisciError(`This Interaction has timed out.`);
     if (this.responded)
       throw new DisciError(`This interaction has already been responded to.`);
     this._callback(response);
@@ -218,7 +212,7 @@ export abstract class BaseInteraction implements IBase {
    */
   deferResponse(options?: { fetchReply?: true, ephemeral?: boolean }): Promise<Message>
   deferResponse({ fetchReply = false, ephemeral = false }= {}): Promise<this> | Promise<Message> {
-    if (this.timeout || this.responded)
+    if (this.responded)
       throw new DisciError(
         `This Interaction already timed out or has been replied to`
       );
