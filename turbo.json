@@ -15,6 +15,7 @@
     "lint": {},
     "format": {},
     "prettier:check": {},
-    "prettier:write": {}
+    "prettier:write": {},
+    "lint:check": {}
   }
 }

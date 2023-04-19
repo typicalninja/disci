@@ -14,9 +14,9 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "lint": "eslint src/**/*.ts --fix",
     "prettier:check": "prettier --parser=typescript \"src/**/*.{js,ts}\" --check",
-    "prettier:write": "prettier --parser=typescript \"src/**/*.{js,ts}\" --write"
+    "prettier:write": "prettier --parser=typescript \"src/**/*.{js,ts}\" --write",
+    "lint:check": "eslint \"src/**/*.{js,ts}\""
   },
   "dependencies": {
     "discord-api-types": "^0.37.22",
