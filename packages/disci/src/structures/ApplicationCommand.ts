@@ -1,6 +1,7 @@
 import {
   APIApplicationCommandInteraction,
   APIChatInputApplicationCommandInteraction,
+  APIUserApplicationCommandInteraction,
   ApplicationCommandType,
   InteractionType,
   Snowflake,
@@ -99,11 +100,25 @@ export class ChatInputInteraction extends ApplicationCommand {
     this.options = new InteractionOptions(rawData.data.options ?? [])
   }
 }
-export class MessageCommandInteraction extends ApplicationCommand {
+
+export interface ContextMenuInteraction {
+  targetId: Snowflake
+}
+export class MessageCommandInteraction extends ApplicationCommand  {
   override commandType = ApplicationCommandType.Message
 }
-export class UserCommandInteraction extends ApplicationCommand {
-  override commandType = ApplicationCommandType.User
+export class UserCommandInteraction extends ApplicationCommand implements ContextMenuInteraction {
+  override commandType = ApplicationCommandType.User;
+  /**
+   * Id of the user 
+   */
+  targetId: Snowflake;
+  constructor(handler: InteractionHandler, rawData: APIUserApplicationCommandInteraction) {
+    super(handler, rawData);
+      const data = rawData.data;
+      this.targetId = data.target_id;
+      
+  }
 }
 
 
