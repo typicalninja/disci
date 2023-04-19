@@ -141,7 +141,6 @@ const config = {
           // Monorepo
           packages: ['./packages/disci/'],
           changelogs: true,
-          minimal: true
         },
       ],
     ]

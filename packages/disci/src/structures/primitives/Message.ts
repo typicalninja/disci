@@ -1,11 +1,13 @@
-import { APIEmbed, APIMessage, AllowedMentionsTypes, Routes, Snowflake } from "discord-api-types/v10";
+import { APIEmbed, APIMessage, AllowedMentionsTypes, RESTPostAPIWebhookWithTokenJSONBody, Routes, Snowflake } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
 import type { IBase } from "../Base";
 import { Embed } from "../Embed";
 import User from "./User";
 import { convertSnowflakeToTimeStamp } from "../../utils/helpers";
+import { DisciTypeError, TypeErrorsMessages } from "../../utils/errors";
 
 export type EmojiResolvable = string | { name: string, id: string };
+
 
 /**
  * @link https://discord.com/developers/docs/resources/channel#allowed-mentions-object
@@ -159,4 +161,31 @@ export default class Message implements IBase {
             Routes.channelPin(this.channelId, this.id)
         )
 	}
+
+    static resolveMessageParams(params: CreateMessageParams) {
+        const msg = {} as Omit<RESTPostAPIWebhookWithTokenJSONBody, 'username' | 'avatar_url'>;
+
+        // if message content is present
+        if(params.content) {
+            if(typeof params.content !== 'string') params.content = new String(params.content).toString();
+            msg.content = params.content;
+        }
+        
+        // resolve embeds
+        if(params.embeds) {
+            if(!Array.isArray(params.embeds)) throw new DisciTypeError(TypeErrorsMessages.ExpectedParameter(`message.embeds`, 'array', typeof params.embeds))
+            // convert embed builders to apiEmbeds
+            msg.embeds = params.embeds.map(embed => {
+                    if(embed instanceof Embed) {
+                    return embed.toJSON()
+                    }
+                    return embed;
+            })
+        }
+
+        // resolve components
+        
+
+        return msg;
+    }
 }
