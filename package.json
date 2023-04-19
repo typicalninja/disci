@@ -7,7 +7,8 @@
     "prettier:check": "turbo run prettier:check",
     "prettier:write": "turbo run prettier:write",
     "lint:check": "turbo run lint:check",
-    "lint": "turbo run lint"
+    "lint": "turbo run lint",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
@@ -17,7 +18,8 @@
     "prettier": "^2.8.7",
     "tsup": "^6.6.0",
     "turbo": "latest",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "husky": "^8.0.0"
   },
   "engines": {
     "node": ">=14.0.0",
