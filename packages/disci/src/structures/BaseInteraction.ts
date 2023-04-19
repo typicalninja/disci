@@ -330,15 +330,15 @@ export class InteractionOptions {
 
   private _getType(
     name: string,
-    expectedtTypes: ApplicationCommandOptionType[],
+    expectedTypes: ApplicationCommandOptionType[],
     properties: ['value'],
     required: boolean,
   ) {
     const option = this.get(name, required)
 
     if (!option) return null
-    if (!expectedtTypes.includes(option.type))
-      throw new DisciTypeError(`Expected Type of option to be ${expectedtTypes.join(' ')} Received ${option.type}`)
+    if (!expectedTypes.includes(option.type))
+      throw new DisciTypeError(`Expected Type of option to be ${expectedTypes.join(' ')} Received ${option.type}`)
     if (required && properties.every((prop) => option[prop] == null || typeof option[prop] == 'undefined'))
       throw new DisciTypeError(`Expected Value to be available`)
 
