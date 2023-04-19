@@ -1,7 +1,4 @@
-
 /**
  * Represents a discord guild
  */
-export default class Guild {
-
-}
+export default class Guild {}
