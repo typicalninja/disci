@@ -2,23 +2,19 @@
   "name": "@discijs/main",
   "private": true,
   "scripts": {
-    "build": "turbo run build",
-    "build:packages": "yarn run build:disci",
-    "build:disci": "turbo run build --filter=disci",
-    "build:docs": "turbo run build --filter=@discijs/docs",
+    "build": "turbo run build --parallel",
     "dev": "turbo run dev --parallel",
-    "dev:disci": "turbo run dev --filter=disci",
-    "dev:docs": "turbo run dev --filter=@discijs/docs",
-    "dev:example": "turbo run dev --filter=@discijs/example",
     "lint": "turbo run lint",
     "format": "turbo run format",
-    "release": "pnpm run build:packages && pnpm run alpha:publish",
-    "alpha:publish": "changesets publish --tag alpha",
-    "alpha:version": "pnpm changeset version --snapshot alpha"
+    "prettier:check": "turbo run prettier:check",
+    "prettier:write": "turbo run prettier:write"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
-    "eslint-config-custom": "workspace:*",
+    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "@typescript-eslint/parser": "^5.51.0",
+    "eslint": "^8.38.0",
+    "prettier": "^2.8.7",
     "tsup": "^6.6.0",
     "turbo": "latest",
     "typescript": "5.0.4"
@@ -27,8 +23,5 @@
     "node": ">=14.0.0",
     "pnpm": ">=6"
   },
-  "packageManager": "pnpm@8.1.1",
-  "dependencies": {
-    "prettier": "^2.8.7"
-  }
+  "packageManager": "pnpm@8.1.1"
 }

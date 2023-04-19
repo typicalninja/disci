@@ -13,6 +13,8 @@
       "cache": false
     },
     "lint": {},
-    "format": {}
+    "format": {},
+    "prettier:check": {},
+    "prettier:write": {}
   }
 }

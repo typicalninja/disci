@@ -1,11 +1,17 @@
 {
 	"root": true,
-	"extends": ["turbo", "prettier"],
-	"parserOptions": {
-		"project": "./tsconfig.eslint.json"
-	},
+	"extends": [
+		"turbo", 
+		"prettier",
+		"plugin:@typescript-eslint/recommended"
+	],
+	"parser": "@typescript-eslint/parser",
+	"plugins": [
+		"@typescript-eslint"
+	],
 	"rules": {
-		"@typescript-eslint/consistent-type-definitions": ["error", "interface"]
+		"@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+		"turbo/no-undeclared-env-vars": "off"
 	},
 	"ignorePatterns": ["**/dist/*"]
 }
