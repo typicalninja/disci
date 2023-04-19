@@ -9,13 +9,9 @@
       "cache": false,
       "persistent": true
     },
-    "serve": {
-      "cache": false
-    },
-    "lint": {},
-    "format": {},
     "prettier:check": {},
     "prettier:write": {},
-    "lint:check": {}
+    "lint:check": {},
+    "lint": {}
   }
 }

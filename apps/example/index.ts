@@ -4,13 +4,13 @@ import { ButtonStyle } from 'discord-api-types/v10'
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 const server = fastify();
 import { ActionRowBuilder, ButtonBuilder } from '@discordjs/builders'
-
+if(typeof process.env.TOKEN !== 'string' || typeof process.env.PUBLIC_KEY !== 'string') throw new Error(`Credentials not set`)
 // by default will use .env
 const client = new InteractionHandler({
   debug: (msg:string) => console.log(msg),
   verificationStratergy: new NativeVerificationStratergy(process.env.PUBLIC_KEY),
   rest: {
-    token: process.env.TOKEN!,
+    token: process.env.TOKEN,
   }
 });
 
