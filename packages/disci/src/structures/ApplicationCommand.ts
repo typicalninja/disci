@@ -67,13 +67,13 @@ export abstract class ApplicationCommand extends BaseInteraction implements IBas
   /**
    * If this is a Message Context menu
    */
-  isMessageCommand(): this is MessageCommandInteraction {
+  isMessageMenu(): this is MessageCommandInteraction {
     return this.commandType === ApplicationCommandType.Message
   }
   /**
    * If this is a User Context menu
    */
-  isUserCommand(): this is UserCommandInteraction {
+  isUserMenu(): this is UserCommandInteraction {
     return this.commandType === ApplicationCommandType.User
   }
   /**
