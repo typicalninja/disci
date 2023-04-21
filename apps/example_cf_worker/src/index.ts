@@ -18,6 +18,7 @@ export interface Env {
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
+	// only 1 time
     if (env.handler === undefined) {
       env.handler = new InteractionHandler({
        // add in dev: debug: (msg: string) => console.log(msg),
@@ -32,10 +33,7 @@ export default {
       env.router = buildRouter(env)
     }
 
-    return env.router.handle(request).catch(async (err) => {
-      console.log(`Error`, err)
-      return error(500, 'Internal Server Error')
-    })
+    return env.router.handle(request)
   },
 }
 
@@ -54,7 +52,7 @@ function buildRouter(env: Env): ThrowableRouter {
     })
   }
 
-  router.get('/hi', async () => {
+  router.get('/', async () => {
     if (!env.handler) return new Response(`No: Handler Offline`)
     return new Response(`Active and ready`)
   })
