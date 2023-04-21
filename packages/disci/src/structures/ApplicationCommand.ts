@@ -1,6 +1,8 @@
 import {
   APIApplicationCommandInteraction,
   APIChatInputApplicationCommandInteraction,
+  APIInteractionDataResolvedGuildMember,
+  APIMessageApplicationCommandInteraction,
   APIUserApplicationCommandInteraction,
   ApplicationCommandType,
   InteractionType,
@@ -10,15 +12,14 @@ import type { InteractionHandler } from '../InteractionHandler'
 import type { IBase } from './Base'
 import { BaseInteraction, InteractionOptions } from './BaseInteraction'
 import type { default as Message } from './primitives/Message'
-import type User from './primitives/User'
-import type Member from './primitives/Member'
+import User from './primitives/User'
 
 /**
  * Represents the resolved data of a received command interaction.
  */
 export interface CommandInteractionResolvedData {
   users: Map<Snowflake, User>
-  members: Map<Snowflake, Member>
+  members: Map<Snowflake, APIInteractionDataResolvedGuildMember>
   roles: Map<Snowflake, unknown>
   messages: Map<Snowflake, Message>
 }
@@ -96,6 +97,10 @@ export interface ContextMenuInteraction {
 }
 export class MessageCommandInteraction extends ApplicationCommand {
   override commandType = ApplicationCommandType.Message
+  constructor(handler: InteractionHandler, rawData: APIMessageApplicationCommandInteraction) {
+    super(handler, rawData)
+    // parse message
+  }
 }
 export class UserCommandInteraction extends ApplicationCommand implements ContextMenuInteraction {
   override commandType = ApplicationCommandType.User
@@ -111,6 +116,20 @@ export class UserCommandInteraction extends ApplicationCommand implements Contex
     super(handler, rawData)
     const data = rawData.data
     this.targetId = data.target_id
+
+    // resolved users
+    if (data.resolved.users) {
+      for (const [id, user] of Object.entries(data.resolved.users)) {
+        this.resolved.users.set(id, new User(this.handler, user))
+      }
+    }
+
+    if (data.resolved.members) {
+      for (const [id, member] of Object.entries(data.resolved.members)) {
+        this.resolved.members.set(id, member)
+      }
+    }
+
     this.targetUser = this.resolved.users.get(this.targetId)
   }
 }

@@ -166,6 +166,10 @@ export default class Message implements IBase {
     await this.handler.api.delete<void>(Routes.channelPin(this.channelId, this.id))
   }
 
+  /**
+   * Internal method to resolve data for message Create
+   * @private
+   */
   static resolveMessageParams(params: CreateMessageParams) {
     const msg = {} as APIInteractionResponseCallbackData
 

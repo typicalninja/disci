@@ -9,7 +9,7 @@ import User from './User'
 /**
  * Partial Class for accessing Discord Api with minimal data
  */
-export class WebhookPartial implements IBase {
+export class PartialWebhook implements IBase {
   handler!: InteractionHandler
   /**
    * Id of a webhook if accessing data about particular webhook
@@ -31,7 +31,7 @@ export class WebhookPartial implements IBase {
     }*/
 }
 
-export default class Webhook extends WebhookPartial {
+export default class Webhook extends PartialWebhook {
   /**
    * The id of the webhook
    */

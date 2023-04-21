@@ -27,15 +27,9 @@ server.post(
 client.on('error', (e) => console.log(`Err:`, e))
 
 client.on('interactionCreate', async (interaction) => {
-  if (interaction.isCommand() && interaction.isChatInputInteraction()) {
-    console.log(
-      `Interaction ID: ${interaction.id}, type: Command `,
-      interaction.commandType,
-      interaction.createdAt,
-      interaction.options,
-      interaction.options.getString('auto')
-    );
-
+  if (interaction.isCommand()) {
+    if(interaction.isChatInputInteraction()) {
+      
     	const confirm = new ButtonBuilder()
 			.setCustomId('confirm')
 			.setLabel('Confirm Ban')
@@ -52,6 +46,17 @@ client.on('interactionCreate', async (interaction) => {
       fetchReply: false,
       components: components
     });
+    }
+    else if(interaction.isUserMenu()) {
+      await interaction.respond({
+        content: `Using User Menu on ${interaction.targetId} ${interaction.targetUser?.username}`
+      });
+    }
+    else if(interaction.isMessageMenu()) {
+      await interaction.respond({
+        content: `Using Message Menu on ${interaction.targetId}`
+      });
+    }
    
   }
   else if(interaction.isAutoComplete()) {
