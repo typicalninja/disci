@@ -20,9 +20,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "cross-fetch": "^3.1.5",
     "discord-api-types": "^0.37.22",
-    "tslib": "^2.4.1",
-    "undici": "^5.20.0"
+    "tslib": "^2.4.1"
   },
   "devDependencies": {
     "@types/node": "^18.11.15",

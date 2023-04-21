@@ -1,9 +1,10 @@
-import { NativeVerificationStratergy, verificationStratergy } from '../verification'
+import type { verificationStratergy } from '../verification'
 import type { ApplicationCommands } from '../structures/ApplicationCommand'
 import type { AutoCompleteInteraction } from '../structures/AutoCompleteInteraction'
 import type { IResponse } from './request'
 import type { RESTClientOptions } from './REST'
 import type { ComponentInteraction } from '../structures/ComponentInteraction'
+import { isNode } from './helpers'
 
 export enum DiscordVerificationHeaders {
   Signature = 'x-signature-ed25519',
@@ -33,9 +34,9 @@ export interface IHandlerOptions {
 }
 
 export const defaultOptions: IHandlerOptions = {
-  verificationStratergy: new NativeVerificationStratergy(),
+  verificationStratergy: (isNode && process.env.PUBLIC_KEY) || '',
   rest: {
-    token: process.env.TOKEN ?? '',
+    token: (isNode && process.env.TOKEN) || '',
   },
 }
 

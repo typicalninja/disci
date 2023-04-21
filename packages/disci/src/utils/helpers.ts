@@ -25,3 +25,9 @@ export function tryAndValue<ReturnType>(fn: () => ReturnType) {
  * Checks if a value is a object
  */
 export const isObject = (value: unknown) => value !== null && typeof value === 'object' && !Array.isArray(value)
+
+/**
+ * Detect if current runtime is node.js
+ * from is-node (npm)
+ */
+export const isNode = !!(typeof process !== 'undefined' && process.versions && process.versions.node)

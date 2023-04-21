@@ -15,12 +15,12 @@ build
 .env.test.local
 .env.production.local
 .env
-
+.dev.vars
 
 # docs
 .docusaurus
 .cache-loader
-
+test
 
 .vscode
 

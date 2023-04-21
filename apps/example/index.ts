@@ -68,6 +68,8 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
+
+// launch the fastify server
 (async () => {
   try {
     await server.listen({ port: 4000 });

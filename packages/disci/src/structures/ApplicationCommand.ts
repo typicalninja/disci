@@ -2,7 +2,6 @@ import {
   APIApplicationCommandInteraction,
   APIChatInputApplicationCommandInteraction,
   APIUserApplicationCommandInteraction,
-  APIUserInteractionDataResolved,
   ApplicationCommandType,
   InteractionType,
   Snowflake,
@@ -11,7 +10,7 @@ import type { InteractionHandler } from '../InteractionHandler'
 import type { IBase } from './Base'
 import { BaseInteraction, InteractionOptions } from './BaseInteraction'
 import type { default as Message } from './primitives/Message'
-import User from './primitives/User'
+import type User from './primitives/User'
 import type Member from './primitives/Member'
 
 /**
@@ -54,14 +53,6 @@ export abstract class ApplicationCommand extends BaseInteraction implements IBas
       members: new Map(),
       roles: new Map(),
       messages: new Map(),
-    }
-
-    if (this.commandType !== ApplicationCommandType.Message) {
-      // does not exist in MessageContextMenu
-      const userResolved = rawData.data?.resolved as APIUserInteractionDataResolved
-      for (const [id, user] of Object.entries(userResolved?.users)) {
-        this.resolved.users.set(id, new User(this.handler, user))
-      }
     }
   }
   /**

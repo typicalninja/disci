@@ -1,14 +1,18 @@
 import type { IRequest } from './utils/request'
-import crypto from 'crypto'
+import type { default as NodeCrypto } from 'node:crypto'
 import { DiscordVerificationHeaders } from './utils/constants'
 import { DisciTypeError, TypeErrorsMessages } from './utils/errors'
+import { isNode } from './utils/helpers'
+
+// allows cf workers bundle this
+import { Buffer } from 'node:buffer'
 
 type CryptoAlgorithms =
-  | crypto.webcrypto.AlgorithmIdentifier
-  | crypto.webcrypto.RsaHashedImportParams
-  | crypto.webcrypto.EcKeyImportParams
-  | crypto.webcrypto.HmacImportParams
-  | crypto.webcrypto.AesKeyAlgorithm
+  | NodeCrypto.webcrypto.AlgorithmIdentifier
+  | NodeCrypto.webcrypto.RsaHashedImportParams
+  | NodeCrypto.webcrypto.EcKeyImportParams
+  | NodeCrypto.webcrypto.HmacImportParams
+  | NodeCrypto.webcrypto.AesKeyAlgorithm
 
 /**
  * A security stratergy is used to verify incoming requests
@@ -21,17 +25,26 @@ export interface verificationStratergy {
  * A security stratergy that uses Native crypto to verify if request is incoming from discord
  */
 export class NativeVerificationStratergy implements verificationStratergy {
-  private _publicKey: null | crypto.webcrypto.CryptoKey = null
+  private _publicKey: null | NodeCrypto.webcrypto.CryptoKey = null
+  private crypto!: typeof NodeCrypto | Crypto
   /**
    *
    * @param publicKey - Public key from discord
    */
   constructor(
-    private publicKey: string = process.env.PUBLIC_KEY || '',
+    private publicKey: string = (isNode && process.env.PUBLIC_KEY) || '',
     private cryptoAlgorithm: CryptoAlgorithms = 'Ed25519',
   ) {
     if (publicKey === '')
       throw new DisciTypeError(TypeErrorsMessages.ParameterRequired(`VerificationStratergy.publicKey`))
+    if (!isNode) {
+      this.cryptoAlgorithm = {
+        name: 'NODE-ED25519',
+        namedCurve: 'NODE-ED25519',
+        // @ts-expect-error Cloudflare worker runtime
+        public: true,
+      }
+    }
   }
   /**
    * Used to validate if a request originated from discord
@@ -42,15 +55,17 @@ export class NativeVerificationStratergy implements verificationStratergy {
     const timestamp = req.headers[DiscordVerificationHeaders.TimeStamp]
     const signature = req.headers[DiscordVerificationHeaders.Signature]
     const { body } = req
+    console.log(body, timestamp, signature)
     if (!timestamp || !signature || !body) return false
     try {
-      return crypto.subtle.verify(
+      return this.crypto.subtle.verify(
         this.cryptoAlgorithm,
         publicKeyGen,
         Buffer.from(signature, 'hex'),
         Buffer.from(timestamp + body),
       )
-    } catch {
+    } catch (err) {
+      console.error(`Error:`, err)
       return false
     }
   }
@@ -60,11 +75,12 @@ export class NativeVerificationStratergy implements verificationStratergy {
    * Run this at startup if you want to pre create a publicKey before any interaction requests.
    * If not, on first interaction request this will be called.
    */
-  generatePublicKey(returnPKey: true): Promise<crypto.webcrypto.CryptoKey>
+  generatePublicKey(returnPKey: true): Promise<NodeCrypto.webcrypto.CryptoKey>
   generatePublicKey(returnPKey?: false): Promise<this>
-  async generatePublicKey(returnPkey?: boolean): Promise<this | crypto.webcrypto.CryptoKey> {
+  async generatePublicKey(returnPkey?: boolean): Promise<this | NodeCrypto.webcrypto.CryptoKey> {
     if (this._publicKey) return returnPkey ? this._publicKey : this
-    this._publicKey = await crypto.subtle.importKey(
+    if (!this.crypto) await this.initCrypto()
+    this._publicKey = await this.crypto.subtle.importKey(
       'raw',
       Buffer.from(this.publicKey, 'hex'),
       this.cryptoAlgorithm,
@@ -72,6 +88,16 @@ export class NativeVerificationStratergy implements verificationStratergy {
       ['verify'],
     )
     return returnPkey ? this._publicKey : this
+  }
+  private async initCrypto() {
+    if (this.crypto) return this.crypto
+    if (typeof crypto !== 'undefined' && !isNode) {
+      this.crypto = crypto
+    } else {
+      this.crypto = (await import('node:crypto')).default
+    }
+
+    return this.crypto
   }
 }
 
