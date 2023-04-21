@@ -1,7 +1,6 @@
 {
   "name": "example_cf_worker",
   "description": "Example of using disci with a cf worker",
-  "version": "0.0.0",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230404.0",
     "@types/itty-router-extras": "^0.4.0",
