@@ -1,6 +1,5 @@
 import fetch from 'cross-fetch'
 import { URLS } from './constants'
-//import { URLSearchParams } from 'node:url'
 import { DisciRestError } from './errors'
 
 // userAgent used in requests
@@ -33,7 +32,6 @@ export class Rest implements RestClient {
   /**
    * for support of serverless and other platforms
    */
-  //private urlsearchParams: URLSearchParams
   constructor(_opts: RESTClientOptions) {
     this.authPrefix = _opts.authPrefix || 'Bot'
     this.authToken = _opts.token

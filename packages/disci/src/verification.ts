@@ -37,6 +37,7 @@ export class NativeVerificationStratergy implements verificationStratergy {
   ) {
     if (publicKey === '')
       throw new DisciTypeError(TypeErrorsMessages.ParameterRequired(`VerificationStratergy.publicKey`))
+    // if not in a node.js context switch the algorithm
     if (!isNode) {
       this.cryptoAlgorithm = {
         name: 'NODE-ED25519',
@@ -55,7 +56,6 @@ export class NativeVerificationStratergy implements verificationStratergy {
     const timestamp = req.headers[DiscordVerificationHeaders.TimeStamp]
     const signature = req.headers[DiscordVerificationHeaders.Signature]
     const { body } = req
-    console.log(body, timestamp, signature)
     if (!timestamp || !signature || !body) return false
     try {
       return this.crypto.subtle.verify(
@@ -64,8 +64,7 @@ export class NativeVerificationStratergy implements verificationStratergy {
         Buffer.from(signature, 'hex'),
         Buffer.from(timestamp + body),
       )
-    } catch (err) {
-      console.error(`Error:`, err)
+    } catch {
       return false
     }
   }
