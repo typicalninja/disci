@@ -21,6 +21,9 @@ build
 .docusaurus
 .cache-loader
 test
+.cache
+# Beta docs, not released or permanent
+docs2
 
 .vscode
 

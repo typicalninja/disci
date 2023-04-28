@@ -104,7 +104,6 @@ export abstract class BaseInteraction implements IBase {
     if (RawInteractionData.guild_id && RawInteractionData.member) {
       // from a guild
       this.member = new Member(this.handler, RawInteractionData.member)
-
       Reflect.defineProperty(this, 'user', {
         get: () => {
           return this.member?.user

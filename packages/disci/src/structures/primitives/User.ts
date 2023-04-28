@@ -1,6 +1,6 @@
-import { type APIUser, type Snowflake, Routes } from 'discord-api-types/v10';
-import type { InteractionHandler } from '../../InteractionHandler';
-import type { IBase } from '../Base';
+import { type APIUser, type Snowflake, Routes } from 'discord-api-types/v10'
+import type { InteractionHandler } from '../../InteractionHandler'
+import type { IBase } from '../Base'
 
 /**
  * Partial Class for accessing Discord Api with minimal data
@@ -17,7 +17,7 @@ export class PartialUser implements IBase {
   constructor(handler: InteractionHandler, data: { id: string }) {
     // assign the handler
     Object.defineProperty(this, 'handler', { value: handler })
-    this.id = data.id;
+    this.id = data.id
   }
   /**
    * Fetch the user this partial belongs to

@@ -8,6 +8,7 @@ import {
   APIChatInputApplicationCommandInteraction,
   APIMessageComponentInteraction,
   APIUserApplicationCommandInteraction,
+  APIMessageApplicationCommandInteraction,
 } from 'discord-api-types/v10'
 import type { InteractionHandler } from '../InteractionHandler'
 import {
@@ -56,7 +57,7 @@ export class ApplicationCommandFactory {
       case ApplicationCommandType.ChatInput:
         return new ChatInputInteraction(handler, APIData as APIChatInputApplicationCommandInteraction)
       case ApplicationCommandType.Message:
-        return new MessageCommandInteraction(handler, APIData)
+        return new MessageCommandInteraction(handler, APIData as APIMessageApplicationCommandInteraction)
       case ApplicationCommandType.User:
         return new UserCommandInteraction(handler, APIData as APIUserApplicationCommandInteraction)
       default:

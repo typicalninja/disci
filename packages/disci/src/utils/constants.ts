@@ -11,6 +11,11 @@ export enum DiscordVerificationHeaders {
   TimeStamp = 'x-signature-timestamp',
 }
 
+/**
+ * @link https://discord.com/developers/docs/reference#image-formatting
+ */
+export type DiscordImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
+
 export const DiscordEpoch = 14200704e5
 
 // Common type for interactions
@@ -55,6 +60,7 @@ export type TRespondCallback = (interaction: InteractionContext) => IResponse | 
 
 export enum URLS {
   DiscordApi = 'https://discord.com/api',
+  DiscordCdn = 'https://cdn.discordapp.com'
 }
 
 /**
