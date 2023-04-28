@@ -14,7 +14,7 @@ export enum DiscordVerificationHeaders {
 /**
  * @link https://discord.com/developers/docs/reference#image-formatting
  */
-export type DiscordImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
+export type DiscordImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096
 
 export const DiscordEpoch = 14200704e5
 
@@ -60,7 +60,7 @@ export type TRespondCallback = (interaction: InteractionContext) => IResponse | 
 
 export enum URLS {
   DiscordApi = 'https://discord.com/api',
-  DiscordCdn = 'https://cdn.discordapp.com'
+  DiscordCdn = 'https://cdn.discordapp.com',
 }
 
 /**
