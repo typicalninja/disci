@@ -32,7 +32,7 @@ To install Node.js on Linux, refer to [this page](https://nodejs.org/en/download
 
 @tab Serverless
 
-See the serverless guide [here](../serverless/README.md)
+See the serverless guide [here](../serverless/README.md#initiating-a-project)
 
 @tab Traditional
 
