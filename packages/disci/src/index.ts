@@ -2,7 +2,7 @@
 export * from './InteractionHandler'
 
 // constants/types
-export { InteractionContext, IHandlerOptions, TRespondCallback, IClientEvents } from './utils/constants'
+export { InteractionContext, IHandlerOptions, IClientEvents } from './utils/constants'
 
 // request related types
 export { IRequest, IResponse } from './utils/request'

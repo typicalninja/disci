@@ -55,9 +55,6 @@ export enum EResponseErrorMessages {
   InternalError = 'Internal Server Error occurred.',
 }
 
-/** Type used to represent the respond callback function */
-export type TRespondCallback = (interaction: InteractionContext) => IResponse | Promise<IResponse>
-
 export enum URLS {
   DiscordApi = 'https://discord.com/api',
   DiscordCdn = 'https://cdn.discordapp.com',
