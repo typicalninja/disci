@@ -15,16 +15,16 @@ type CryptoAlgorithms =
   | NodeCrypto.webcrypto.AesKeyAlgorithm
 
 /**
- * A security stratergy is used to verify incoming requests
+ * A security Strategy is used to verify incoming requests
  */
-export interface verificationStratergy {
+export interface verificationStrategy {
   verifyRequest: (req: IRequest) => Promise<boolean>
 }
 
 /**
- * A security stratergy that uses Native crypto to verify if request is incoming from discord
+ * A security Strategy that uses Native crypto to verify if request is incoming from discord
  */
-export class NativeVerificationStratergy implements verificationStratergy {
+export class NativeVerificationStrategy implements verificationStrategy {
   private _publicKey: null | NodeCrypto.webcrypto.CryptoKey = null
   private crypto!: typeof NodeCrypto | Crypto
   /**
@@ -36,7 +36,7 @@ export class NativeVerificationStratergy implements verificationStratergy {
     private cryptoAlgorithm: CryptoAlgorithms = 'Ed25519',
   ) {
     if (publicKey === '')
-      throw new DisciTypeError(TypeErrorsMessages.ParameterRequired(`VerificationStratergy.publicKey`))
+      throw new DisciTypeError(TypeErrorsMessages.ParameterRequired(`VerificationStrategy.publicKey`))
     // if not in a node.js context switch the algorithm
     if (!isNode) {
       this.cryptoAlgorithm = {
@@ -101,9 +101,9 @@ export class NativeVerificationStratergy implements verificationStratergy {
 }
 
 /**
- * Allow all request stratergy
+ * Allow all request Strategy
  */
-export class NoLimitVerificationStratergy implements verificationStratergy {
+export class NoLimitVerificationStrategy implements verificationStrategy {
   verifyRequest() {
     // since we typed it as Promise<boolean>
     return Promise.resolve(true)

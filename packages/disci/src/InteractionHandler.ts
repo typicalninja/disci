@@ -9,7 +9,7 @@ import { DisciTypeError } from './utils/errors'
 import { InteractionFactory } from './utils/Factories'
 
 import { EventEmitter } from 'node:events'
-import { NativeVerificationStratergy, NoLimitVerificationStratergy, verificationStratergy } from './verification'
+import { NativeVerificationStrategy, NoLimitVerificationStrategy, verificationStrategy } from './verification'
 import { Rest } from './utils/REST'
 
 export class InteractionHandler extends (EventEmitter as unknown as new () => TypedEmitter<IClientEvents>) {
@@ -21,20 +21,20 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
   /**
    * Verifiction stratergy for request verification
    */
-  private verificationStratergy: verificationStratergy
+  private verificationStrategy: verificationStrategy
   constructor(options: Partial<IHandlerOptions>) {
     super()
     this.options = Object.assign({}, defaultOptions, options)
-    this.verificationStratergy = this.getVerificationStratergy(this.options.verificationStratergy)
+    this.verificationStrategy = this.getVerificationStrategy(this.options.verificationStratergy)
     // rest manager is provided by the user
     this.api = new Rest(this.options.rest)
   }
-  private getVerificationStratergy(receivedStrat: verificationStratergy | null | string): verificationStratergy {
+  private getVerificationStrategy(receivedStrat: verificationStrategy | null | string): verificationStrategy {
     // null means access=all verification stratergy
-    if (receivedStrat === null) return new NoLimitVerificationStratergy()
+    if (receivedStrat === null) return new NoLimitVerificationStrategy()
     // probably provided publicKey as the verification stratergy
-    else if (typeof receivedStrat === 'string') return new NativeVerificationStratergy(receivedStrat)
-    else return receivedStrat
+    else if (typeof receivedStrat === 'string') return new NativeVerificationStrategy(receivedStrat)
+    else return receivedStrat;
   }
   /**
    * Internal function for debugging conditionally
@@ -57,7 +57,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
   async handleRequest(req: unknown): Promise<IResponse> {
     // type this as Irequest for typescript
     const receivedRequest = ValidateRequest(req as IRequest)
-    const requestVerified = await this.verificationStratergy.verifyRequest(receivedRequest)
+    const requestVerified = await this.verificationStrategy.verifyRequest(receivedRequest)
 
     if (!requestVerified) /* Auth failed */ return toResponse(EResponseErrorMessages.Unauthorized, 400)
 
