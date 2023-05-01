@@ -4,7 +4,7 @@ import { DiscordVerificationHeaders } from './utils/constants'
 import { DisciTypeError, TypeErrorsMessages } from './utils/errors'
 import { isNode } from './utils/helpers'
 
-// allows cf workers bundle this
+// allows cf workers to bundle this
 import { Buffer } from 'node:buffer'
 
 type CryptoAlgorithms =
