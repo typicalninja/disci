@@ -43,7 +43,6 @@ export default hopeTheme({
       attrs: true,
       chart: true,
       codetabs: true,
-      demo: true,
       echarts: true,
       figure: true,
       flowchart: true,
@@ -53,7 +52,6 @@ export default hopeTheme({
       include: true,
       katex: true,
       mark: true,
-      mermaid: true,
       playground: {
         presets: ["ts"],
       },
@@ -64,7 +62,6 @@ export default hopeTheme({
       sup: true,
       tabs: true,
       vPre: true,
-      vuePlayground: false,
     },
     // uncomment these if you want a pwa
     pwa: {

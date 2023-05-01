@@ -1,4 +1,5 @@
-# Setting Up a basic project
+# Preparations
+## Setting Up a basic project
 
 
 ::: tip
@@ -72,3 +73,13 @@ npm i disci@dev
 ```
 
 :::
+
+
+
+## Next
+
+
+After you have successfully setup a Project, you can get started for real,
+Choose the method your are going to host the bot with.
+
+* [Traditional](../traditional/README.md) 

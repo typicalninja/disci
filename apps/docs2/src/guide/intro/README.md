@@ -1,8 +1,9 @@
----
-sidebar_position: 0
----
-# Introduction
-[![DisciJs](https://badge.fury.io/js/disci.png)](https://badge.fury.io/js/disci)
+# Getting Started
+[![](https://badgen.net/npm/v/disci)](https://npmjs.org/package/disci)
+[![](https://badgen.net/npm/v/disci/dev)](https://npmjs.org/package/disci)
+[![](https://badgen.net/npm/dw/disci)](https://npmjs.org/package/disci)
+[![](https://badgen.net/npm/dw/disci)](https://npmjs.org/package/disci)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/75048bba-9a49-4e42-8b97-523c5a32303c/deploy-status?branch=dev)](https://app.netlify.com/sites/disci/deploys)
 
 A simple and easy to use module for creating discord bots.This packages uses discord's [Http interactions](https://discord.com/developers/docs/interactions/receiving-and-responding#receiving-an-interaction) instead of the normal Discord Gateway.
 
