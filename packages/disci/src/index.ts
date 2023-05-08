@@ -12,5 +12,5 @@ export * from './structures'
 // Rest module typings and etc
 export * from './utils/REST'
 
-// auth/security stratergy for incoming requests
+// auth/security strategy for incoming requests
 export * from './verification'

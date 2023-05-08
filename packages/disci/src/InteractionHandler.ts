@@ -25,7 +25,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
   constructor(options: Partial<IHandlerOptions>) {
     super()
     this.options = Object.assign({}, defaultOptions, options)
-    this.verificationStrategy = this.getVerificationStrategy(this.options.verificationStratergy)
+    this.verificationStrategy = this.getVerificationStrategy(this.options.verificationStrategy)
     // rest manager is provided by the user
     this.api = new Rest(this.options.rest)
   }
@@ -55,7 +55,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
    * @returns A Object containing Response Object.Does not reject
    */
   async handleRequest(req: unknown): Promise<IResponse> {
-    // type this as Irequest for typescript
+    // type this as IRequest for typescript
     const receivedRequest = ValidateRequest(req as IRequest)
     const requestVerified = await this.verificationStrategy.verifyRequest(receivedRequest)
 
@@ -75,7 +75,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
   }
   /**
    * Process a request and return a response according to the request.
-   * You must use the respctive method of returning a response to the client of your framework and return the Response back.
+   * You must use the respective method of returning a response to the client of your framework and return the Response back.
    * this does not verify if request is valid or not
    * @param req
    * @param res

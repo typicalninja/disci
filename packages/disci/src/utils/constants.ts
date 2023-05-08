@@ -1,7 +1,6 @@
-import type { verificationStratergy } from '../verification'
+import type { verificationStrategy } from '../verification'
 import type { ApplicationCommands } from '../structures/ApplicationCommand'
 import type { AutoCompleteInteraction } from '../structures/AutoCompleteInteraction'
-import type { IResponse } from './request'
 import type { RESTClientOptions } from './REST'
 import type { ComponentInteraction } from '../structures/ComponentInteraction'
 import { isNode } from './helpers'
@@ -31,7 +30,7 @@ export interface IHandlerOptions {
    * do no specify for default and specify null for allow all requests
    * specify a string (your public key) for default stratergy will use that instead of process.env.PUBLIC_KEY
    */
-  verificationStratergy: verificationStratergy | null | string
+  verificationStrategy: verificationStrategy | null | string
   /**
    * Options for built in rest client
    */
@@ -39,7 +38,7 @@ export interface IHandlerOptions {
 }
 
 export const defaultOptions: IHandlerOptions = {
-  verificationStratergy: (isNode && process.env.PUBLIC_KEY) || '',
+  verificationStrategy: (isNode && process.env.PUBLIC_KEY) || '',
   rest: {
     token: (isNode && process.env.TOKEN) || '',
   },
@@ -47,6 +46,7 @@ export const defaultOptions: IHandlerOptions = {
 
 /**
  * Error Messages Returned in HttpErrors
+ * @private
  */
 export enum EResponseErrorMessages {
   Unauthorized = 'Unable to Authorize. Check your headers',
@@ -55,6 +55,7 @@ export enum EResponseErrorMessages {
   InternalError = 'Internal Server Error occurred.',
 }
 
+/** @private */
 export enum URLS {
   DiscordApi = 'https://discord.com/api',
   DiscordCdn = 'https://cdn.discordapp.com',
@@ -75,4 +76,20 @@ export interface IClientEvents {
    * @returns
    */
   error: (err: unknown) => void
+}
+
+/**
+ * Common Request type containing required parts for our scripts
+ */
+export interface IRequest {
+  /**
+   * Body of the Request
+   */
+  body: string
+  /**
+   * Headers of the Request
+   * Used for validation
+   * @readonly
+   */
+  headers: Record<string, string>
 }
