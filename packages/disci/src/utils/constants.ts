@@ -4,6 +4,7 @@ import type { AutoCompleteInteraction } from '../structures/AutoCompleteInteract
 import type { RESTClientOptions } from './REST'
 import type { ComponentInteraction } from '../structures/ComponentInteraction'
 import { isNode } from './helpers'
+import type { APIInteractionResponse } from 'discord-api-types/v10'
 
 export enum DiscordVerificationHeaders {
   Signature = 'x-signature-ed25519',
@@ -92,4 +93,15 @@ export interface IRequest {
    * @readonly
    */
   headers: Record<string, string>
+}
+
+
+/**
+ * Data returned by handleRequest
+ */
+export interface IResponse {
+  /**
+   * Response to the request
+   */
+  responseData: APIInteractionResponse | { data: string }
 }

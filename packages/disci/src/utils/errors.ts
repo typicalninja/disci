@@ -6,6 +6,7 @@ export const TypeErrorsMessages = {
     `Expected ${value} as ${expected} ${received ? `but received ${received}` : ''}`,
   ParameterRequired: (parameter: string) => `Parameter ${parameter} is required and must not be null/undefined`,
   PropertyNotFound: (prop: string) => `No ${prop} Found`,
+  UnSupportedFeature: (feature: string) => `${feature} is unsupported currently`
 }
 
 // utility to create custom errorClasses
@@ -23,3 +24,4 @@ function createError(errorName: string) {
 export const DisciError = createError(`Error`)
 export const DisciTypeError = createError('TypeError')
 export const DisciRestError = createError(`RestError`)
+export const DisciAuthError = createError(`AuthError`)

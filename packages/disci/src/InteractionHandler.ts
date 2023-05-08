@@ -1,11 +1,10 @@
 // types for events
 import type { TypedEmitter } from './utils/TypedEmitter'
 
-import { APIInteraction, InteractionResponseType, InteractionType } from 'discord-api-types/v10'
-import { IHandlerOptions, defaultOptions, EResponseErrorMessages, IClientEvents } from './utils/constants'
-import { IRequest, IResponse, ValidateRequest, toResponse } from './utils/request'
+import { APIInteraction, APIInteractionResponse, InteractionResponseType, InteractionType } from 'discord-api-types/v10'
+import { IHandlerOptions, defaultOptions, EResponseErrorMessages, IClientEvents, IResponse, IRequest } from './utils/constants'
 import { tryAndValue } from './utils/helpers'
-import { DisciTypeError } from './utils/errors'
+import { DisciAuthError, DisciError, DisciTypeError, TypeErrorsMessages } from './utils/errors'
 import { InteractionFactory } from './utils/Factories'
 
 import { EventEmitter } from 'node:events'
@@ -53,35 +52,26 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
    * Handles a Request and returns a Response Object
    * @param Request the request from the server to handle
    * @returns A Object containing Response Object.Does not reject
+   * @example
+   * ```ts
+   * const req = { headers: {}, body: ... }
+   * <Handler>.handleRequest(req).then(() => ...dosomething)
+   * ```
    */
-  async handleRequest(req: unknown): Promise<IResponse> {
-    // type this as IRequest for typescript
-    const receivedRequest = ValidateRequest(req as IRequest)
-    const requestVerified = await this.verificationStrategy.verifyRequest(receivedRequest)
-
-    if (!requestVerified) /* Auth failed */ return toResponse(EResponseErrorMessages.Unauthorized, 400)
-
-    // process the request
-    try {
-      return await this.processRequest(receivedRequest)
-    } catch (pErr) {
-      // emit error
-      this.emit('error', pErr)
-      this.debug(`Error occurred while processing an Interaction: [${String(pErr)}]`)
-
-      // close the request
-      return toResponse(EResponseErrorMessages.InternalError, 500)
-    }
+  async handleRequest(req: IRequest): Promise<APIInteractionResponse> {
+    const requestVerified = await this.verificationStrategy.verifyRequest(req)
+    if (!requestVerified) /* Auth failed */ throw new DisciAuthError(`Could not verify this request`)
+    return await this.processRequest(req)
   }
   /**
    * Process a request and return a response according to the request.
    * You must use the respective method of returning a response to the client of your framework and return the Response back.
-   * this does not verify if request is valid or not
+   * this does not verify if request is valid or not use {@link InteractionHandler.handleRequest}
    * @param req
    * @param res
    * @returns a Response Object containing data to be responded with
    */
-  processRequest(req: IRequest): Promise<IResponse> {
+  processRequest(req: IRequest): Promise<APIInteractionResponse> {
     return new Promise((resolve, reject) => {
       // parse the request body
       const rawInteraction = tryAndValue<APIInteraction>(() => JSON.parse(req.body) as APIInteraction)
@@ -94,7 +84,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
         // assign a callback
         interaction.useCallback((response) => {
           this.debug(`Resolving Interaction with ${JSON.stringify(response)} `)
-          return resolve(toResponse(response))
+          return resolve(response)
         })
         // finally emit the event
         return this.emit('interactionCreate', interaction)
@@ -102,13 +92,12 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
       // a ping event
       else if (rawInteraction.type === InteractionType.Ping) {
         return resolve(
-          toResponse({
+          {
             type: InteractionResponseType.Pong,
-          }),
-        )
+          })
       } else {
         this.debug(`Unsupported Interaction type of ${rawInteraction.type} was received`)
-        return resolve(toResponse(EResponseErrorMessages.NotSupported, 500))
+        reject(new DisciError(TypeErrorsMessages.UnSupportedFeature(`interactionType.${rawInteraction.type}`)))
       }
     })
   }

@@ -1,6 +1,5 @@
-import type { IRequest } from './utils/request'
 import type { default as NodeCrypto } from 'node:crypto'
-import { DiscordVerificationHeaders } from './utils/constants'
+import { DiscordVerificationHeaders, IRequest } from './utils/constants'
 import { DisciTypeError, TypeErrorsMessages } from './utils/errors'
 import { isNode } from './utils/helpers'
 
