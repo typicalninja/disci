@@ -10,7 +10,7 @@
 	],
 	"rules": {
 		"@typescript-eslint/consistent-type-definitions": ["error", "interface"],
-		"turbo/no-undeclared-env-vars": "off"
+		"key-spacing":  "error"
 	},
 	"ignorePatterns": ["**/dist/*"]
 }

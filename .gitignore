@@ -24,7 +24,7 @@ test
 # Beta docs, not released or permanent
 .temp
 .cache
-apps/docs2/src/api
+api
 
 .vscode
 
