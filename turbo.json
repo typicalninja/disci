@@ -16,6 +16,7 @@
       "outputs": ["src/**"]
     },
     "lint:check": {},
-    "lint": {}
+    "lint": {},
+    "lint-staged": {}
   }
 }

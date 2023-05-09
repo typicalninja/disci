@@ -8,6 +8,7 @@
     "prettier:write": "turbo run prettier:write",
     "lint:check": "turbo run lint:check",
     "lint": "turbo run lint",
+    "lint-staged": "turbo run lint-staged",
     "prepare": "husky install"
   },
   "devDependencies": {
@@ -26,14 +27,6 @@
   "engines": {
     "node": ">=14.0.0",
     "pnpm": ">=6"
-  },
-  "lint-staged": {
-    "*.{js, jsx,ts,tsx}": [
-      "eslint --quiet --fix"
-    ],
-    "*.{json,js,ts,jsx,tsx,html}": [
-      "prettier --write"
-    ]
   },
   "packageManager": "pnpm@8.1.1"
 }
