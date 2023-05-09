@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { InteractionHandler, NativeVerificationStratergy, } from 'disci';
+import { InteractionHandler, NativeVerificationStrategy, } from 'disci';
 import { ButtonStyle } from 'discord-api-types/v10'
 import fastify, { FastifyReply, FastifyRequest } from "fastify";
 const server = fastify();
@@ -8,7 +8,7 @@ if(typeof process.env.TOKEN !== 'string' || typeof process.env.PUBLIC_KEY !== 's
 // by default will use .env
 const client = new InteractionHandler({
   debug: (msg:string) => console.log(msg),
-  verificationStratergy: new NativeVerificationStratergy(process.env.PUBLIC_KEY),
+  verificationStrategy: new NativeVerificationStrategy(process.env.PUBLIC_KEY),
   rest: {
     token: process.env.TOKEN,
   }
@@ -19,8 +19,8 @@ server.post(
   "/interactions",
   async (req: FastifyRequest, res: FastifyReply) => {
     const response = await client.handleRequest(req);
-    res.statusCode = response.statusCode || 200;
-    return response.responseData;
+    res.statusCode = 200
+    return response;
   }
 );
 
@@ -54,7 +54,7 @@ client.on('interactionCreate', async (interaction) => {
     }
     else if(interaction.isMessageMenu()) {
       await interaction.respond({
-        content: `Using Message Menu on ${interaction.targetId}`
+        content: `Using Message Menu on ${interaction}`
       });
     }
    

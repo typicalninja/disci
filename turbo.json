@@ -3,14 +3,18 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "build/*"]
+      "outputs": ["dist/**", "build/**"]
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
-    "prettier:check": {},
-    "prettier:write": {},
+    "prettier:check": {
+      "cache": false
+    },
+    "prettier:write": {
+      "outputs": ["src/**"]
+    },
     "lint:check": {},
     "lint": {}
   }

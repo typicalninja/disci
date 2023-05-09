@@ -1,14 +1,14 @@
-import type { verificationStrategy } from '../verification'
-import type { ApplicationCommands } from '../structures/ApplicationCommand'
-import type { AutoCompleteInteraction } from '../structures/AutoCompleteInteraction'
-import type { RESTClientOptions } from './REST'
-import type { ComponentInteraction } from '../structures/ComponentInteraction'
-import { isNode } from './helpers'
-import type { APIInteractionResponse } from 'discord-api-types/v10'
+import type { verificationStrategy } from "../verification"
+import type { ApplicationCommands } from "../structures/ApplicationCommand"
+import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction"
+import type { RESTClientOptions } from "./REST"
+import type { ComponentInteraction } from "../structures/ComponentInteraction"
+import { isNode } from "./helpers"
+import type { APIInteractionResponse } from "discord-api-types/v10"
 
 export enum DiscordVerificationHeaders {
-  Signature = 'x-signature-ed25519',
-  TimeStamp = 'x-signature-timestamp',
+	Signature = "x-signature-ed25519",
+	TimeStamp = "x-signature-timestamp",
 }
 
 /**
@@ -22,27 +22,27 @@ export const DiscordEpoch = 14200704e5
 export type InteractionContext = ApplicationCommands | AutoCompleteInteraction | ComponentInteraction
 
 export interface IHandlerOptions {
-  /**
-   * A debug callback function that can be used for debugging
-   */
-  debug?: (msg: string) => void
-  /**
-   * Verification stratergy used for validating incoming requests,
-   * do no specify for default and specify null for allow all requests
-   * specify a string (your public key) for default stratergy will use that instead of process.env.PUBLIC_KEY
-   */
-  verificationStrategy: verificationStrategy | null | string
-  /**
-   * Options for built in rest client
-   */
-  rest: RESTClientOptions
+	/**
+	 * A debug callback function that can be used for debugging
+	 */
+	debug?: (msg: string) => void
+	/**
+	 * Verification stratergy used for validating incoming requests,
+	 * do no specify for default and specify null for allow all requests
+	 * specify a string (your public key) for default stratergy will use that instead of process.env.PUBLIC_KEY
+	 */
+	verificationStrategy: verificationStrategy | null | string
+	/**
+	 * Options for built in rest client
+	 */
+	rest: RESTClientOptions
 }
 
 export const defaultOptions: IHandlerOptions = {
-  verificationStrategy: (isNode && process.env.PUBLIC_KEY) || '',
-  rest: {
-    token: (isNode && process.env.TOKEN) || '',
-  },
+	verificationStrategy: (isNode && process.env.PUBLIC_KEY) || "",
+	rest: {
+		token: (isNode && process.env.TOKEN) || "",
+	},
 }
 
 /**
@@ -50,58 +50,57 @@ export const defaultOptions: IHandlerOptions = {
  * @private
  */
 export enum EResponseErrorMessages {
-  Unauthorized = 'Unable to Authorize. Check your headers',
-  NotSupported = 'This Feature is not yet supported',
-  TimedOut = 'Response Timed Out',
-  InternalError = 'Internal Server Error occurred.',
+	Unauthorized = "Unable to Authorize. Check your headers",
+	NotSupported = "This Feature is not yet supported",
+	TimedOut = "Response Timed Out",
+	InternalError = "Internal Server Error occurred.",
 }
 
 /** @private */
 export enum URLS {
-  DiscordApi = 'https://discord.com/api',
-  DiscordCdn = 'https://cdn.discordapp.com',
+	DiscordApi = "https://discord.com/api",
+	DiscordCdn = "https://cdn.discordapp.com",
 }
 
 /**
  * Events fired by the handler
  */
 export interface IClientEvents {
-  /**
-   * Fired when a interaction is received
-   * @param interaction - Interaction contact
-   */
-  interactionCreate: (interaction: InteractionContext) => void
-  /**
-   * Fired when there is a error
-   * @param err
-   * @returns
-   */
-  error: (err: unknown) => void
+	/**
+	 * Fired when a interaction is received
+	 * @param interaction - Interaction contact
+	 */
+	interactionCreate: (interaction: InteractionContext) => void
+	/**
+	 * Fired when there is a error
+	 * @param err
+	 * @returns
+	 */
+	error: (err: unknown) => void
 }
 
 /**
  * Common Request type containing required parts for our scripts
  */
 export interface IRequest {
-  /**
-   * Body of the Request
-   */
-  body: string
-  /**
-   * Headers of the Request
-   * Used for validation
-   * @readonly
-   */
-  headers: Record<string, string>
+	/**
+	 * Body of the Request
+	 */
+	body: string
+	/**
+	 * Headers of the Request
+	 * Used for validation
+	 * @readonly
+	 */
+	headers: Record<string, string>
 }
-
 
 /**
  * Data returned by handleRequest
  */
 export interface IResponse {
-  /**
-   * Response to the request
-   */
-  responseData: APIInteractionResponse | { data: string }
+	/**
+	 * Response to the request
+	 */
+	responseData: APIInteractionResponse | { data: string }
 }

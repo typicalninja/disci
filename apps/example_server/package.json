@@ -1,5 +1,5 @@
 {
-  "name": "@discijs/example",
+  "name": "@example/server",
   "private": true,
   "dependencies": {
     "@discordjs/builders": "^1.6.1",

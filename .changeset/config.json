@@ -8,8 +8,7 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
-    "@discijs/example",
-    "@discijs/docs",
-    "eslint-config-custom"
+    "docs",
+    "@example/*"
   ]
 }

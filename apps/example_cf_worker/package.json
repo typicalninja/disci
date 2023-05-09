@@ -1,5 +1,5 @@
 {
-  "name": "example_cf_worker",
+  "name": "@example/serverless",
   "description": "Example of using disci with a cf worker",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230404.0",

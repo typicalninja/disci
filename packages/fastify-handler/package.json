@@ -1,0 +1,14 @@
+{
+  "name": "@discijs/fastify-handler",
+  "version": "1.0.0",
+  "description": "DisciJS support for fastify based webservers",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Apache-2.0"
+}
