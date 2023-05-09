@@ -17,6 +17,7 @@
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^8.8.0",
     "husky": "^8.0.0",
+    "lint-staged": "^13.2.2",
     "prettier": "^2.8.7",
     "tsup": "^6.6.0",
     "turbo": "latest",
@@ -25,6 +26,14 @@
   "engines": {
     "node": ">=14.0.0",
     "pnpm": ">=6"
+  },
+  "lint-staged": {
+    "*.{js, jsx,ts,tsx}": [
+      "eslint --quiet --fix"
+    ],
+    "*.{json,js,ts,jsx,tsx,html}": [
+      "prettier --write"
+    ]
   },
   "packageManager": "pnpm@8.1.1"
 }
