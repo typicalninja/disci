@@ -14,9 +14,9 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "prettier:check": "prettier --parser=typescript \"src/**/*.{js,ts}\" --check",
-    "prettier:write": "prettier --parser=typescript \"src/**/*.{js,ts}\" --write",
-    "lint:check": "eslint \"src/**/*.{js,ts}\"",
+    "prettier:check": "prettier --parser=typescript --check",
+    "prettier:write": "prettier --parser=typescript --write",
+    "lint:check": "eslint",
     "lint": "eslint",
     "lint-staged": "lint-staged"
   },
@@ -49,10 +49,8 @@
   "homepage": "https://disci.typical.gq/",
   "lint-staged": {
     "*.{js,ts}": [
+      "pnpm prettier:write",
       "pnpm lint:check"
-    ],
-    "*.{json,js,ts,jsx,tsx,html}": [
-      "pnpm prettier:write"
     ]
   }
 }

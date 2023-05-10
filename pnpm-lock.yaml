@@ -192,7 +192,18 @@ importers:
         specifier: ^6.6.0
         version: 6.6.3(typescript@5.0.4)
 
-  packages/fastify-handler: {}
+  packages/fastify-handler:
+    dependencies:
+      disci:
+        specifier: workspace:^
+        version: link:../disci
+      fastify:
+        specifier: ^4.10.2
+        version: 4.13.0
+    devDependencies:
+      tsup:
+        specifier: ^6.6.0
+        version: 6.6.3(typescript@5.0.4)
 
 packages:
 

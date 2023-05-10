@@ -21,7 +21,6 @@ build
 .docusaurus
 .cache-loader
 test
-# Beta docs, not released or permanent
 .temp
 .cache
 apps/docs/src/api
@@ -31,3 +30,8 @@ apps/docs/src/api
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# beta packages ... later
+node-verify
+
+fastify-handler
