@@ -1,52 +1,82 @@
 // types for events
-import type { TypedEmitter } from "./utils/TypedEmitter"
+import type { TypedEmitter } from "./utils/TypedEmitter";
 
-import { APIInteraction, APIInteractionResponse, InteractionResponseType, InteractionType } from "discord-api-types/v10"
-import { IHandlerOptions, defaultOptions, IClientEvents, IRequest } from "./utils/constants"
-import { tryAndValue } from "./utils/helpers"
-import { DisciAuthError, DisciError, DisciTypeError, TypeErrorsMessages } from "./utils/errors"
-import { InteractionFactory } from "./utils/Factories"
+import {
+	APIInteraction,
+	APIInteractionResponse,
+	APIInteractionResponsePong,
+	InteractionResponseType,
+	InteractionType,
+} from "discord-api-types/v10";
+import {
+	IHandlerOptions,
+	defaultOptions,
+	IClientEvents,
+	IRequest,
+} from "./utils/constants";
+import { tryAndValue } from "./utils/helpers";
+import {
+	DisciAuthError,
+	DisciError,
+	DisciTypeError,
+	TypeErrorsMessages,
+} from "./utils/errors";
+import { InteractionFactory } from "./utils/Factories";
 
-import { EventEmitter } from "node:events"
-import { NativeVerificationStrategy, NoLimitVerificationStrategy, verificationStrategy } from "./verification"
-import { Rest } from "./utils/REST"
+import { EventEmitter } from "node:events";
+import {
+	NativeVerificationStrategy,
+	NoLimitVerificationStrategy,
+	verificationStrategy,
+} from "./verification";
+import { Rest } from "./utils/REST";
+import {
+	DisciResponse,
+	ProvideResponse,
+	ResponseStatusCodes,
+} from "./requests/Response";
 
 export class InteractionHandler extends (EventEmitter as unknown as new () => TypedEmitter<IClientEvents>) {
-	options: IHandlerOptions
+	options: IHandlerOptions;
 	/**
 	 * Rest Manager
 	 */
-	api: Rest
+	api: Rest;
 	/**
 	 * Verifiction stratergy for request verification
 	 */
-	private verificationStrategy: verificationStrategy
+	private verificationStrategy: verificationStrategy;
 	constructor(options: Partial<IHandlerOptions>) {
-		super()
-		this.options = Object.assign({}, defaultOptions, options)
-		this.verificationStrategy = this.getVerificationStrategy(this.options.verificationStrategy)
+		super();
+		this.options = Object.assign({}, defaultOptions, options);
+		this.verificationStrategy = this.getVerificationStrategy(
+			this.options.verificationStrategy,
+		);
 		// rest manager is provided by the user
-		this.api = new Rest(this.options.rest)
+		this.api = new Rest(this.options.rest);
 	}
-	private getVerificationStrategy(receivedStrat: verificationStrategy | null | string): verificationStrategy {
+	private getVerificationStrategy(
+		receivedStrat: verificationStrategy | null | string,
+	): verificationStrategy {
 		// null means access=all verification stratergy
-		if (receivedStrat === null) return new NoLimitVerificationStrategy()
+		if (receivedStrat === null) return new NoLimitVerificationStrategy();
 		// probably provided publicKey as the verification stratergy
-		else if (typeof receivedStrat === "string") return new NativeVerificationStrategy(receivedStrat)
-		else return receivedStrat
+		else if (typeof receivedStrat === "string")
+			return new NativeVerificationStrategy(receivedStrat);
+		else return receivedStrat;
 	}
 	/**
 	 * Internal function for debugging conditionally
 	 */
 	private debug(msg: string) {
-		msg = "[@DISCI/HANDLER]: " + msg
+		msg = "[@DISCI/HANDLER]: " + msg;
 		if (this.options.debug) {
 			// if debug is enabled
-			if (typeof this.options.debug === "function") this.options.debug(msg)
-			else console.debug(msg)
+			if (typeof this.options.debug === "function") this.options.debug(msg);
+			else console.debug(msg);
 		}
 
-		return void 0
+		return void 0;
 	}
 	/**
 	 * Handles a Request and returns a Response Object
@@ -62,10 +92,16 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 	 * })
 	 * ```
 	 */
-	async handleRequest(req: IRequest): Promise<APIInteractionResponse> {
-		const requestVerified = await this.verificationStrategy.verifyRequest(req)
-		if (!requestVerified) /* Auth failed */ throw new DisciAuthError(`Could not verify this request`)
-		return await this.processRequest(req)
+	async handleRequest(
+		req: IRequest,
+	): Promise<DisciResponse<APIInteractionResponse>> {
+		const requestVerified = await this.verificationStrategy.verifyRequest(req);
+		if (!requestVerified)
+			/* Auth failed */ return ProvideResponse<APIInteractionResponse>(
+				{ error: "Authorization failed" },
+				ResponseStatusCodes.Unauthorized,
+			);
+		return await this.processRequest(req);
 	}
 	/**
 	 * Process a request and return a response according to the request.
@@ -75,33 +111,52 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 	 * @param res
 	 * @returns a Response Object containing data to be responded with
 	 */
-	processRequest(req: IRequest): Promise<APIInteractionResponse> {
-		return new Promise((resolve, reject) => {
+	processRequest(
+		req: IRequest,
+	): Promise<DisciResponse<APIInteractionResponse>> {
+		return new Promise((resolve) => {
 			// parse the request body
-			const rawInteraction = tryAndValue<APIInteraction>(() => JSON.parse(req.body) as APIInteraction)
-			if (!rawInteraction) return reject(new DisciTypeError(`Failed to parse rawBody into a valid ApiInteraction`))
-
+			const rawInteraction = tryAndValue<APIInteraction>(
+				() => JSON.parse(req.body) as APIInteraction,
+			);
+			if (!rawInteraction)
+				return resolve(
+					ProvideResponse<APIInteractionResponse>(
+						{ error: "Invalid interaction data" },
+						ResponseStatusCodes.BadRequest,
+					),
+				);
 			// convert rawInteraction -> interaction
-			const interaction = InteractionFactory.from(this, rawInteraction)
+			const interaction = InteractionFactory.from(this, rawInteraction);
 
 			if (interaction) {
 				// assign a callback
 				interaction.useCallback((response) => {
-					this.debug(`Resolving Interaction with ${JSON.stringify(response)} `)
-					return resolve(response)
-				})
+					this.debug(`Resolving Interaction with ${JSON.stringify(response)} `);
+					return resolve(ProvideResponse<APIInteractionResponse>(response));
+				});
 				// finally emit the event
-				return this.emit("interactionCreate", interaction)
+				return this.emit("interactionCreate", interaction);
 			}
 			// a ping event
 			else if (rawInteraction.type === InteractionType.Ping) {
-				return resolve({
-					type: InteractionResponseType.Pong,
-				})
+				return resolve(
+					ProvideResponse<APIInteractionResponse>({
+						type: InteractionResponseType.Pong,
+					}),
+				);
+				// if its not a interaction we recognize or a ping its most likely unsupported new feature
 			} else {
-				this.debug(`Unsupported Interaction type of ${rawInteraction.type} was received`)
-				reject(new DisciError(TypeErrorsMessages.UnSupportedFeature(`interactionType.${rawInteraction.type}`)))
+				this.debug(
+					`Unsupported Interaction type of ${rawInteraction.type} was received`,
+				);
+				resolve(
+					ProvideResponse<APIInteractionResponse>(
+						{ error: "Feature is not supported" },
+						ResponseStatusCodes.BadRequest,
+					),
+				);
 			}
-		})
+		});
 	}
 }
