@@ -9,32 +9,35 @@ import {
 	APIMessageComponentInteraction,
 	APIUserApplicationCommandInteraction,
 	APIMessageApplicationCommandInteraction,
-} from "discord-api-types/v10"
-import type { InteractionHandler } from "../InteractionHandler"
+} from "discord-api-types/v10";
+import type { InteractionHandler } from "../InteractionHandler";
 import {
 	type ApplicationCommands,
 	ChatInputInteraction,
 	MessageCommandInteraction,
 	UserCommandInteraction,
-} from "../structures/ApplicationCommand"
-import { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction"
-import type { InteractionContext } from "./constants"
-import { ComponentInteraction } from "../structures/ComponentInteraction"
+} from "../structures/ApplicationCommand";
+import { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
+import type { InteractionContext } from "./constants";
+import { ComponentInteraction } from "../structures/ComponentInteraction";
 
 /**
  * Factory for all base Interactions
  */
 export class InteractionFactory {
-	static from(handler: InteractionHandler, APIData: APIInteraction): InteractionContext | null {
+	static from(
+		handler: InteractionHandler,
+		APIData: APIInteraction,
+	): InteractionContext | null {
 		switch (APIData.type) {
 			case InteractionType.ApplicationCommand:
-				return ApplicationCommandFactory.from(handler, APIData)
+				return ApplicationCommandFactory.from(handler, APIData);
 			case InteractionType.ApplicationCommandAutocomplete:
-				return new AutoCompleteInteraction(handler, APIData)
+				return new AutoCompleteInteraction(handler, APIData);
 			case InteractionType.MessageComponent:
-				return ComponentInteractionFactory.from(handler, APIData)
+				return ComponentInteractionFactory.from(handler, APIData);
 			default:
-				return null
+				return null;
 		}
 	}
 }
@@ -43,8 +46,11 @@ export class InteractionFactory {
  * Factory for components
  */
 export class ComponentInteractionFactory {
-	static from(handler: InteractionHandler, apiData: APIMessageComponentInteraction) {
-		return new ComponentInteraction(handler, apiData)
+	static from(
+		handler: InteractionHandler,
+		apiData: APIMessageComponentInteraction,
+	) {
+		return new ComponentInteraction(handler, apiData);
 	}
 }
 
@@ -52,16 +58,28 @@ export class ComponentInteractionFactory {
  * Factory for Application Commands
  */
 export class ApplicationCommandFactory {
-	static from(handler: InteractionHandler, APIData: APIApplicationCommandInteraction): ApplicationCommands | null {
+	static from(
+		handler: InteractionHandler,
+		APIData: APIApplicationCommandInteraction,
+	): ApplicationCommands | null {
 		switch (APIData.data.type) {
 			case ApplicationCommandType.ChatInput:
-				return new ChatInputInteraction(handler, APIData as APIChatInputApplicationCommandInteraction)
+				return new ChatInputInteraction(
+					handler,
+					APIData as APIChatInputApplicationCommandInteraction,
+				);
 			case ApplicationCommandType.Message:
-				return new MessageCommandInteraction(handler, APIData as APIMessageApplicationCommandInteraction)
+				return new MessageCommandInteraction(
+					handler,
+					APIData as APIMessageApplicationCommandInteraction,
+				);
 			case ApplicationCommandType.User:
-				return new UserCommandInteraction(handler, APIData as APIUserApplicationCommandInteraction)
+				return new UserCommandInteraction(
+					handler,
+					APIData as APIUserApplicationCommandInteraction,
+				);
 			default:
-				return null
+				return null;
 		}
 	}
 }
