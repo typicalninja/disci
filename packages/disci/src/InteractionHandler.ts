@@ -4,7 +4,6 @@ import type { TypedEmitter } from "./utils/TypedEmitter";
 import {
 	APIInteraction,
 	APIInteractionResponse,
-	APIInteractionResponsePong,
 	InteractionResponseType,
 	InteractionType,
 } from "discord-api-types/v10";
@@ -15,12 +14,6 @@ import {
 	IRequest,
 } from "./utils/constants";
 import { tryAndValue } from "./utils/helpers";
-import {
-	DisciAuthError,
-	DisciError,
-	DisciTypeError,
-	TypeErrorsMessages,
-} from "./utils/errors";
 import { InteractionFactory } from "./utils/Factories";
 
 import { EventEmitter } from "node:events";
