@@ -21,7 +21,9 @@ const client = new InteractionHandler({
 server.post(
   "/interactions",
   async (req: FastifyRequest, res: FastifyReply) => {
-    const response = await client.handleRequest(req);
+    const response = await client.handleRequest({
+      body: req
+    });
     res.statusCode = 200
     return response;
   }

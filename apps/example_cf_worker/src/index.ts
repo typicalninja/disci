@@ -1,4 +1,4 @@
-import { InteractionHandler, NativeVerificationStratergy } from 'disci'
+import { InteractionHandler, NativeVerificationStrategy } from 'disci'
 import { IRequest } from 'itty-router'
 import { ThrowableRouter, withContent, StatusError, status, error } from 'itty-router-extras'
 
@@ -22,7 +22,7 @@ export default {
     if (env.handler === undefined) {
       env.handler = new InteractionHandler({
        // add in dev: debug: (msg: string) => console.log(msg),
-        verificationStratergy: new NativeVerificationStratergy(env.PUBLIC_KEY),
+        verificationStrategy: new NativeVerificationStrategy(env.PUBLIC_KEY),
         rest: {
           token: env.TOKEN,
         },
@@ -71,7 +71,7 @@ function buildRouter(env: Env): ThrowableRouter {
       })
       .catch((err) => console.log(err))
     if (!response) throw new StatusError(500, 'server Error')
-    return status(response.statusCode, response.responseData)
+    return status(response.status, response.content)
   })
 
   router.all('*', () => new Response('Not Found.', { status: 404 }))
