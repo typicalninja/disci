@@ -41,22 +41,18 @@ export default class User extends PartialUser {
 	 */
 	username: string;
 	/**
-	 * The user's 4-digit discord-tag
-	 */
-	discriminator: string;
-	/**
 	 * Create a new user from discord data
 	 * @param apiData - data from discord api
 	 */
 	constructor(handler: InteractionHandler, public apiData: APIUser) {
 		super(handler, { id: apiData.id });
-		this.discriminator = apiData.discriminator;
 		this.username = apiData.username;
 	}
 	/**
-	 * Tag of this user. [username#discriminator]
+	 * Tag of this user.
+	 * @deprecated tag is no longer relevant
 	 */
 	get tag() {
-		return `${this.username}#${this.discriminator}`;
+		return `${this.username}`;
 	}
 }
