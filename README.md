@@ -1,7 +1,14 @@
-# DisciJs
+# 🎨 DisciJs
 
-Easy to use library for creating discord applications via interaction webhooks
-# Install
+Easy to use library for creating discord applications via interaction webhooks.
+
+# 📦 Monorepo
+
+This is the monorepo for disci.js, you can find the disci package readme [here](./packages/disci/README.md)
+
+# 🚀 Install
+
+Use any of the following commands
 
 ```bash
 
@@ -17,16 +24,15 @@ pnpm add disci
 
 ```
 
-# Development
+# 💻 Development
 
-* Development is done in /dev branch and on each new version, dev will be merged with main
-GH action will deploy docs if there is anything is pushed to /main
+* Development is done in `dev`` branch.
 
-* dev snapshot releases will be published to @dev tag to npm using snapshot release workflow
+* dev snapshot releases will be published to @dev tag to npm.
 
-# Links
+# 🔗 Links
 
-* [Documentation & Guide](https://disci.typical.gq)
+* [Documentation & Guide](https://dev--disci.netlify.app/)
 * [Npm](https://www.npmjs.com/package/disci)
 * [Github](https://github.com/typicalninja493/disci)
 * [Discord Server](https://discord.gg/9s52pz6nWX)
