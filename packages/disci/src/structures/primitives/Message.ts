@@ -75,7 +75,7 @@ export default class Message implements IBase {
 	author?: User;
 	timestamp: number;
 	editedTimestamp: number | null;
-	webhhok?: {
+	webhook?: {
 		id: string;
 		username: string;
 		discriminator: string;
@@ -103,7 +103,7 @@ export default class Message implements IBase {
 		} else if (apiData.author.discriminator === "0000") {
 			// from webhook
 			console.log("webhook:", apiData.author, "id:", apiData.webhook_id);
-			this.webhhok = {
+			this.webhook = {
 				id: apiData.webhook_id,
 				username: apiData.author.username,
 				discriminator: apiData.author.discriminator,
