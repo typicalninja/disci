@@ -2,35 +2,31 @@
   "name": "@discijs/main",
   "private": true,
   "scripts": {
-    "build": "turbo run build",
-    "build:packages": "yarn run build:disci",
-    "build:disci": "turbo run build --filter=disci",
-    "build:docs": "turbo run build --filter=@discijs/docs",
-    "build:forge": "turbo run build --filter=@discijs/forge",
-    "build:utils": "turbo run build --filter=@discijs/utils",
+    "build": "turbo run build --parallel",
     "dev": "turbo run dev --parallel",
-    "dev:disci": "turbo run dev --filter=disci",
-    "dev:docs": "turbo run dev --filter=@discijs/docs",
-    "dev:example": "turbo run dev --filter=@discijs/example",
-    "serve:docs": "turbo run serve --filter=@discijs/docs",
+    "prettier:check": "turbo run prettier:check",
+    "prettier:write": "turbo run prettier:write",
+    "lint:check": "turbo run lint:check",
     "lint": "turbo run lint",
-    "format": "turbo run format",
-    "release": "pnpm run build:packages && pnpm run alpha:publish",
-    "alpha:publish": "changesets publish --tag alpha",
-    "alpha:version": "changeset version --snapshot alpha"
+    "lint-staged": "turbo run lint-staged",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
-    "eslint-config-custom": "workspace:*",
+    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "@typescript-eslint/parser": "^5.51.0",
+    "eslint": "^8.38.0",
+    "eslint-config-prettier": "^8.8.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.2.2",
+    "prettier": "^2.8.7",
     "tsup": "^6.6.0",
     "turbo": "latest",
     "typescript": "5.0.4"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=14.0.0",
+    "pnpm": ">=6"
   },
-  "packageManager": "pnpm@8.1.1",
-  "dependencies": {
-    "prettier": "^2.8.7"
-  }
+  "packageManager": "pnpm@8.1.1"
 }

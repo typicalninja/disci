@@ -5,8 +5,8 @@ import type { InteractionHandler } from "../InteractionHandler";
  * All toplevel structures MUST implement this structure
  */
 export interface IBase {
-    /**
-     * The InteractionHandler that initialised this structure
-     */
-    readonly handler: InteractionHandler
+	/**
+	 * The InteractionHandler that initialised this structure
+	 */
+	readonly handler: InteractionHandler;
 }

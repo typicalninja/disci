@@ -1,0 +1,11 @@
+{
+    "name": "{{name}}",
+    "private": true,
+    "scripts": {
+        "dev": "{{packageManager}}"
+    },
+    "dependencies": {
+        "dotenv": "^16.0.3",
+        "fastify": "^4.10.2"
+    }
+}

@@ -15,14 +15,23 @@ build
 .env.test.local
 .env.production.local
 .env
-
+.dev.vars
 
 # docs
 .docusaurus
 .cache-loader
+test
+.temp
+.cache
+apps/docs/src/api
 
 .vscode
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# beta packages ... later
+node-verify
+
+fastify-handler

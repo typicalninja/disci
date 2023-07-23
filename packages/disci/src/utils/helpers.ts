@@ -1,23 +1,38 @@
 import type { Snowflake } from "discord-api-types/globals";
+import { DiscordEpoch } from "./constants";
 
-export const DiscordEpoch = 14200704e5;
 /**
  * Converts a discord id to a timestamp
  * @param id - SnowFlake id
- * @returns 
+ * @returns
  */
 export const convertSnowflakeToTimeStamp = (id: Snowflake): number => {
-    // just a little hack, since ids are too large 
-    const milliseconds = BigInt(id) >> 22n
-    return Number(milliseconds) + DiscordEpoch
-}
+	// just a little hack, since ids are too large
+	const milliseconds = BigInt(id) >> 22n;
+	return Number(milliseconds) + DiscordEpoch;
+};
 
 /** encapsulates a fn in try catch block and return value/null */
-export function tryAndValue<ReturnType> (fn: () => ReturnType) {
-    try {
-        return fn();
-    }
-    catch {
-        return null;
-    }
+export function tryAndValue<ReturnType>(fn: () => ReturnType) {
+	try {
+		return fn();
+	} catch {
+		return null;
+	}
 }
+
+/**
+ * Checks if a value is a object
+ */
+export const isObject = (value: unknown) =>
+	value !== null && typeof value === "object" && !Array.isArray(value);
+
+/**
+ * Detect if current runtime is node.js
+ * from is-node (npm)
+ */
+export const isNode = !!(
+	typeof process !== "undefined" &&
+	process.versions &&
+	process.versions.node
+);

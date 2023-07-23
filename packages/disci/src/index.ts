@@ -3,31 +3,23 @@ export * from "./InteractionHandler";
 
 // constants/types
 export {
-  InteractionContext,
-  IHandlerOptions,
-  TRespondCallback,
-  IClientEvents
+	InteractionContext,
+	IHandlerOptions,
+	IClientEvents,
 } from "./utils/constants";
 
-// request related types
+// Structures
+export * from "./structures";
+// Rest module typings and etc
+export * from "./utils/REST";
+
+// auth/security strategy for incoming requests
+export * from "./verification";
+
+// diff error types
 export {
-  IRequest,
-  IResponse
-} from "./utils/request";
-
-
-export * from "./structures/Bitfield";
-
-
-// Builders
-export { Embed as EmbedBuilder } from "./structures/Embed"; 
-
-export { ChatInputInteraction } from "./structures/ApplicationCommand";
-
-export * from './utils/REST'
-
-// auth/security stratergy for incoming requests
-export * from './verification';
-
-// Primitives Export
-export * from './structures/primitives/Message'
+	DisciError,
+	DisciAuthError,
+	DisciTypeError,
+	DisciRestError,
+} from "./utils/errors";
