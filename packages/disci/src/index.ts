@@ -13,9 +13,6 @@ export * from "./structures";
 // Rest module typings and etc
 export * from "./utils/REST";
 
-// auth/security strategy for incoming requests
-export * from "../../../tmp/verification";
-
 // diff error types
 export {
 	DisciError,

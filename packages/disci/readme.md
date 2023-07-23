@@ -19,6 +19,14 @@ pnpm add disci
 
 ```
 
+# Overview
+
+DisciJs contains the minimum code to create a discord application with the new (relatively) interaction webhook system. DisciJs does not itself include validation of received interactions, we expect the **user** to handle that before passing us the data.
+
+You can use [discord-interactions-js](https://github.com/discord/discord-interactions-js) for validation of received requests
+
+> Guides and more can be found [here](https://dev--disci.netlify.app/)
+
 # Links
 
 * [Documentation & Guide](https://dev--disci.netlify.app/)

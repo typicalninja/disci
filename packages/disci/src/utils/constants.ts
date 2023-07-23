@@ -1,10 +1,8 @@
-import type { verificationStrategy } from "../../../../tmp/verification";
 import type { ApplicationCommands } from "../structures/ApplicationCommand";
 import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
 import type { RESTClientOptions } from "./REST";
 import type { ComponentInteraction } from "../structures/ComponentInteraction";
 import { isNode } from "./helpers";
-import type { APIInteractionResponse } from "discord-api-types/v10";
 
 export enum DiscordVerificationHeaders {
 	Signature = "x-signature-ed25519",
@@ -39,19 +37,12 @@ export interface IHandlerOptions {
 	 */
 	debug?: (msg: string) => void;
 	/**
-	 * Verification stratergy used for validating incoming requests,
-	 * do no specify for default and specify null for allow all requests
-	 * specify a string (your public key) for default stratergy will use that instead of process.env.PUBLIC_KEY
-	 */
-	verificationStrategy: verificationStrategy | null | string;
-	/**
 	 * Options for built in rest client
 	 */
 	rest: RESTClientOptions;
 }
 
 export const defaultOptions: IHandlerOptions = {
-	verificationStrategy: (isNode && process.env.PUBLIC_KEY) || "",
 	rest: {
 		token: (isNode && process.env.TOKEN) || "",
 	},
@@ -89,30 +80,4 @@ export interface IClientEvents {
 	 * @returns
 	 */
 	error: (err: unknown) => void;
-}
-
-/**
- * Common Request type containing required parts for our scripts
- */
-export interface IRequest {
-	/**
-	 * Body of the Request
-	 */
-	body: string;
-	/**
-	 * Headers of the Request
-	 * Used for validation
-	 * @readonly
-	 */
-	headers: Record<string, string>;
-}
-
-/**
- * Data returned by handleRequest
- */
-export interface IResponse {
-	/**
-	 * Response to the request
-	 */
-	responseData: APIInteractionResponse | { data: string };
 }

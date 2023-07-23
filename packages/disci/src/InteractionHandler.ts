@@ -11,7 +11,6 @@ import {
 	IHandlerOptions,
 	defaultOptions,
 	IClientEvents,
-	IRequest,
 } from "./utils/constants";
 import { tryAndValue } from "./utils/helpers";
 import { InteractionFactory } from "./utils/Factories";
@@ -46,17 +45,16 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 	}
 	/**
 	 * Process a request and return a response according to the request.
-	 * You must use the respective method of returning a response to the client of your framework and return the Response back.
-	 * this does not verify if request is valid or not use {@link InteractionHandler.handleRequest}
-	 * @param req
-	 * @param res
+	 * You must use the respective method of returning a response to the client of your framework and return the Response back with the appropriate statusCode.
+	 * This does not verify the validity of the request
+	 * @param body body of the received request
 	 * @returns a Response Object containing data to be responded with
 	 */
-	processRequest(req: IRequest): Promise<APIInteractionResponse> {
+	processRequest(body: string): Promise<APIInteractionResponse> {
 		return new Promise((resolve) => {
 			// parse the request body
 			const rawInteraction = tryAndValue<APIInteraction>(
-				() => JSON.parse(req.body) as APIInteraction,
+				() => JSON.parse(body) as APIInteraction,
 			);
 			if (!rawInteraction)
 				throw new TypeError(

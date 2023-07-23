@@ -6,6 +6,10 @@ Easy to use library for creating discord applications via interaction webhooks.
 
 This is the monorepo for disci.js, you can find the disci package readme [here](./packages/disci/readme.md)
 
+All packages are in ./packages directory 
+
+while Examples and Documentation is in ./apps directory
+
 # 🚀 Install
 
 Use any of the following commands, belonging to your package manager
