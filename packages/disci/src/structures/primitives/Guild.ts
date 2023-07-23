@@ -124,9 +124,7 @@ export default class Guild extends PartialGuild {
 				this.id,
 				this.iconHash,
 				opts.format ??
-					(this.iconHash.startsWith("a_")
-						? ImageFormat.JPEG
-						: ImageFormat.JPEG),
+					(this.iconHash.startsWith("a_") ? ImageFormat.GIF : ImageFormat.JPEG),
 			)}`
 		);
 	}

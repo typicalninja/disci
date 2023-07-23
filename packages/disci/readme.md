@@ -7,7 +7,6 @@ Easy to use library for creating discord applications via interaction webhooks.
 Use any of the following commands
 
 ```bash
-
 npm install disci
 
 # yarn

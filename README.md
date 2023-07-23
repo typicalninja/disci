@@ -8,7 +8,9 @@ This is the monorepo for disci.js, you can find the disci package readme [here](
 
 # 🚀 Install
 
-Use any of the following commands
+Use any of the following commands, belonging to your package manager
+
+> We suggest you use [pnpm](https://pnpm.io/) however the choice is yours
 
 ```bash
 

@@ -1,6 +1,6 @@
 import { InteractionHandler, NativeVerificationStrategy } from 'disci'
 import { IRequest } from 'itty-router'
-import { ThrowableRouter, withContent, StatusError, status, error } from 'itty-router-extras'
+import { ThrowableRouter, withContent, StatusError, status } from 'itty-router-extras'
 
 type RequestWith = {
   content: string[]
