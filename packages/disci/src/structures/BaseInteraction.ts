@@ -88,7 +88,7 @@ export abstract class BaseInteraction implements IBase {
 	member?: Member;
 	private _callback!: TcallbackFn;
 	/**
-	 * Handler than initated this class
+	 * Handler than initiated this class
 	 */
 	handler!: InteractionHandler;
 	guildLocale: LocaleString | null;

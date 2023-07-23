@@ -47,7 +47,9 @@ export class AutoCompleteInteraction extends BaseInteraction implements IBase {
 		this.options = new InteractionOptions(data.options ?? []);
 	}
 	/**
-	 * Sends the autoComplete choices.Set to empty array for "No choices"
+	 * Send autocomplete results
+	 *
+	 * Set to empty array for "No choices"
 	 */
 	respondWithChoices(choices: (APIApplicationCommandOptionChoice | string)[]) {
 		if (!Array.isArray(choices))
