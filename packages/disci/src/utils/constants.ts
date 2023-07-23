@@ -1,4 +1,4 @@
-import type { verificationStrategy } from "../verification";
+import type { verificationStrategy } from "../../../../tmp/verification";
 import type { ApplicationCommands } from "../structures/ApplicationCommand";
 import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
 import type { RESTClientOptions } from "./REST";

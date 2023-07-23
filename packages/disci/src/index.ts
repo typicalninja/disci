@@ -14,7 +14,7 @@ export * from "./structures";
 export * from "./utils/REST";
 
 // auth/security strategy for incoming requests
-export * from "./verification";
+export * from "../../../tmp/verification";
 
 // diff error types
 export {
