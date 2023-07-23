@@ -1,14 +1,21 @@
-# Interaction Server
+# DisciJs
 
-**NOTE**: This is not production ready and is a Hobby Project/ custom library for my own bot, your welcome to use it.However do **NOT** expect full support for this module 
+Easy to use library for creating discord applications via interaction webhooks
+# Install
 
-**NOTE**: Current build is more of a placeholder than a alpha project please do not use.
-# Name
+```bash
 
-**NOTE**: Project is still in ALPHA stage 
+npm install disci
 
-> Disci -> Disc = Discord | i = interactions
-> Disci = Discord interactions
+# yarn
+
+yarn add disci
+
+# pnpm
+
+pnpm add disci
+
+```
 
 # Development
 
@@ -27,7 +34,3 @@ GH action will deploy docs if there is anything is pushed to /main
 # License
 
 This repository and the code inside it is licensed under the Apache-2.0 License. Read [LICENSE](https://github.com/typicalninja493/disci/blob/master/LICENSE) for more information.
-
-# Inspiration
-
-* [Biscuit](https://github.com/oasisjs/biscuit/) 
