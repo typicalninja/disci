@@ -25,6 +25,13 @@ DisciJs contains the minimum code to create a discord application with the new (
 
 You can use [discord-interactions-js](https://github.com/discord/discord-interactions-js) for validation of received requests
 
+This package expects you to have **prior knowledge of javascript / typescript** and **prior knowledge with interacting with the discord api** via either,
+
+1. The raw api
+2. or other discord libraries (like discord.js)
+
+The library will only error out on certain occasions and for other occasions use is expected to handle the error via api errors received
+
 > Guides and more can be found [here](https://dev--disci.netlify.app/)
 
 # Links

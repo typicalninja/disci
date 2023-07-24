@@ -18,6 +18,10 @@ Use any of the following commands, belonging to your package manager
 
 ```bash
 
+# Install the base package
+
+# if npm
+
 npm install disci
 
 # yarn
