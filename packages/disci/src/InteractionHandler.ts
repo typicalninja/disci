@@ -48,10 +48,15 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 	 * You must use the respective method of returning a response to the client of your framework and return the Response back with the appropriate statusCode.
 	 * This does not verify the validity of the request
 	 * @param body body of the received request
+	 * @param signal Abort controller signal allow you to control when the handler ends (timeouts etc)
 	 * @returns a Response Object containing data to be responded with
 	 */
-	processRequest(body: string): Promise<APIInteractionResponse> {
+	processRequest(
+		body: string,
+		signal?: AbortSignal,
+	): Promise<APIInteractionResponse> {
 		return new Promise((resolve, reject) => {
+			if (signal?.aborted) return reject(signal.reason);
 			// parse the request body
 			const rawInteraction = tryAndValue<APIInteraction>(
 				() =>
@@ -73,6 +78,13 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 					return resolve(response);
 				});
 				// finally emit the event
+
+				if (signal) {
+					signal.addEventListener("abort", () => {
+						reject(signal.reason);
+					});
+				}
+
 				return this.emit("interactionCreate", interaction);
 			}
 			// a ping event
