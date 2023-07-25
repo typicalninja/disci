@@ -30,9 +30,17 @@ This package expects you to have **prior knowledge of javascript / typescript** 
 1. The raw api
 2. or other discord libraries (like discord.js)
 
-The library will only error out on certain occasions and for other occasions use is expected to handle the error via api errors received
+The library will only error out on certain occasions and for other occasions user is expected to handle the error via api errors received
 
 > Guides and more can be found [here](https://dev--disci.netlify.app/)
+
+# Nodejs version
+
+This only apply if you plan to use disci in a server environment.
+Disci uses the [fetch]() api for its built in rest module which is **Already** available in
+serverless environments (such as cloudflare workers).
+However Native fetch api for node.js is implemented in node.js v18+
+as such this Module requires node.js version 18+ to be used
 
 # Links
 
