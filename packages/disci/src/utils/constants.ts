@@ -2,12 +2,6 @@ import type { ApplicationCommands } from "../structures/ApplicationCommand";
 import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
 import type { RESTClientOptions } from "./REST";
 import type { ComponentInteraction } from "../structures/ComponentInteraction";
-import { isNode } from "./helpers";
-
-export enum DiscordVerificationHeaders {
-	Signature = "x-signature-ed25519",
-	TimeStamp = "x-signature-timestamp",
-}
 
 /**
  * @link https://discord.com/developers/docs/reference#image-formatting
@@ -44,20 +38,9 @@ export interface IHandlerOptions {
 
 export const defaultOptions: IHandlerOptions = {
 	rest: {
-		token: (isNode && process.env.TOKEN) || "",
+		token: (typeof process !== "undefined" && process.env.TOKEN) || "",
 	},
 };
-
-/**
- * Error Messages Returned in HttpErrors
- * @private
- */
-export enum EResponseErrorMessages {
-	Unauthorized = "Unable to Authorize. Check your headers",
-	NotSupported = "This Feature is not yet supported",
-	TimedOut = "Response Timed Out",
-	InternalError = "Internal Server Error occurred.",
-}
 
 /** @private */
 export enum URLS {

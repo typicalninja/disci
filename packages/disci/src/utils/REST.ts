@@ -1,4 +1,3 @@
-import fetch from "cross-fetch";
 import { URLS } from "./constants";
 import { DisciRestError } from "./errors";
 
