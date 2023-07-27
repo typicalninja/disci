@@ -27,9 +27,9 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 	 * Handler Rest Manager
 	 */
 	api: Rest;
-	constructor(options: Partial<IHandlerOptions>) {
+	constructor(options: Partial<IHandlerOptions> = {}) {
 		super();
-		this.options = Object.assign({}, defaultOptions, options);
+		this.options = Object.assign(defaultOptions, options);
 		this.api = new Rest(this.options.rest);
 	}
 	/**
@@ -60,7 +60,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 	 * // get the request here
 	 *
 	 * // verify it here
-	 * if(!(await isVerified(request))) return new Response(401, 'Unauthorized')
+	 * if(!(await isVerified(request))) return new Response("Invalid Headers, Unauthorized", { status: 401 })
 	 *
 	 *	const timeOutAbort = new AbortController();
 	 *	const timeout = setTimeout(() => {
@@ -73,10 +73,10 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 	 * 	// remember to remove the timeout
 	 * 	clearTimeout(timeout)
 	 * 	// it safe to return the response as a json response
-	 * 	return new Response(200, handled)
+	 * 	return new Response(handled, { status: 200 })
 	 * }
 	 * catch {
-	 * 	return new Response(500, 'Internal error')
+	 * 	return new Response("Server Error", { status: 500 })
 	 * }
 	 * ```
 	 */
