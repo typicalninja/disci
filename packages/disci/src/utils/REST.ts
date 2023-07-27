@@ -1,5 +1,6 @@
 import { URLS } from "./constants";
 import { DisciRestError } from "./errors";
+import { tryAndValue } from "./helpers";
 
 // userAgent used in requests
 const UserAgent =
@@ -16,7 +17,10 @@ export interface RestClient {
 }
 
 export interface RESTClientOptions {
-	token: string;
+	/**
+	 * Client token, alternatively provide it with <rest>.setToken
+	 */
+	token?: string;
 	authPrefix?: "bot";
 	rootUrl?: string;
 }
@@ -27,7 +31,7 @@ export interface RESTCommonOptions {
 }
 
 /**
- * Default rest handler, built for serverLess Environments without any ratelimit checks
+ * Default rest handler, built for serverLess Environments without any rate limit checks
  */
 export class Rest implements RestClient {
 	authPrefix: string;
@@ -38,12 +42,25 @@ export class Rest implements RestClient {
 	 */
 	constructor(_opts: RESTClientOptions) {
 		this.authPrefix = _opts.authPrefix || "Bot";
-		this.authToken = _opts.token;
+		this.authToken = _opts.token || "";
 		this.rootUrl = _opts.rootUrl
 			? _opts.rootUrl.endsWith("/")
 				? _opts.rootUrl.slice(0, _opts.rootUrl.length - 1)
 				: _opts.rootUrl
 			: URLS.DiscordApi;
+	}
+	/**
+	 * Set the current active token, request may fail if this is not set
+	 * @param token
+	 * @returns
+	 */
+	setToken(token: string) {
+		if (typeof token !== "string" || token === "")
+			throw new TypeError(
+				`Token must be a valid string, received ${typeof token}`,
+			);
+		this.authToken = token;
+		return this;
 	}
 	async makeRequest<T>(
 		method: string,
@@ -54,15 +71,15 @@ export class Rest implements RestClient {
 			method,
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: this.authheader,
+				Authorization: this.authHeader,
 				"User-Agent": UserAgent,
 				...opts?.headers,
 			},
 			body: JSON.stringify(opts?.body),
 		});
 
-		if (req.status >= 400) {
-			const errors = await req.json();
+		if (!req.ok) {
+			const errors = await tryAndValue(() => req.json());
 			throw new DisciRestError(
 				`Request to [${method}:${path}] returned ${req.status} [${req.statusText}]`,
 				{
@@ -108,7 +125,7 @@ export class Rest implements RestClient {
 		}
 		return url;
 	}
-	get authheader() {
+	get authHeader() {
 		return `${this.authPrefix} ${this.authToken}`;
 	}
 }
