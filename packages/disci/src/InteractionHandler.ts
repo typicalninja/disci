@@ -1,5 +1,6 @@
 // types for events
 import type { TypedEmitter } from "./utils/TypedEmitter";
+import { EventEmitter } from "node:events";
 
 import {
 	APIInteraction,
@@ -15,19 +16,20 @@ import {
 import { tryAndValue } from "./utils/helpers";
 import { InteractionFactory } from "./utils/Factories";
 
-import { EventEmitter } from "node:events";
 import { Rest } from "./utils/REST";
 
+/**
+ * Main Handler class, handles incoming request and outputs a response
+ */
 export class InteractionHandler extends (EventEmitter as unknown as new () => TypedEmitter<IClientEvents>) {
 	options: IHandlerOptions;
 	/**
-	 * Rest Manager
+	 * Handler Rest Manager
 	 */
 	api: Rest;
 	constructor(options: Partial<IHandlerOptions>) {
 		super();
 		this.options = Object.assign({}, defaultOptions, options);
-		// rest manager is provided by the user
 		this.api = new Rest(this.options.rest);
 	}
 	/**
@@ -45,17 +47,45 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 	}
 	/**
 	 * Process a request and return a response according to the request.
-	 * You must use the respective method of returning a response to the client of your framework and return the Response back with the appropriate statusCode.
 	 * This does not verify the validity of the request
+	 *
 	 * @param body body of the received request
 	 * @param signal Abort controller signal allow you to control when the handler ends (timeouts etc)
-	 * @returns a Response Object containing data to be responded with
+	 * @returns A json object containing data to be responded with
+	 *
+	 *
+	 * @example
+	 *
+	 * ```ts
+	 * // get the request here
+	 *
+	 * // verify it here
+	 * if(!(await isVerified(request))) return new Response(401, 'Unauthorized')
+	 *
+	 *	const timeOutAbort = new AbortController();
+	 *	const timeout = setTimeout(() => {
+	 *		timeOutAbort.abort("Time out");
+	 *	}, 3000);
+	 *
+	 * try {
+	 * 	const handled = await processRequest(body, timeOutAbort.signal)
+	 * 	// if it resolved that means handler successfully resolved
+	 * 	// remember to remove the timeout
+	 * 	clearTimeout(timeout)
+	 * 	// it safe to return the response as a json response
+	 * 	return new Response(200, handled)
+	 * }
+	 * catch {
+	 * 	return new Response(500, 'Internal error')
+	 * }
+	 * ```
 	 */
 	processRequest(
-		body: string,
+		body: string | Record<string, unknown>,
 		signal?: AbortSignal,
 	): Promise<APIInteractionResponse> {
 		return new Promise((resolve, reject) => {
+			// check if the request should be immediately aborted
 			if (signal?.aborted) return reject(signal.reason);
 			// parse the request body
 			const rawInteraction = tryAndValue<APIInteraction>(
@@ -77,13 +107,17 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 					this.debug(`Resolving Interaction with ${JSON.stringify(response)} `);
 					return resolve(response);
 				});
-				// finally emit the event
-
+				// register a event to check for aborts
 				if (signal) {
 					signal.addEventListener("abort", () => {
+						interaction.useCallback(() => {
+							throw new Error(`Interaction timed out (via abort)`);
+						});
 						reject(signal.reason);
 					});
 				}
+
+				// finally emit the event
 
 				return this.emit("interactionCreate", interaction);
 			}
