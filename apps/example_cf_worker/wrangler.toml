@@ -1,4 +1,4 @@
 name = "disciworker"
 main = "src/index.ts"
-compatibility_date = "2023-04-21"
-compatibility_flags = [ "nodejs_compat" ]
+node_compat = true
+compatibility_date = "2023-07-17"
