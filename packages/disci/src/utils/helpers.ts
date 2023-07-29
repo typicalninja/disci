@@ -13,7 +13,7 @@ export const convertSnowflakeToTimeStamp = (id: Snowflake): number => {
 };
 
 /** encapsulates a fn in try catch block and return value/null */
-export function tryAndValue<ReturnType>(fn: () => ReturnType) {
+export function tryAndValue<ReturnType>(fn: () => ReturnType): ReturnType | null {
 	try {
 		return fn();
 	} catch {

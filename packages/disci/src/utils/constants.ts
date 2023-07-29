@@ -1,7 +1,5 @@
-import type { ApplicationCommands } from "../structures/ApplicationCommand";
-import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
 import type { RESTClientOptions } from "./REST";
-import type { ComponentInteraction } from "../structures/ComponentInteraction";
+import type { BaseInteraction } from "../structures";
 
 /**
  * @link https://discord.com/developers/docs/reference#image-formatting
@@ -19,13 +17,7 @@ export type DiscordImageSize =
 
 export const DiscordEpoch = 14200704e5;
 
-// Common type for interactions
-export type InteractionContext =
-	| ApplicationCommands
-	| AutoCompleteInteraction
-	| ComponentInteraction;
-
-export interface IHandlerOptions {
+export interface HandlerOptions {
 	/**
 	 * A debug callback function that can be used for debugging
 	 */
@@ -36,7 +28,7 @@ export interface IHandlerOptions {
 	rest: RESTClientOptions;
 }
 
-export const defaultOptions: IHandlerOptions = {
+export const defaultOptions: HandlerOptions = {
 	rest: {
 		token: (typeof process !== "undefined" && process.env.TOKEN) || "",
 	},
@@ -51,16 +43,10 @@ export enum URLS {
 /**
  * Events fired by the handler
  */
-export interface IClientEvents {
+export interface ClientEvents {
 	/**
 	 * Fired when a interaction is received
-	 * @param interaction - Interaction contact
+	 * @param interaction - Respective interaction class
 	 */
-	interactionCreate: (interaction: InteractionContext) => void;
-	/**
-	 * Fired when there is a error
-	 * @param err
-	 * @returns
-	 */
-	error: (err: unknown) => void;
+	interactionCreate: (interaction: BaseInteraction) => void;
 }

@@ -3,9 +3,8 @@ export * from "./InteractionHandler";
 
 // constants/types
 export {
-	InteractionContext,
-	IHandlerOptions,
-	IClientEvents,
+	HandlerOptions,
+	ClientEvents,
 } from "./utils/constants";
 
 // Structures

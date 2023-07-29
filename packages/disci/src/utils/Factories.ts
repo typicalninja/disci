@@ -1,5 +1,5 @@
-// factory pattern - takes data from the api and returns thier respective classes from disci
-// fixes a circular dep bug due to old factories being in thier respective files?
+// factory pattern - takes data from the api and returns their respective classes from disci
+// fixes a circular dep bug due to old factories being in their respective files?
 import {
 	type APIInteraction,
 	InteractionType,
@@ -18,8 +18,8 @@ import {
 	UserCommandInteraction,
 } from "../structures/ApplicationCommand";
 import { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
-import type { InteractionContext } from "./constants";
 import { ComponentInteraction } from "../structures/ComponentInteraction";
+import type { BaseInteraction } from "../structures";
 
 /**
  * Factory for all base Interactions
@@ -28,7 +28,7 @@ export class InteractionFactory {
 	static from(
 		handler: InteractionHandler,
 		APIData: APIInteraction,
-	): InteractionContext | null {
+	): BaseInteraction | null {
 		switch (APIData.type) {
 			case InteractionType.ApplicationCommand:
 				return ApplicationCommandFactory.from(handler, APIData);

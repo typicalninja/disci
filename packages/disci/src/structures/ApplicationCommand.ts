@@ -10,8 +10,10 @@ import {
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
 import type { IBase } from "./Base";
-import { BaseInteraction, InteractionOptions } from "./BaseInteraction";
-import type { default as Message } from "./primitives/Message";
+import { BaseReplyInteraction, InteractionOptions } from "./BaseInteraction";
+import type {
+	default as Message,
+} from "./primitives/Message";
 import User from "./primitives/User";
 
 /**
@@ -24,8 +26,11 @@ export interface CommandInteractionResolvedData {
 	messages: Map<Snowflake, Message>;
 }
 
+/**
+ * Represents Application commands such as slash commands / menu
+ */
 export abstract class ApplicationCommand
-	extends BaseInteraction
+	extends BaseReplyInteraction
 	implements IBase
 {
 	override type = InteractionType.ApplicationCommand;
@@ -87,6 +92,7 @@ export abstract class ApplicationCommand
 	isChatInputInteraction(): this is ChatInputInteraction {
 		return this.isSlashCommand();
 	}
+	
 }
 
 export class ChatInputInteraction extends ApplicationCommand {

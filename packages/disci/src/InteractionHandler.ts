@@ -1,6 +1,6 @@
 // types for events
 import type { TypedEmitter } from "./utils/TypedEmitter";
-import { EventEmitter } from "node:events";
+import { EventEmitter } from "events";
 
 import {
 	APIInteraction,
@@ -9,9 +9,9 @@ import {
 	InteractionType,
 } from "discord-api-types/v10";
 import {
-	IHandlerOptions,
+	HandlerOptions,
 	defaultOptions,
-	IClientEvents,
+	ClientEvents,
 } from "./utils/constants";
 import { tryAndValue } from "./utils/helpers";
 import { InteractionFactory } from "./utils/Factories";
@@ -21,13 +21,13 @@ import { Rest } from "./utils/REST";
 /**
  * Main Handler class, handles incoming request and outputs a response
  */
-export class InteractionHandler extends (EventEmitter as unknown as new () => TypedEmitter<IClientEvents>) {
-	options: IHandlerOptions;
+export class InteractionHandler extends (EventEmitter as unknown as new () => TypedEmitter<ClientEvents>) {
+	options: HandlerOptions;
 	/**
 	 * Handler Rest Manager
 	 */
 	api: Rest;
-	constructor(options: Partial<IHandlerOptions> = {}) {
+	constructor(options: Partial<HandlerOptions> = {}) {
 		super();
 		this.options = Object.assign(defaultOptions, options);
 		this.api = new Rest(this.options.rest);
