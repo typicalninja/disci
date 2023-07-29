@@ -18,7 +18,7 @@ export interface RestClient {
 
 export interface RESTClientOptions {
 	/**
-	 * Client token, alternatively provide it with <rest>.setToken
+	 * Client token, alternatively provide it with \<rest\>.setToken
 	 */
 	token?: string;
 	authPrefix?: "bot";
