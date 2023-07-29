@@ -9,16 +9,20 @@ actions:
     link: /guide
     type: primary
 
-  - text: Api
+  - text: Documentation
+    icon: "proposal"
     link: /api/
 
 features:
   - title: Serverless support
-    icon: config
+    icon: light
     details: Run your discord bot on serverless platforms like cloudflare workers
+  - title: Run on traditional servers
+    icon: config
+    details: DisciJS also works on regular servers too
   - title: Written in typescript
     icon: typescript
-    details: DisciJS is completely written using typescript
+    details: DisciJS is completely written using typescript, allowing you to enjoy the full power of typescript
   - title: Documentation
     icon: file
     details: Readily available docs and guides

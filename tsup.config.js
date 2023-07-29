@@ -11,7 +11,7 @@ export function createTsupConfig({
 	skipNodeModulesBundle = true,
 	clean = false,
 	shims = false,
-	minify = false,
+	minify = true,
 	splitting = false,
 	keepNames = true,
 	dts = true,

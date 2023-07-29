@@ -10,25 +10,17 @@ export default sidebar({
             collapsible: true,
             children: [
                 "",
-                "setup"
             ]
         },
         {
-            text: 'Serverless Bots',
-            prefix: 'serverless',
+            text: 'Hosting',
+            prefix: 'hosting',
             collapsible: true,
             children: [
-                "",
+                "server",
+                "serverless"
             ]
         },
-        {
-            text: 'Traditional Bots',
-            prefix: 'traditional',
-            collapsible: true,
-            children: [
-                "",
-            ]
-        }
     ],
 });
   
