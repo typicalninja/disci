@@ -1,3 +1,11 @@
+---
+id: "index"
+title: "disci"
+sidebar_label: "Readme"
+sidebar_position: 0
+custom_edit_url: null
+---
+
 # 🎨 DisciJs
 
 Easy to use library for creating discord applications via interaction webhooks.
@@ -37,9 +45,9 @@ The library will only error out on certain occasions and for other occasions use
 # Nodejs version
 
 This only apply if you plan to use disci in a server environment.
-Disci uses the fetch api for its built in rest module which is **Already** available in
+Disci uses the api for its built in rest module which is **Already** available in
 serverless environments (such as cloudflare workers).
-However Native fetch api for node.js is implemented in node.js v18+ (unstable & experimental)
+However Native fetch api for node.js is implemented in node.js v18+
 as such this Module requires node.js version 18+ to be used
 
 # Links

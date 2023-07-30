@@ -25,14 +25,11 @@ import Member from "./primitives/Member";
 import type { ApplicationCommand } from "./ApplicationCommand";
 import type { AutoCompleteInteraction } from "./AutoCompleteInteraction";
 import Webhook from "./primitives/Webhook";
-import {
-	DisciTypeError,
-	TypeErrorsMessages,
-} from "../utils/errors";
+import { DisciTypeError, TypeErrorsMessages } from "../utils/errors";
 import type { ComponentInteraction } from "./ComponentInteraction";
 import { CreateMessageParams, default as Message } from "./primitives/Message";
 
-type CallbackFunction = (data: APIInteractionResponse) => void
+type CallbackFunction = (data: APIInteractionResponse) => void;
 
 /**
  * Represents an basic interaction.
@@ -181,7 +178,10 @@ export abstract class BaseInteraction implements IBase {
 	 * Indicates whether this interaction can be replied to.
 	 */
 	isRepliable(): this is BaseReplyInteraction {
-		return !this.responded && this.type != InteractionType.ApplicationCommandAutocomplete
+		return (
+			!this.responded &&
+			this.type != InteractionType.ApplicationCommandAutocomplete
+		);
 	}
 	/**
 	 * Respond to this interaction, Raw method
@@ -276,6 +276,12 @@ export class BaseReplyInteraction extends BaseInteraction {
 		if (opts.fetchReply === true) return this.fetchReply();
 		return Promise.resolve(this);
 	}
+	/**
+	 * Edit previously sent responses
+	 */
+	/*editReply(message: CreateMessageParams) {
+		if(!this.responded) throw new Error(`Interaction was not responded to`)
+	}*/
 }
 
 // inspired from discord.js & biscuit

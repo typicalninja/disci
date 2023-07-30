@@ -1,3 +1,11 @@
+---
+id: "index"
+title: "disci"
+sidebar_label: "Readme"
+sidebar_position: 0
+custom_edit_url: null
+---
+
 # 🎨 DisciJs
 
 Easy to use library for creating discord applications via interaction webhooks.

@@ -23,6 +23,7 @@ build
 test
 .temp
 .cache
+apps/docsNew/docs/api
 apps/docs/src/api
 
 .vscode
