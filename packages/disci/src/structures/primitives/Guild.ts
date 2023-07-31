@@ -23,7 +23,7 @@ export class PartialGuild implements IBase {
 	}
 	/**
 	 * Fetch the guild this partial belongs to
-	 * @param opts.witCounts when true, will return approximate member and presence counts for the guild
+	 * @param opts.withCounts when true, will return approximate member and presence counts for the guild
 	 */
 	async fetch({ withCounts }: { withCounts?: boolean } = {}) {
 		const guild = await this.handler.api.get<APIGuild>(Routes.guild(this.id), {
