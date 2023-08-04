@@ -8,41 +8,15 @@ import {
 import type { InteractionHandler } from "../../InteractionHandler";
 import { DisciTypeError } from "../../utils/errors";
 import type { IBase } from "../Base";
-import Message from "./Message";
+import Message, { CreateMessageParams } from "./Message";
 import User from "./User";
 
-/**
- * Partial Class for accessing Discord Api with minimal data
- */
-export class PartialWebhook implements IBase {
-	handler!: InteractionHandler;
-	/**
-	 * Id of a webhook if accessing data about particular webhook
-	 */
-	readonly id: string;
-	constructor(handler: InteractionHandler, data: { id: string }) {
-		Object.defineProperty(this, "handler", { value: handler });
-		this.id = data.id;
-	}
-	/**
-	 * Fetch the webhook this id belongs to
-	 */
-	async fetch(): Promise<Webhook> {
-		const webhook = await this.handler.api.get<APIWebhook>(
-			Routes.webhook(this.id),
-		);
-		return new Webhook(this.handler, webhook);
-	}
-	/* createWebhook({ reason, channelId }: { reason?: string; channelId: string }) {
-       // const createdWebhook = this.handler.api.post(Routes.channelWebhooks(channelId))
-    }*/
-}
-
-export default class Webhook extends PartialWebhook {
+export default class Webhook implements IBase {
+	handler: InteractionHandler;
 	/**
 	 * The id of the webhook
 	 */
-	override readonly id: Snowflake;
+	readonly id: Snowflake;
 	/**
 	 * The secure token of the webhook
 	 */
@@ -59,23 +33,29 @@ export default class Webhook extends PartialWebhook {
 	 */
 	owner: User | null;
 	/**
-	 *  The application that created this webhook
+	 *  The application that created this werbhook
 	 */
 	applicationId: string | null;
-	constructor(handler: InteractionHandler, data: APIWebhook) {
-		super(handler, { id: data.id });
-
-		Object.defineProperty(this, "handler", { value: handler });
+	constructor(data: APIWebhook, handler: InteractionHandler) {
+		this.handler = handler;
 
 		this.id = data.id;
 		this.token = data.token ?? null;
 		this.type = data.type;
 
 		this.owner = data.user ? new User(this.handler, data.user) : null;
-
 		this.applicationId = data.application_id ?? null;
 	}
-
+	/**
+	 * Fetch the webhook this id belongs to
+	 */
+	async fetch(): Promise<Webhook> {
+		const webhook = await this.handler.api.get<APIWebhook>(
+			// * takes token of undefined as optional parameter
+			Routes.webhook(this.id, this.token || undefined),
+		);
+		return new Webhook(webhook, this.handler);
+	}
 	/**
 	 * Gets a message that was sent by this webhook.
 	 */
@@ -84,7 +64,7 @@ export default class Webhook extends PartialWebhook {
 		{ threadId }: { threadId?: string } = {},
 	): Promise<Message> {
 		if (!this.token)
-			throw new DisciTypeError(`This webook does not contain a Token`);
+			throw new DisciTypeError(`This webhook does not contain a Token`);
 		const query: { threadId?: string } = {};
 		if (threadId) query.threadId = threadId;
 		const message = await this.handler.api.get<APIMessage>(
@@ -95,5 +75,22 @@ export default class Webhook extends PartialWebhook {
 		);
 
 		return new Message(this.handler, message);
+	}
+	/**
+	 *
+	 * @param messageId id of the message to edit
+	 * @param newMessage new data to edit
+	 */
+	async editReply(messageId: string, newMessage: CreateMessageParams) {
+		if (!this.token) throw new Error(`This webhook does not contain a Token`);
+		const resolvedParams = Message.resolveMessageParams(newMessage);
+		const edited = await this.handler.api.patch<APIMessage>(
+			Routes.webhookMessage(this.id, this.token, messageId),
+			{
+				body: resolvedParams,
+			},
+		);
+
+		return new Message(this.handler, edited);
 	}
 }

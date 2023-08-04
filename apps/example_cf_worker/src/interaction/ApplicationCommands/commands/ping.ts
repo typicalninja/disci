@@ -35,14 +35,12 @@ export default {
 			.setLabel(`Button 2`);
 
 		actionRow1.addComponents(button1, button2);
-		console.log(JSON.stringify(actionRow1.toJSON()));
+		console.log(JSON.stringify(actionRow1.toJSON()))
 		const msg = await interaction.reply({
 			content: `Hi from cloudflare`,
 			embeds: [embed.toJSON()],
 			components: [actionRow1.toJSON()],
 			fetchReply: true,
 		});
-
-		console.log(msg.embeds);
 	},
 };

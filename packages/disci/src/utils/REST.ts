@@ -26,7 +26,7 @@ export interface RESTClientOptions {
 }
 export interface RESTCommonOptions {
 	headers?: Record<string, string>;
-	body?: Record<string, string>;
+	body?: unknown;
 	query?: Record<string, string>;
 }
 

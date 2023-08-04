@@ -1,0 +1,60 @@
+import Admonition from '@theme/Admonition';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Nodejs hosting
+
+## Quick start
+
+<Admonition type="caution" icon="🚧" title="Work in progress.">
+  <p>
+  Quick start guide is still wip, we suggest you to use the manual setup
+  </p>
+</Admonition>
+
+### Creating a project
+
+To start you can either use our cli tool `create-disci` or generate one on your own using nodejs. This guide will explore on how to create a new bot using our cli tool `create-disci`
+
+First open a commands prompt and cd into the directory you want to create the project in and then run following command
+
+<Tabs groupId="cliCommands">
+  <TabItem value="npm" label="npm" default>
+
+  ```bash
+  npm create disci node-ts
+  ```
+
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm">
+
+  ```bash
+  pnpm create disci node-ts
+  ```
+  </TabItem>
+  <TabItem value="yarn" label="yarn">
+
+  ```bash
+  yarn create disci node-ts
+  ```
+  </TabItem>
+</Tabs>
+
+
+This should quickly scaffold a new application for you
+
+
+
+## Manual setup
+
+We suggest you to read the manual setup guide even with "quick setup" to get an idea on how the 
+project works.
+
+Note: Each file structure may differ depending on your [hosting provider](#platforms-available) 
+how ever the base file structure used in any DisciJS project should be (suggested) as follows
+
+
+```js
+src/        // your source code for the bot
+  index.ts // main file
+```

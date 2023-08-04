@@ -1,0 +1,12 @@
+{
+    "short_name": "DisciJS Docs",
+    "name": "DisciJS Documentation",
+    "icons": [],
+    "id": "/",
+    "background_color": "#5865F2",
+    "display_override": ["minimal-ui"],
+    "theme_color": "#5865F2",
+    "display": "standalone",
+    "scope": "/",
+    "description": "Http powered discord bots"
+  }

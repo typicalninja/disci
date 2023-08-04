@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build --parallel",
-    "dev": "turbo run dev --parallel",
+    "dev": "turbo run dev --parallel --no-daemon",
     "prettier:check": "turbo run prettier:check",
     "prettier:write": "turbo run prettier:write",
     "lint:check": "turbo run lint:check",

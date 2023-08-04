@@ -28,6 +28,7 @@ import Webhook from "./primitives/Webhook";
 import { DisciTypeError, TypeErrorsMessages } from "../utils/errors";
 import type { ComponentInteraction } from "./ComponentInteraction";
 import { CreateMessageParams, default as Message } from "./primitives/Message";
+import { PartialGuild } from "./primitives/Guild";
 
 type CallbackFunction = (data: APIInteractionResponse) => void;
 
@@ -52,9 +53,13 @@ export abstract class BaseInteraction implements IBase {
 	 */
 	type: InteractionType;
 	/**
-	 * Guild that the interaction was sent from
+	 * Id of the Guild that the interaction was sent from
 	 */
 	guildId?: string;
+	/**
+	 * Guild the interaction was sent from as a partial guild
+	 */
+	guild?: PartialGuild;
 	/**
 	 * Channel that the interaction was sent from
 	 */
@@ -108,6 +113,7 @@ export abstract class BaseInteraction implements IBase {
 		if (RawInteractionData.guild_id && RawInteractionData.member) {
 			// from a guild
 			this.guildId = RawInteractionData.guild_id;
+			this.guild = new PartialGuild(this.handler, { id: this.guildId });
 			this.member = new Member(this.handler, RawInteractionData.member);
 			Reflect.defineProperty(this, "user", {
 				get: () => {
@@ -157,13 +163,13 @@ export abstract class BaseInteraction implements IBase {
 		return new Date(this.createdTimestamp);
 	}
 	/**
-	 * Type guard to verify if this interaction is for an ApplicationCommand
+	 * Indicates whether this interaction is a {@link ApplicationCommand}
 	 */
 	isCommand(): this is ApplicationCommand {
 		return this.type === InteractionType.ApplicationCommand;
 	}
 	/**
-	 * TIndicates whether this interaction is a {@link AutoCompleteInteraction}
+	 * Indicates whether this interaction is a {@link AutoCompleteInteraction}
 	 */
 	isAutoComplete(): this is AutoCompleteInteraction {
 		return this.type === InteractionType.ApplicationCommandAutocomplete;
@@ -175,7 +181,7 @@ export abstract class BaseInteraction implements IBase {
 		return this.type === InteractionType.MessageComponent;
 	}
 	/**
-	 * Indicates whether this interaction can be replied to.
+	 * Indicates whether this interaction can be replied to (i.e {@link BaseReplyInteraction}).
 	 */
 	isRepliable(): this is BaseReplyInteraction {
 		return (
@@ -200,7 +206,6 @@ export abstract class BaseInteraction implements IBase {
 
 /**
  * Base for all repliable to interactions
- *
  */
 export class BaseReplyInteraction extends BaseInteraction {
 	/**
@@ -279,9 +284,18 @@ export class BaseReplyInteraction extends BaseInteraction {
 	/**
 	 * Edit previously sent responses
 	 */
-	/*editReply(message: CreateMessageParams) {
-		if(!this.responded) throw new Error(`Interaction was not responded to`)
-	}*/
+	editReply(message: CreateMessageParams) {
+		if (!this.responded) throw new Error(`Interaction was not responded to`);
+		return Webhook.prototype.editReply.call(
+			{
+				id: this.applicationId,
+				token: this.token,
+				handler: this.handler,
+			},
+			"@original",
+			message,
+		);
+	}
 }
 
 // inspired from discord.js & biscuit
