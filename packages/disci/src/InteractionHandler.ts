@@ -85,8 +85,6 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 		signal?: AbortSignal,
 	): Promise<APIInteractionResponse> {
 		return new Promise((resolve, reject) => {
-			// check if the request should be immediately aborted
-			if (signal?.aborted) return reject(signal.reason);
 			// parse the request body
 			const rawInteraction = tryAndValue<APIInteraction>(
 				() =>
@@ -96,7 +94,9 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 			);
 			if (!rawInteraction)
 				return reject(
-					`ParseError: Failed to parse received interaction to a valid interaction`,
+					new TypeError(
+						`Failed to parse received interaction to a valid interaction`,
+					),
 				);
 			// convert rawInteraction -> interaction
 			const interaction = InteractionFactory.from(this, rawInteraction);
@@ -130,7 +130,9 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 			} else {
 				// if its not a interaction we recognize or a ping its most likely unsupported new feature
 				reject(
-					`UnsupportedInteraction: Unsupported Interaction of type ${rawInteraction.type} received`,
+					new TypeError(
+						`Unsupported Interaction of type ${rawInteraction.type} received`,
+					),
 				);
 			}
 		});
