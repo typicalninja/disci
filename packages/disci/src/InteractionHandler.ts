@@ -33,19 +33,6 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 		this.api = new Rest(this.options.rest);
 	}
 	/**
-	 * Internal function for debugging conditionally
-	 */
-	private debug(msg: string) {
-		msg = "[@DISCI/HANDLER]: " + msg;
-		if (this.options.debug) {
-			// if debug is enabled
-			if (typeof this.options.debug === "function") this.options.debug(msg);
-			else console.debug(msg);
-		}
-
-		return void 0;
-	}
-	/**
 	 * Process a request and return a response according to the request.
 	 * This does not verify the validity of the request
 	 *
@@ -103,10 +90,7 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 
 			if (interaction) {
 				// assign a callback
-				interaction.useCallback((response) => {
-					this.debug(`Resolving Interaction with ${JSON.stringify(response)} `);
-					return resolve(response);
-				});
+				interaction.useCallback((response) => resolve(response));
 				// register a event to check for aborts
 				if (signal) {
 					signal.addEventListener("abort", () => {
