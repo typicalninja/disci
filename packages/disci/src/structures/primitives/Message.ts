@@ -48,7 +48,7 @@ export interface CreateMessageParams {
 	/**
 	 * Array of Embeds (max 10)
 	 */
-	embeds?: (APIEmbed)[];
+	embeds?: APIEmbed[];
 	/**
 	 *  Allowed mentions for the message
 	 */
@@ -63,9 +63,9 @@ export interface CreateMessageParams {
 	 */
 	components?: APIActionRowComponent<APIMessageActionRowComponent>[];
 	/**
-	 * Message flags to used
+	 * Message flags to be used
 	 */
-	flags?: MessageFlags
+	flags?: MessageFlags;
 }
 
 export default class Message implements IBase {
@@ -189,26 +189,25 @@ export default class Message implements IBase {
 		// if message content is present
 		if (params.content) {
 			if (typeof params.content !== "string")
-				throw new TypeError(`Expected a string for message content`)
+				throw new TypeError(`Expected a string for message content`);
 			msg.content = params.content;
 		}
 
 		// resolve embeds
 		if (params.embeds) {
 			if (!Array.isArray(params.embeds))
-				throw new TypeError(`Expected a array for embeds`)
+				throw new TypeError(`Expected a array for embeds`);
 			msg.embeds = params.embeds;
 		}
 
 		// resolve components
-		if(params.components) {
+		if (params.components) {
 			if (!Array.isArray(params.embeds))
-				throw new TypeError(`Expected a array for Component Action rows`)
+				throw new TypeError(`Expected a array for Component Action rows`);
 			msg.components = params.components;
 		}
 
-		if(params.flags) msg.flags = params.flags;
-
+		if (params.flags) msg.flags = params.flags;
 
 		return msg;
 	}

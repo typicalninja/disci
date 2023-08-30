@@ -1,8 +1,10 @@
 {
+  "name": "serverless-example",
   "scripts": {
     "dev": "wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts"
   },
+  "type": "module",
   "dependencies": {
     "hono": "^3.5.4",
     "@discordjs/builders": "^1.6.1",
