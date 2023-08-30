@@ -44,7 +44,7 @@ importers:
         specifier: ^1.6.1
         version: 1.6.1
       disci:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/disci
       discord-api-types:
         specifier: ^0.37.50
@@ -72,7 +72,7 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0
       disci:
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/disci
       discord-api-types:
         specifier: ^0.37.50
@@ -201,6 +201,9 @@ importers:
       discord-api-types:
         specifier: ^0.37.22
         version: 0.37.35
+      eventemitter2:
+        specifier: ^6.4.9
+        version: 6.4.9
       tslib:
         specifier: ^2.4.1
         version: 2.5.0
@@ -6906,6 +6909,10 @@ packages:
   /event-target-shim@5.0.1:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
+    dev: false
+
+  /eventemitter2@6.4.9:
+    resolution: {integrity: sha512-JEPTiaOt9f04oa6NOkc4aH+nVp5I3wEjpHbIPqfgCdD5v5bUzy7xQqwcVO2aDQgOWhI28da57HksMrzK9HlRxg==}
     dev: false
 
   /eventemitter3@4.0.7:

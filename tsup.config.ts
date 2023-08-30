@@ -13,11 +13,12 @@ export function createTsupConfig({
 	shims = false,
 	minify = false,
 	splitting = false,
-	keepNames = true,
+	keepNames = false,
 	dts = true,
 	sourcemap = false,
 	esbuildPlugins = [],
 	outDir = 'dist',
+	
 }: Options = {}) {
 	return defineConfig({
 		entry,
