@@ -1,5 +1,4 @@
 import { URLS } from "./constants";
-import { DisciRestError } from "./errors";
 import { tryAndValue } from "./helpers";
 
 // userAgent used in requests
@@ -80,7 +79,7 @@ export class Rest implements RestClient {
 
 		if (!req.ok) {
 			const errors = await tryAndValue(() => req.json());
-			throw new DisciRestError(
+			throw new Error(
 				`Request to [${method}:${path}] returned ${req.status} [${req.statusText}]`,
 				{
 					cause: errors,

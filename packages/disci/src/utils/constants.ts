@@ -44,5 +44,5 @@ export interface ClientEvents {
 	 * Fired when a interaction is received
 	 * @param interaction - Respective interaction class
 	 */
-	interactionCreate: (interaction: BaseInteraction) => void;
+	interactionCreate: (interaction: BaseInteraction) => unknown;
 }

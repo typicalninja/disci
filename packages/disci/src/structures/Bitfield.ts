@@ -3,7 +3,6 @@ import {
 	PermissionFlagsBits,
 	UserFlags,
 } from "discord-api-types/v10";
-import { DisciTypeError, TypeErrorsMessages } from "../utils/errors";
 
 export type BitFieldResolvable = bigint | bigint[] | number | number[];
 
@@ -77,13 +76,7 @@ export abstract class BitField {
 						.map((b) => BitField.resolve(b))
 						.reduce((prev, cur) => prev | cur, BitField.None);
 				} else
-					throw new DisciTypeError(
-						TypeErrorsMessages.ExpectedParameter(
-							"bit",
-							"bitFieldResolvable",
-							typeof bit,
-						),
-					);
+					throw new TypeError();
 		}
 	}
 }

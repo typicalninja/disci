@@ -25,7 +25,6 @@ import Member from "./primitives/Member";
 import type { ApplicationCommand } from "./ApplicationCommand";
 import type { AutoCompleteInteraction } from "./AutoCompleteInteraction";
 import Webhook from "./primitives/Webhook";
-import { DisciTypeError, TypeErrorsMessages } from "../utils/errors";
 import type { ComponentInteraction } from "./ComponentInteraction";
 import { CreateMessageParams, default as Message } from "./primitives/Message";
 import { PartialGuild } from "./primitives/Guild";
@@ -326,9 +325,7 @@ export class InteractionOptions {
 	getSubCommand(required: true): string;
 	getSubCommand(required = false): string | null {
 		if (required && !this.subCommand)
-			throw new DisciTypeError(
-				TypeErrorsMessages.PropertyNotFound("subCommand"),
-			);
+			throw new TypeError(`Subcommand Not found`);
 		return this.subCommand ?? null;
 	}
 	/**
@@ -338,10 +335,7 @@ export class InteractionOptions {
 	 */
 	getSubCommandGroup(required: true): string;
 	getSubCommandGroup(required = false): string | null {
-		if (required && !this.group)
-			throw new DisciTypeError(
-				TypeErrorsMessages.PropertyNotFound(`subCommandGroup`),
-			);
+		if (required && !this.group) throw new TypeError(`Subcommand Not found`);
 		return this.group ?? null;
 	}
 	/**
@@ -363,7 +357,7 @@ export class InteractionOptions {
 			(o) => o.name === name,
 		) as APIApplicationCommandInteractionDataBasicOption;
 		if (required && !opt)
-			throw new DisciTypeError(`Missing interaction option: ${name}`);
+			throw new TypeError(`Missing interaction option: ${name}`);
 		return opt ?? null;
 	}
 
@@ -377,7 +371,7 @@ export class InteractionOptions {
 
 		if (!option) return null;
 		if (!expectedTypes.includes(option.type))
-			throw new DisciTypeError(
+			throw new TypeError(
 				`Expected Type of option to be ${expectedTypes.join(" ")} Received ${
 					option.type
 				}`,
@@ -388,7 +382,7 @@ export class InteractionOptions {
 				(prop) => option[prop] == null || typeof option[prop] == "undefined",
 			)
 		)
-			throw new DisciTypeError(`Expected Value to be available`);
+			throw new TypeError(`Expected Value to be available`);
 
 		return option;
 	}
@@ -551,7 +545,7 @@ export class InteractionOptions {
 		const focusedOption = this._options.find(
 			(option) => (option as { focused?: boolean }).focused,
 		) as APIApplicationCommandInteractionDataBasicOption;
-		if (!focusedOption) throw new DisciTypeError(`No Focused option found`);
+		if (!focusedOption) throw new Error(`No Focused option found`);
 		return full ? focusedOption : focusedOption.value;
 	}
 }

@@ -1,6 +1,6 @@
 // types for events
 import type { TypedEmitter } from "./utils/TypedEmitter";
-import { EventEmitter } from "events";
+import EventEmitter from "eventemitter2";
 
 import {
 	APIInteraction,

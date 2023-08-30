@@ -6,7 +6,6 @@ import {
 	WebhookType,
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
-import { DisciTypeError } from "../../utils/errors";
 import type { IBase } from "../Base";
 import Message, { CreateMessageParams } from "./Message";
 import User from "./User";
@@ -64,7 +63,7 @@ export default class Webhook implements IBase {
 		{ threadId }: { threadId?: string } = {},
 	): Promise<Message> {
 		if (!this.token)
-			throw new DisciTypeError(`This webhook does not contain a Token`);
+			throw new TypeError(`This webhook does not contain a Token`);
 		const query: { threadId?: string } = {};
 		if (threadId) query.threadId = threadId;
 		const message = await this.handler.api.get<APIMessage>(
