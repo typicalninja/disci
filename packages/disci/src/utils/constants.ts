@@ -19,10 +19,6 @@ export const DiscordEpoch = 14200704e5;
 
 export interface HandlerOptions {
 	/**
-	 * A debug callback function that can be used for debugging
-	 */
-	debug?: (msg: string) => void;
-	/**
 	 * Options for built in rest client
 	 */
 	rest: RESTClientOptions;
