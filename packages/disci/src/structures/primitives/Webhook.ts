@@ -10,16 +10,43 @@ import type { IBase } from "../Base";
 import Message, { CreateMessageParams } from "./Message";
 import User from "./User";
 
-export default class Webhook implements IBase {
+export class WebhookPartial implements IBase {
+	/**
+	 * The handler than initiated this class
+	 */
 	handler: InteractionHandler;
 	/**
 	 * The id of the webhook
 	 */
-	readonly id: Snowflake;
+	id: Snowflake;
 	/**
 	 * The secure token of the webhook
 	 */
-	token: string | null;
+	token?: string;
+	constructor(
+		handler: InteractionHandler,
+		data: { id: string; token?: string },
+	) {
+		// assign the handler
+		this.handler = handler;
+
+		// assign base data
+		this.id = data.id;
+		this.token = data.token;
+	}
+	/**
+	 * Fetch the webhook this id belongs to
+	 */
+	async fetch(): Promise<Webhook> {
+		const webhook = await this.handler.api.get<APIWebhook>(
+			// * takes token of undefined as optional parameter
+			Routes.webhook(this.id, this.token),
+		);
+		return new Webhook(this.handler, webhook);
+	}
+}
+
+export default class Webhook extends WebhookPartial {
 	/**
 	 *The type of the webhook
 	 *
@@ -35,25 +62,12 @@ export default class Webhook implements IBase {
 	 *  The application that created this werbhook
 	 */
 	applicationId: string | null;
-	constructor(data: APIWebhook, handler: InteractionHandler) {
-		this.handler = handler;
-
-		this.id = data.id;
-		this.token = data.token ?? null;
+	constructor(handler: InteractionHandler, data: APIWebhook) {
+		super(handler, { id: data.id, token: data.token });
 		this.type = data.type;
 
 		this.owner = data.user ? new User(this.handler, data.user) : null;
 		this.applicationId = data.application_id ?? null;
-	}
-	/**
-	 * Fetch the webhook this id belongs to
-	 */
-	async fetch(): Promise<Webhook> {
-		const webhook = await this.handler.api.get<APIWebhook>(
-			// * takes token of undefined as optional parameter
-			Routes.webhook(this.id, this.token || undefined),
-		);
-		return new Webhook(webhook, this.handler);
 	}
 	/**
 	 * Gets a message that was sent by this webhook.
