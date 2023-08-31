@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "discord-api-types": "^0.37.22",
-    "eventemitter2": "^6.4.9",
+    "eventemitter3": "^5.0.1",
     "tslib": "^2.4.1"
   },
   "devDependencies": {

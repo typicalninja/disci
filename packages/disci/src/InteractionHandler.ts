@@ -1,6 +1,4 @@
-// types for events
-import type { TypedEmitter } from "./utils/TypedEmitter";
-import EventEmitter from "eventemitter2";
+import { EventEmitter } from "eventemitter3";
 
 import {
 	APIInteraction,
@@ -21,7 +19,7 @@ import { Rest } from "./utils/REST";
 /**
  * Main Handler class, handles incoming request and outputs a response
  */
-export class InteractionHandler extends (EventEmitter as unknown as new () => TypedEmitter<ClientEvents>) {
+export class InteractionHandler extends EventEmitter<ClientEvents> {
 	options: HandlerOptions;
 	/**
 	 * Handler Rest Manager
