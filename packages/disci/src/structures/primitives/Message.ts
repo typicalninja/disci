@@ -12,6 +12,8 @@ import type { InteractionHandler } from "../../InteractionHandler";
 import type { IBase } from "../Base";
 import User from "./User";
 import { convertSnowflakeToTimeStamp } from "../../utils/helpers";
+import { BitFieldResolvable, MessageFlagsBitField } from "../Bitfield";
+import { WebhookPartial } from "./Webhook";
 
 export type EmojiResolvable = string | { name: string; id: string };
 
@@ -65,7 +67,7 @@ export interface CreateMessageParams {
 	/**
 	 * Message flags to be used
 	 */
-	flags?: MessageFlags;
+	flags?: MessageFlagsBitField | BitFieldResolvable;
 }
 
 export default class Message implements IBase {
@@ -76,15 +78,16 @@ export default class Message implements IBase {
 	id: Snowflake;
 	embeds: APIEmbed[];
 	content?: string;
-	author?: User;
 	timestamp: number;
 	editedTimestamp: number | null;
-	webhook?: {
-		id: string;
-		username: string;
-		discriminator: string;
-		avatar: string | undefined;
-	};
+	/**
+	 * The user who created this message (if created by a user)
+	 */
+	author?: User;
+	/**
+	 * Webhook that created this message (if created by webhook)
+	 */
+	webhook?: WebhookPartial
 	channelId: string;
 	constructor(handler: InteractionHandler, apiData: APIMessage) {
 		Object.defineProperty(this, "handler", { value: handler });
@@ -104,14 +107,9 @@ export default class Message implements IBase {
 		// if the message is not from a webhook, its has a author
 		if (!apiData.webhook_id) {
 			this.author = new User(this.handler, apiData.author);
-		} else if (apiData.author.discriminator === "0000") {
+		} else {
 			// from webhook
-			this.webhook = {
-				id: apiData.webhook_id,
-				username: apiData.author.username,
-				discriminator: apiData.author.discriminator,
-				avatar: apiData.author.avatar ? apiData.author.avatar : undefined,
-			};
+			this.webhook = new WebhookPartial(handler, { id: apiData.webhook_id })
 		}
 	}
 	/**
@@ -207,7 +205,10 @@ export default class Message implements IBase {
 			msg.components = params.components;
 		}
 
-		if (params.flags) msg.flags = params.flags;
+		if (params.flags) {
+			const bitfield = MessageFlagsBitField.resolve(params.flags)
+			msg.flags = bitfield.toString() as unknown as MessageFlags;
+		}
 
 		return msg;
 	}
