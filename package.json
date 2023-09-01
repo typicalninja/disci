@@ -2,7 +2,7 @@
   "name": "@discijs/main",
   "private": true,
   "scripts": {
-    "build": "turbo run build --parallel",
+    "build": "turbo run build --no-daemon",
     "dev": "turbo run dev --parallel --no-daemon",
     "prettier:check": "turbo run prettier:check",
     "prettier:write": "turbo run prettier:write",
