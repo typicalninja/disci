@@ -97,13 +97,13 @@ export class Rest implements RestClient {
 		return this.makeRequest<T>("GET", path, opts);
 	}
 	post<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
-		return this.makeRequest<T>("GET", path, opts);
+		return this.makeRequest<T>("POST", path, opts);
 	}
 	put<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
-		return this.makeRequest<T>("put", path, opts);
+		return this.makeRequest<T>("PUT", path, opts);
 	}
 	patch<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
-		return this.makeRequest<T>("GET", path, opts);
+		return this.makeRequest<T>("PATCH", path, opts);
 	}
 	delete<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
 		return this.makeRequest<T>("DELETE", path, opts);
