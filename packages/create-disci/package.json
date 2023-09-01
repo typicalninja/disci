@@ -2,7 +2,7 @@
   "name": "create-disci",
   "description": "Create a disci app",
   "version": "0.0.0",
-  "author": "typicalninja493 <65993466+typicalninja493@users.noreply.github.com>",
+  "author": "typicalninja",
   "scripts": {
     "build": "tsup src/cli.ts --minify",
     "clean": "shx rm -rf lib",

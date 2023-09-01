@@ -44,9 +44,9 @@ This package expects you to have **prior knowledge of javascript / typescript** 
 
 * [Documentation & Guide](https://dev--disci.netlify.app/)
 * [Npm](https://www.npmjs.com/package/disci)
-* [Github](https://github.com/typicalninja493/disci)
+* [Github](https://github.com/typicalninja/disci)
 * [Discord Server](https://discord.gg/ynwckXS9T2)
 
 ## License
 
-This repository and the code inside it is licensed under the Apache-2.0 License. Read [LICENSE](https://github.com/typicalninja493/disci/blob/master/LICENSE) for more information.
+This repository and the code inside it is licensed under the Apache-2.0 License. Read [LICENSE](https://github.com/typicalninja/disci/blob/master/LICENSE) for more information.

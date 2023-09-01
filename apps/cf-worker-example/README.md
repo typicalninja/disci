@@ -30,5 +30,5 @@ It also includes a example command handler suitable for sever less applications.
 
 * [Documentation & Guide](https://disci.typical.gq)
 * [Npm](https://www.npmjs.com/package/disci)
-* [Github](https://github.com/typicalninja493/disci)
+* [Github](https://github.com/typicalninja/disci)
 * [Discord Server](https://discord.gg/9s52pz6nWX)

@@ -3,7 +3,7 @@ import { tryAndValue } from "./helpers";
 
 // userAgent used in requests
 const UserAgent =
-	`DiscordBot (https://github.com/typicalninja493/disci, 0.0.1)`.trim();
+	`DiscordBot (https://github.com/typicalninja/disci, 0.0.1)`.trim();
 
 export interface RestClient {
 	makeRequest: <T>(
