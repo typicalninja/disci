@@ -1,33 +1,30 @@
-# Interaction Server
+# 🎨 Disci Project
 
-**NOTE**: This is not production ready and is a Hobby Project/ custom library for my own bot, your welcome to use it.However do **NOT** expect full support for this module 
+![NPM version badge](https://img.shields.io/npm/v/disci)
+![NPM bundle size](https://img.shields.io/bundlephobia/minzip/disci)
+![NPM license](https://img.shields.io/npm/l/disci)
+![GitHub issues](https://img.shields.io/github/issues/typicalninja/disci)
 
-**NOTE**: Current build is more of a placeholder than a alpha project please do not use.
-# Name
+Disci is a project designed for interacting with Discord's new interaction webhook system, enabling the creation of Discord applications without the need for a websocket connection. It's an ideal choice for serverless and small to medium-sized bots (*Size as in code size, not servers*)
 
-**NOTE**: Project is still in ALPHA stage 
+# 📦 Monorepo
 
-> Disci -> Disc = Discord | i = interactions
-> Disci = Discord interactions
+This is the monorepo for Disci.js. The Disci package readme is available [here](./packages/disci/readme.md).
 
-# Development
+All packages are in the ./packages directory, while Examples and Documentation are in the ./apps directory.
+## 💻 Development
 
-* Development is done in /dev branch and on each new version, dev will be merged with main
-GH action will deploy docs if there is anything is pushed to /main
+The current latest published version of the main package (![npm version badge](https://img.shields.io/npm/v/disci)) is a pre-release version
 
-* dev snapshot releases will be published to @dev tag to npm using snapshot release workflow
+All versions within the range of **0.xx.xx** are considered pre-release and may contain breaking changes within minor and patch releases.
 
-# Links
+## 🔗 Links
 
-* [Documentation & Guide](https://disci.typical.gq)
+* [Documentation & Guide](https://dev--disci.netlify.app/)
 * [Npm](https://www.npmjs.com/package/disci)
 * [Github](https://github.com/typicalninja493/disci)
-* [Discord Server](https://discord.gg/9s52pz6nWX)
+* [Discord Server](https://discord.gg/ynwckXS9T2)
 
-# License
+## License
 
 This repository and the code inside it is licensed under the Apache-2.0 License. Read [LICENSE](https://github.com/typicalninja493/disci/blob/master/LICENSE) for more information.
-
-# Inspiration
-
-* [Biscuit](https://github.com/oasisjs/biscuit/) 

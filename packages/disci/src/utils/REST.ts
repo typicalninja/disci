@@ -1,6 +1,5 @@
-import fetch from "cross-fetch";
 import { URLS } from "./constants";
-import { DisciRestError } from "./errors";
+import { tryAndValue } from "./helpers";
 
 // userAgent used in requests
 const UserAgent =
@@ -17,18 +16,21 @@ export interface RestClient {
 }
 
 export interface RESTClientOptions {
-	token: string;
+	/**
+	 * Client token, alternatively provide it with \<rest\>.setToken
+	 */
+	token?: string;
 	authPrefix?: "bot";
 	rootUrl?: string;
 }
 export interface RESTCommonOptions {
 	headers?: Record<string, string>;
-	body?: Record<string, string>;
-	query?: Record<string, string>;
+	body?: unknown;
+	query?: Record<string, unknown>;
 }
 
 /**
- * Default rest handler, built for serverLess Environments without any ratelimit checks
+ * Default rest handler, built for serverLess Environments without any rate limit checks
  */
 export class Rest implements RestClient {
 	authPrefix: string;
@@ -39,12 +41,25 @@ export class Rest implements RestClient {
 	 */
 	constructor(_opts: RESTClientOptions) {
 		this.authPrefix = _opts.authPrefix || "Bot";
-		this.authToken = _opts.token;
+		this.authToken = _opts.token || "";
 		this.rootUrl = _opts.rootUrl
 			? _opts.rootUrl.endsWith("/")
 				? _opts.rootUrl.slice(0, _opts.rootUrl.length - 1)
 				: _opts.rootUrl
 			: URLS.DiscordApi;
+	}
+	/**
+	 * Set the current active token, request may fail if this is not set
+	 * @param token
+	 * @returns
+	 */
+	setToken(token: string) {
+		if (typeof token !== "string" || token === "")
+			throw new TypeError(
+				`Token must be a valid string, received ${typeof token}`,
+			);
+		this.authToken = token;
+		return this;
 	}
 	async makeRequest<T>(
 		method: string,
@@ -55,16 +70,16 @@ export class Rest implements RestClient {
 			method,
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: this.authheader,
+				Authorization: this.authHeader,
 				"User-Agent": UserAgent,
 				...opts?.headers,
 			},
 			body: JSON.stringify(opts?.body),
 		});
 
-		if (req.status >= 400) {
-			const errors = await req.json();
-			throw new DisciRestError(
+		if (!req.ok) {
+			const errors = await tryAndValue(() => req.json());
+			throw new Error(
 				`Request to [${method}:${path}] returned ${req.status} [${req.statusText}]`,
 				{
 					cause: errors,
@@ -82,18 +97,18 @@ export class Rest implements RestClient {
 		return this.makeRequest<T>("GET", path, opts);
 	}
 	post<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
-		return this.makeRequest<T>("GET", path, opts);
+		return this.makeRequest<T>("POST", path, opts);
 	}
 	put<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
-		return this.makeRequest<T>("put", path, opts);
+		return this.makeRequest<T>("PUT", path, opts);
 	}
 	patch<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
-		return this.makeRequest<T>("GET", path, opts);
+		return this.makeRequest<T>("PATCH", path, opts);
 	}
 	delete<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
 		return this.makeRequest<T>("DELETE", path, opts);
 	}
-	private getUrl(path: string, queryParams?: Record<string, string>) {
+	private getUrl(path: string, queryParams?: Record<string, unknown>) {
 		let url: string;
 		if (path.startsWith("/")) {
 			url = `${this.rootUrl}${path}`;
@@ -105,11 +120,13 @@ export class Rest implements RestClient {
 		}
 
 		if (queryParams) {
-			url = `${url}?${new URLSearchParams(queryParams).toString()}`;
+			url = `${url}?${new URLSearchParams(
+				queryParams as Record<string, string>,
+			).toString()}`;
 		}
 		return url;
 	}
-	get authheader() {
+	get authHeader() {
 		return `${this.authPrefix} ${this.authToken}`;
 	}
 }

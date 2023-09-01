@@ -6,7 +6,6 @@ import {
 	InteractionType,
 	Snowflake,
 } from "discord-api-types/v10";
-import { TypeErrorsMessages, DisciTypeError } from "../utils/errors";
 import type { IBase } from "./Base";
 import { BaseInteraction, InteractionOptions } from "./BaseInteraction";
 import type { InteractionHandler } from "../InteractionHandler";
@@ -47,17 +46,25 @@ export class AutoCompleteInteraction extends BaseInteraction implements IBase {
 		this.options = new InteractionOptions(data.options ?? []);
 	}
 	/**
-	 * Sends the autoComplete choices.Set to empty array for "No choices"
+	 * Send autocomplete results
+	 * 
+	 * @example
+	 * ```ts
+	 * interaction.respond([
+	 * 	"regular Choice",
+	 * 	{ name: 'choice', value: 'choice value' }
+	 * ])
+	 * ```
+	 * 
+	 * @example
+	 * ```ts
+	 * // for no choices screen
+	 * interaction.respond([])
+	 * ```
 	 */
-	respondWithChoices(choices: (APIApplicationCommandOptionChoice | string)[]) {
+	respond(choices: (APIApplicationCommandOptionChoice | string)[]) {
 		if (!Array.isArray(choices))
-			throw new DisciTypeError(
-				TypeErrorsMessages.ExpectedParameter(
-					`choices`,
-					"array",
-					typeof choices,
-				),
-			);
+			throw new TypeError(`Expected autocomplete choices to be a array`);
 		const _choices = this.getChoices(choices);
 		this._respond({
 			type: InteractionResponseType.ApplicationCommandAutocompleteResult,

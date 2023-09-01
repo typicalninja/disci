@@ -1,5 +1,4 @@
-// types for events
-import type { TypedEmitter } from "./utils/TypedEmitter";
+import { EventEmitter } from "eventemitter3";
 
 import {
 	APIInteraction,
@@ -8,115 +7,80 @@ import {
 	InteractionType,
 } from "discord-api-types/v10";
 import {
-	IHandlerOptions,
+	HandlerOptions,
 	defaultOptions,
-	IClientEvents,
-	IRequest,
+	ClientEvents,
 } from "./utils/constants";
 import { tryAndValue } from "./utils/helpers";
 import { InteractionFactory } from "./utils/Factories";
 
-import { EventEmitter } from "node:events";
-import {
-	NativeVerificationStrategy,
-	NoLimitVerificationStrategy,
-	verificationStrategy,
-} from "./verification";
 import { Rest } from "./utils/REST";
-import {
-	DisciResponse,
-	ProvideResponse,
-	ResponseStatusCodes,
-} from "./requests/Response";
 
-export class InteractionHandler extends (EventEmitter as unknown as new () => TypedEmitter<IClientEvents>) {
-	options: IHandlerOptions;
+/**
+ * Main Handler class, handles incoming request and outputs a response
+ */
+export class InteractionHandler extends EventEmitter<ClientEvents> {
+	options: HandlerOptions;
 	/**
-	 * Rest Manager
+	 * Handler Rest Manager
 	 */
 	api: Rest;
-	/**
-	 * Verifiction stratergy for request verification
-	 */
-	private verificationStrategy: verificationStrategy;
-	constructor(options: Partial<IHandlerOptions>) {
+	constructor(options: Partial<HandlerOptions> = {}) {
 		super();
-		this.options = Object.assign({}, defaultOptions, options);
-		this.verificationStrategy = this.getVerificationStrategy(
-			this.options.verificationStrategy,
-		);
-		// rest manager is provided by the user
+		this.options = Object.assign(defaultOptions, options);
 		this.api = new Rest(this.options.rest);
-	}
-	private getVerificationStrategy(
-		receivedStrat: verificationStrategy | null | string,
-	): verificationStrategy {
-		// null means access=all verification stratergy
-		if (receivedStrat === null) return new NoLimitVerificationStrategy();
-		// probably provided publicKey as the verification stratergy
-		else if (typeof receivedStrat === "string")
-			return new NativeVerificationStrategy(receivedStrat);
-		else return receivedStrat;
-	}
-	/**
-	 * Internal function for debugging conditionally
-	 */
-	private debug(msg: string) {
-		msg = "[@DISCI/HANDLER]: " + msg;
-		if (this.options.debug) {
-			// if debug is enabled
-			if (typeof this.options.debug === "function") this.options.debug(msg);
-			else console.debug(msg);
-		}
-
-		return void 0;
-	}
-	/**
-	 * Handles a Request and returns a Response Object
-	 * @param Request the request from the server to handle
-	 * @returns A Object containing Response Object.Does not reject
-	 * @example
-	 * ```ts
-	 * const req = { headers: {}, body: ... }
-	 * <Handler>.handleRequest(req).then((res) => {
-	 *  // return the response
-	 * }).catch((err) => {
-	 *  // catch auth or unsupported errors
-	 * })
-	 * ```
-	 */
-	async handleRequest(
-		req: IRequest,
-	): Promise<DisciResponse<APIInteractionResponse>> {
-		const requestVerified = await this.verificationStrategy.verifyRequest(req);
-		if (!requestVerified)
-			/* Auth failed */ return ProvideResponse<APIInteractionResponse>(
-				{ error: "Authorization failed" },
-				ResponseStatusCodes.Unauthorized,
-			);
-		return await this.processRequest(req);
 	}
 	/**
 	 * Process a request and return a response according to the request.
-	 * You must use the respective method of returning a response to the client of your framework and return the Response back.
-	 * this does not verify if request is valid or not use {@link InteractionHandler.handleRequest}
-	 * @param req
-	 * @param res
-	 * @returns a Response Object containing data to be responded with
+	 * This does not verify the validity of the request
+	 *
+	 * @param body body of the received request
+	 * @param signal Abort controller signal allow you to control when the handler ends (timeouts etc)
+	 * @returns A json object containing data to be responded with
+	 *
+	 *
+	 * @example
+	 *
+	 * ```ts
+	 * // get the request here
+	 *
+	 * // verify it here
+	 * if(!(await isVerified(request))) return new Response("Invalid Headers, Unauthorized", { status: 401 })
+	 *
+	 *	const timeOutAbort = new AbortController();
+	 *	const timeout = setTimeout(() => {
+	 *		timeOutAbort.abort("Time out");
+	 *	}, 3000);
+	 *
+	 * try {
+	 * 	const handled = await processRequest(body, timeOutAbort.signal)
+	 * 	// if it resolved that means handler successfully resolved
+	 * 	// remember to remove the timeout
+	 * 	clearTimeout(timeout)
+	 * 	// it safe to return the response as a json response
+	 * 	return new Response(handled, { status: 200 })
+	 * }
+	 * catch {
+	 * 	return new Response("Server Error", { status: 500 })
+	 * }
+	 * ```
 	 */
 	processRequest(
-		req: IRequest,
-	): Promise<DisciResponse<APIInteractionResponse>> {
-		return new Promise((resolve) => {
+		body: string | Record<string, unknown>,
+		signal?: AbortSignal,
+	): Promise<APIInteractionResponse> {
+		return new Promise((resolve, reject) => {
 			// parse the request body
 			const rawInteraction = tryAndValue<APIInteraction>(
-				() => JSON.parse(req.body) as APIInteraction,
+				() =>
+					(typeof body === "string"
+						? JSON.parse(body)
+						: body) as APIInteraction,
 			);
 			if (!rawInteraction)
-				return resolve(
-					ProvideResponse<APIInteractionResponse>(
-						{ error: "Invalid interaction data" },
-						ResponseStatusCodes.BadRequest,
+				return reject(
+					new TypeError(
+						`Failed to parse received interaction to a valid interaction`,
 					),
 				);
 			// convert rawInteraction -> interaction
@@ -124,29 +88,32 @@ export class InteractionHandler extends (EventEmitter as unknown as new () => Ty
 
 			if (interaction) {
 				// assign a callback
-				interaction.useCallback((response) => {
-					this.debug(`Resolving Interaction with ${JSON.stringify(response)} `);
-					return resolve(ProvideResponse<APIInteractionResponse>(response));
-				});
+				interaction.useCallback((response) => resolve(response));
+				// register a event to check for aborts
+				if (signal) {
+					signal.addEventListener("abort", () => {
+						interaction.useCallback(() => {
+							throw new Error(`Interaction timed out (via abort)`);
+						});
+						reject(signal.reason);
+					});
+				}
+
 				// finally emit the event
+
 				return this.emit("interactionCreate", interaction);
 			}
 			// a ping event
 			else if (rawInteraction.type === InteractionType.Ping) {
-				return resolve(
-					ProvideResponse<APIInteractionResponse>({
-						type: InteractionResponseType.Pong,
-					}),
-				);
-				// if its not a interaction we recognize or a ping its most likely unsupported new feature
+				// just resolve without doing anything
+				return resolve({
+					type: InteractionResponseType.Pong,
+				});
 			} else {
-				this.debug(
-					`Unsupported Interaction type of ${rawInteraction.type} was received`,
-				);
-				resolve(
-					ProvideResponse<APIInteractionResponse>(
-						{ error: "Feature is not supported" },
-						ResponseStatusCodes.BadRequest,
+				// if its not a interaction we recognize or a ping its most likely unsupported new feature
+				reject(
+					new TypeError(
+						`Unsupported Interaction of type ${rawInteraction.type} received`,
 					),
 				);
 			}

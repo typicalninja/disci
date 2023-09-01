@@ -1,6 +1,6 @@
 import type { InteractionHandler } from "../InteractionHandler";
 import type { IBase } from "./Base";
-import { PermissionsBitField } from "./Bitfield";
+import { PermissionsBitField } from "../structures/Bitfield";
 
 import type { Snowflake } from "discord-api-types/globals";
 import {
@@ -9,7 +9,7 @@ import {
 	APIInteraction,
 	APIInteractionResponse,
 	APIInteractionResponseChannelMessageWithSource,
-	APIMessageComponent,
+	//APIMessageComponent,
 	ApplicationCommandOptionType,
 	InteractionResponseType,
 	InteractionType,
@@ -24,24 +24,15 @@ import Member from "./primitives/Member";
 // Types for different interaction context's
 import type { ApplicationCommand } from "./ApplicationCommand";
 import type { AutoCompleteInteraction } from "./AutoCompleteInteraction";
-import Webhook from "./primitives/Webhook";
-import {
-	DisciError,
-	DisciTypeError,
-	TypeErrorsMessages,
-} from "../utils/errors";
+import { Webhook } from "./primitives/Webhook";
 import type { ComponentInteraction } from "./ComponentInteraction";
-import type {
-	CreateMessageParams,
-	default as Message,
-} from "./primitives/Message";
-import { Embed } from "./Embed";
-import { ResolveComponents } from "./Components";
+import { CreateMessageParams, default as Message } from "./primitives/Message";
+import { PartialGuild } from "./primitives/Guild";
 
-type TcallbackFn = (data: APIInteractionResponse) => void;
+type CallbackFunction = (data: APIInteractionResponse) => void;
 
 /**
- * Base Interaction, used by all other Interaction related Structures
+ * Represents an basic interaction.
  */
 export abstract class BaseInteraction implements IBase {
 	/**
@@ -61,9 +52,13 @@ export abstract class BaseInteraction implements IBase {
 	 */
 	type: InteractionType;
 	/**
-	 * Guild that the interaction was sent from
+	 * Id of the Guild that the interaction was sent from
 	 */
 	guildId?: string;
+	/**
+	 * Guild the interaction was sent from as a partial guild
+	 */
+	guild?: PartialGuild;
 	/**
 	 * Channel that the interaction was sent from
 	 */
@@ -74,6 +69,7 @@ export abstract class BaseInteraction implements IBase {
 	 */
 	readonly version: 1;
 	appPermissions?: PermissionsBitField;
+	private callback!: CallbackFunction;
 	/**
 	 * If this interaction has Already been responded to
 	 */
@@ -82,18 +78,21 @@ export abstract class BaseInteraction implements IBase {
 	 * The user who invoked this interaction
 	 */
 	user?: User;
+
 	/**
-	 * Guild member who invoked this interaction
+	 * Guild member who invoked this interaction (if any)
 	 */
 	member?: Member;
-	private _callback!: TcallbackFn;
 	/**
-	 * Handler than initated this class
+	 * Handler that initiated this class
 	 */
-	handler!: InteractionHandler;
+	readonly handler!: InteractionHandler;
+	/**
+	 * The preferred locale from the guild this interaction was sent in
+	 */
 	guildLocale: LocaleString | null;
 	/**
-	 *
+	 * Create a new received interaction
 	 * @param handler
 	 * @param RawInteractionData
 	 */
@@ -108,11 +107,12 @@ export abstract class BaseInteraction implements IBase {
 		this.token = RawInteractionData.token;
 		this.type = RawInteractionData.type;
 		this.version = RawInteractionData.version;
-
 		this.guildLocale = RawInteractionData.guild_locale ?? null;
 
 		if (RawInteractionData.guild_id && RawInteractionData.member) {
 			// from a guild
+			this.guildId = RawInteractionData.guild_id;
+			this.guild = new PartialGuild(this.handler, { id: this.guildId });
 			this.member = new Member(this.handler, RawInteractionData.member);
 			Reflect.defineProperty(this, "user", {
 				get: () => {
@@ -139,9 +139,10 @@ export abstract class BaseInteraction implements IBase {
 	 * Internal function. define the function used to respond the interaction
 	 * @param fn
 	 * @private
+	 * @ignore
 	 */
-	useCallback(fn: TcallbackFn) {
-		Reflect.defineProperty(this, "_callback", {
+	useCallback(fn: CallbackFunction) {
+		Reflect.defineProperty(this, "callback", {
 			value: fn,
 			enumerable: false,
 		});
@@ -161,68 +162,66 @@ export abstract class BaseInteraction implements IBase {
 		return new Date(this.createdTimestamp);
 	}
 	/**
-	 * Type guard to verify if this interaction is for an ApplicationCommand
+	 * Indicates whether this interaction is a {@link ApplicationCommand}
 	 */
 	isCommand(): this is ApplicationCommand {
 		return this.type === InteractionType.ApplicationCommand;
 	}
 	/**
-	 * Type guard to verify if this interaction is for an autocomplete Request
+	 * Indicates whether this interaction is a {@link AutoCompleteInteraction}
 	 */
 	isAutoComplete(): this is AutoCompleteInteraction {
 		return this.type === InteractionType.ApplicationCommandAutocomplete;
 	}
 	/**
-	 * Typeguard to verify if this interaction is for an component
+	 * Indicates whether this interaction is a {@link ComponentInteraction}
 	 */
 	isComponent(): this is ComponentInteraction {
 		return this.type === InteractionType.MessageComponent;
 	}
 	/**
+	 * Indicates whether this interaction can be replied to (i.e {@link BaseReplyInteraction}).
+	 */
+	isRepliable(): this is BaseReplyInteraction {
+		return (
+			!this.responded &&
+			this.type != InteractionType.ApplicationCommandAutocomplete
+		);
+	}
+	/**
 	 * Respond to this interaction, Raw method
 	 * @returns
 	 * @private
+	 * @ignore
 	 */
 	_respond(response: APIInteractionResponse) {
 		if (this.responded)
-			throw new DisciError(`This interaction has already been responded to.`);
-		this._callback(response);
+			throw new Error(`This interaction has already been responded to.`);
+		this.callback(response);
 		this.responded = true;
 		return this;
 	}
-	/**
-	 * Fetch the reply that was sent for this interaction
-	 * @returns Message
-	 */
-	fetchReply() {
-		if (!this.responded)
-			throw new DisciError(
-				`Please Respond to this interaction before fetching it.`,
-			);
-		return Webhook.prototype.fetchMessage.call(
-			{
-				id: this.applicationId,
-				token: this.token,
-				handler: this.handler,
-			},
-			"@original",
-		);
-	}
+}
+
+/**
+ * Base for all repliable to interactions
+ */
+export class BaseReplyInteraction extends BaseInteraction {
 	/**
 	 * Defers the reply to the interaction.
 	 * @param options options for defer reply
 	 * @param options.fetchReply Whether to fetch the reply that was sent
 	 * @param options.ephemeral send a ephemeral defer
 	 */
-	deferResponse(options?: {
+	deferReply(options?: {
 		fetchReply?: true;
 		ephemeral?: boolean;
 	}): Promise<Message>;
-	deferResponse({ fetchReply = false, ephemeral = false } = {}):
+	deferReply({ fetchReply = false, ephemeral = false } = {}):
 		| Promise<this>
 		| Promise<Message> {
 		if (this.responded)
-			throw new DisciError(
+			throw new Error(
 				`This Interaction already timed out or has been replied to`,
 			);
 		// respond to this interaction
@@ -239,17 +238,33 @@ export abstract class BaseInteraction implements IBase {
 		return Promise.resolve(this);
 	}
 	/**
-	 * Respond to this interaction
+	 * Fetch the reply that was sent for this interaction
+	 * @returns Message
+	 */
+	fetchReply() {
+		if (!this.responded)
+			throw new Error(`Please Respond to this interaction before fetching it.`);
+		return Webhook.prototype.fetchMessage.call(
+			{
+				id: this.applicationId,
+				token: this.token,
+				handler: this.handler,
+			},
+			"@original",
+		);
+	}
+	/**
+	 * reply to this interaction
 	 * @param opts
 	 * @returns this interaction instance or the message instance after responding if fetchReply is true
 	 */
-	respond(opts: CreateMessageParams & { fetchReply?: false }): this;
-	respond(opts: CreateMessageParams & { fetchReply: true }): Promise<Message>;
-	respond(
+	reply(opts: CreateMessageParams & { fetchReply?: false }): Promise<this>;
+	reply(opts: CreateMessageParams & { fetchReply: true }): Promise<Message>;
+	reply(
 		opts: CreateMessageParams & { fetchReply?: boolean },
-	): this | Promise<Message> {
+	): Promise<this> | Promise<Message> {
 		if (this.responded)
-			throw new DisciError(
+			throw new Error(
 				`This interaction either timed out or already been responded to`,
 			);
 		const APIResponse = {
@@ -258,50 +273,27 @@ export abstract class BaseInteraction implements IBase {
 		} as APIInteractionResponseChannelMessageWithSource;
 
 		if (opts) {
-			if (!opts.content && !Array.isArray(opts.embeds))
-				throw new DisciTypeError(`Content or Embeds is needed`);
-
-			// if content is there but not a string, try converting it to one
-			if (opts.content) {
-				if (typeof opts.content !== "string")
-					opts.content = new String(opts.content).toString();
-				Reflect.defineProperty(APIResponse.data, "content", {
-					value: opts.content,
-					enumerable: true,
-					configurable: true,
-				});
-			}
-
-			if (opts.embeds && Array.isArray(opts.embeds)) {
-				// convert embed builders to apiEmbeds
-				opts.embeds = opts.embeds.map((embed) => {
-					if (embed instanceof Embed) {
-						return embed.toJSON();
-					}
-					return embed;
-				});
-
-				Reflect.defineProperty(APIResponse.data, "embeds", {
-					value: opts.embeds,
-					enumerable: true,
-					configurable: true,
-				});
-			}
-
-			if (opts.components) {
-				const components = ResolveComponents<APIMessageComponent[]>(
-					opts.components,
-				);
-				Reflect.defineProperty(APIResponse.data, "components", {
-					value: components,
-					enumerable: true,
-				});
-			}
-		} else throw new DisciTypeError(`CreateMessage Options are required`);
+			APIResponse.data = Message.resolveMessageParams(opts);
+		} else throw new TypeError(`CreateMessage Options are required`);
 
 		this._respond(APIResponse);
 		if (opts.fetchReply === true) return this.fetchReply();
-		return this;
+		return Promise.resolve(this);
+	}
+	/**
+	 * Edit previously sent responses
+	 */
+	editReply(message: CreateMessageParams) {
+		if (!this.responded) throw new Error(`Interaction was not responded to`);
+		return Webhook.prototype.editReply.call(
+			{
+				id: this.applicationId,
+				token: this.token,
+				handler: this.handler,
+			},
+			"@original",
+			message,
+		);
 	}
 }
 
@@ -333,9 +325,7 @@ export class InteractionOptions {
 	getSubCommand(required: true): string;
 	getSubCommand(required = false): string | null {
 		if (required && !this.subCommand)
-			throw new DisciTypeError(
-				TypeErrorsMessages.PropertyNotFound("subCommand"),
-			);
+			throw new TypeError(`Subcommand Not found`);
 		return this.subCommand ?? null;
 	}
 	/**
@@ -345,10 +335,7 @@ export class InteractionOptions {
 	 */
 	getSubCommandGroup(required: true): string;
 	getSubCommandGroup(required = false): string | null {
-		if (required && !this.group)
-			throw new DisciTypeError(
-				TypeErrorsMessages.PropertyNotFound(`subCommandGroup`),
-			);
+		if (required && !this.group) throw new TypeError(`Subcommand Not found`);
 		return this.group ?? null;
 	}
 	/**
@@ -370,7 +357,7 @@ export class InteractionOptions {
 			(o) => o.name === name,
 		) as APIApplicationCommandInteractionDataBasicOption;
 		if (required && !opt)
-			throw new DisciTypeError(`Missing interaction option: ${name}`);
+			throw new TypeError(`Missing interaction option: ${name}`);
 		return opt ?? null;
 	}
 
@@ -384,7 +371,7 @@ export class InteractionOptions {
 
 		if (!option) return null;
 		if (!expectedTypes.includes(option.type))
-			throw new DisciTypeError(
+			throw new TypeError(
 				`Expected Type of option to be ${expectedTypes.join(" ")} Received ${
 					option.type
 				}`,
@@ -395,7 +382,7 @@ export class InteractionOptions {
 				(prop) => option[prop] == null || typeof option[prop] == "undefined",
 			)
 		)
-			throw new DisciTypeError(`Expected Value to be available`);
+			throw new TypeError(`Expected Value to be available`);
 
 		return option;
 	}
@@ -558,7 +545,7 @@ export class InteractionOptions {
 		const focusedOption = this._options.find(
 			(option) => (option as { focused?: boolean }).focused,
 		) as APIApplicationCommandInteractionDataBasicOption;
-		if (!focusedOption) throw new DisciTypeError(`No Focused option found`);
+		if (!focusedOption) throw new Error(`No Focused option found`);
 		return full ? focusedOption : focusedOption.value;
 	}
 }

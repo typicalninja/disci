@@ -1,0 +1,10 @@
+PUBLIC_KEY="PUBLIC KEY FROM DISCORD HERE"
+TOKEN="TOKEN FROM DISCORD HERE"
+
+
+#### DELETE
+##
+##   Add your variable inside (")
+##   make sure to rename .dev.vars.example to => .dev.vars 
+##
+#### DELETE

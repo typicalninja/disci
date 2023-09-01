@@ -1,0 +1,17 @@
+.features {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-row: 2;
+  padding: 2rem 0;
+  gap: 3px;
+}
+
+.featureSvg {
+  height: 200px;
+  width: 200px;
+}
+
+.card {
+  border-radius: 2px;
+}

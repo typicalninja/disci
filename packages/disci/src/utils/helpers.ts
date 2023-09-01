@@ -13,7 +13,7 @@ export const convertSnowflakeToTimeStamp = (id: Snowflake): number => {
 };
 
 /** encapsulates a fn in try catch block and return value/null */
-export function tryAndValue<ReturnType>(fn: () => ReturnType) {
+export function tryAndValue<ReturnType>(fn: () => ReturnType): ReturnType | null {
 	try {
 		return fn();
 	} catch {
@@ -26,13 +26,3 @@ export function tryAndValue<ReturnType>(fn: () => ReturnType) {
  */
 export const isObject = (value: unknown) =>
 	value !== null && typeof value === "object" && !Array.isArray(value);
-
-/**
- * Detect if current runtime is node.js
- * from is-node (npm)
- */
-export const isNode = !!(
-	typeof process !== "undefined" &&
-	process.versions &&
-	process.versions.node
-);

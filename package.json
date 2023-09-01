@@ -2,8 +2,8 @@
   "name": "@discijs/main",
   "private": true,
   "scripts": {
-    "build": "turbo run build --parallel",
-    "dev": "turbo run dev --parallel",
+    "build": "turbo run build --no-daemon",
+    "dev": "turbo run dev --parallel --no-daemon",
     "prettier:check": "turbo run prettier:check",
     "prettier:write": "turbo run prettier:write",
     "lint:check": "turbo run lint:check",
@@ -20,7 +20,7 @@
     "husky": "^8.0.0",
     "lint-staged": "^13.2.2",
     "prettier": "^2.8.7",
-    "tsup": "^6.6.0",
+    "tsup": "^7.2.0",
     "turbo": "latest",
     "typescript": "5.0.4"
   },

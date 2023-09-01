@@ -1,17 +1,19 @@
 import {
+	APIActionRowComponent,
 	APIEmbed,
-	APIInteractionResponseCallbackData,
 	APIMessage,
+	APIMessageActionRowComponent,
 	AllowedMentionsTypes,
+	MessageFlags,
 	Routes,
 	Snowflake,
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
 import type { IBase } from "../Base";
-import { Embed } from "../Embed";
 import User from "./User";
 import { convertSnowflakeToTimeStamp } from "../../utils/helpers";
-import { DisciTypeError, TypeErrorsMessages } from "../../utils/errors";
+import { BitFieldResolvable, MessageFlagsBitField } from "../Bitfield";
+import { WebhookPartial } from "./Webhook";
 
 export type EmojiResolvable = string | { name: string; id: string };
 
@@ -48,7 +50,7 @@ export interface CreateMessageParams {
 	/**
 	 * Array of Embeds (max 10)
 	 */
-	embeds?: (APIEmbed | Embed)[];
+	embeds?: APIEmbed[];
 	/**
 	 *  Allowed mentions for the message
 	 */
@@ -61,7 +63,11 @@ export interface CreateMessageParams {
 	 * The components belonging to this message
 	 * Typed as unknown to support builders from packages like @discordjs/builders
 	 */
-	components?: unknown;
+	components?: APIActionRowComponent<APIMessageActionRowComponent>[];
+	/**
+	 * Message flags to be used
+	 */
+	flags?: MessageFlagsBitField | BitFieldResolvable;
 }
 
 export default class Message implements IBase {
@@ -70,23 +76,24 @@ export default class Message implements IBase {
 	 * Id of this message
 	 */
 	id: Snowflake;
-	embeds: Embed[];
+	embeds: APIEmbed[];
 	content?: string;
-	author?: User;
 	timestamp: number;
 	editedTimestamp: number | null;
-	webhhok?: {
-		id: string;
-		username: string;
-		discriminator: string;
-		avatar: string | undefined;
-	};
+	/**
+	 * The user who created this message (if created by a user)
+	 */
+	author?: User;
+	/**
+	 * Webhook that created this message (if created by webhook)
+	 */
+	webhook?: WebhookPartial
 	channelId: string;
 	constructor(handler: InteractionHandler, apiData: APIMessage) {
 		Object.defineProperty(this, "handler", { value: handler });
 
 		this.id = apiData.id;
-		this.embeds = apiData.embeds?.map((apiEmbed) => new Embed(apiEmbed)) ?? [];
+		this.embeds = apiData.embeds ?? [];
 		this.timestamp = Date.parse(apiData.timestamp);
 		this.editedTimestamp = apiData.edited_timestamp
 			? Date.parse(apiData.edited_timestamp)
@@ -100,15 +107,9 @@ export default class Message implements IBase {
 		// if the message is not from a webhook, its has a author
 		if (!apiData.webhook_id) {
 			this.author = new User(this.handler, apiData.author);
-		} else if (apiData.author.discriminator === "0000") {
+		} else {
 			// from webhook
-			console.log("webhook:", apiData.author, "id:", apiData.webhook_id);
-			this.webhhok = {
-				id: apiData.webhook_id,
-				username: apiData.author.username,
-				discriminator: apiData.author.discriminator,
-				avatar: apiData.author.avatar ? apiData.author.avatar : undefined,
-			};
+			this.webhook = new WebhookPartial(handler, { id: apiData.webhook_id })
 		}
 	}
 	/**
@@ -181,35 +182,33 @@ export default class Message implements IBase {
 	 * @private
 	 */
 	static resolveMessageParams(params: CreateMessageParams) {
-		const msg = {} as APIInteractionResponseCallbackData;
+		const msg = {} as APIMessage;
 
 		// if message content is present
 		if (params.content) {
 			if (typeof params.content !== "string")
-				params.content = new String(params.content).toString();
+				throw new TypeError(`Expected a string for message content`);
 			msg.content = params.content;
 		}
 
 		// resolve embeds
 		if (params.embeds) {
 			if (!Array.isArray(params.embeds))
-				throw new DisciTypeError(
-					TypeErrorsMessages.ExpectedParameter(
-						`message.embeds`,
-						"array",
-						typeof params.embeds,
-					),
-				);
-			// convert embed builders to apiEmbeds
-			msg.embeds = params.embeds.map((embed) => {
-				if (embed instanceof Embed) {
-					return embed.toJSON();
-				}
-				return embed;
-			});
+				throw new TypeError(`Expected a array for embeds`);
+			msg.embeds = params.embeds;
 		}
 
 		// resolve components
+		if (params.components) {
+			if (!Array.isArray(params.embeds))
+				throw new TypeError(`Expected a array for Component Action rows`);
+			msg.components = params.components;
+		}
+
+		if (params.flags) {
+			const bitfield = MessageFlagsBitField.resolve(params.flags)
+			msg.flags = bitfield.toString() as unknown as MessageFlags;
+		}
 
 		return msg;
 	}

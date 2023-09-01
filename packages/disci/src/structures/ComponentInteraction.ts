@@ -1,4 +1,4 @@
-import { BaseInteraction } from "./BaseInteraction";
+import { BaseReplyInteraction } from "./BaseInteraction";
 import type { IBase } from "./Base";
 import {
 	APIMessageComponentInteraction,
@@ -6,7 +6,7 @@ import {
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../InteractionHandler";
 
-export class ComponentInteraction extends BaseInteraction implements IBase {
+export class ComponentInteraction extends BaseReplyInteraction implements IBase {
 	override type = InteractionType.MessageComponent;
 	customId: string;
 	constructor(

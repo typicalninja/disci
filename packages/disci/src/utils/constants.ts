@@ -1,15 +1,5 @@
-import type { verificationStrategy } from "../verification";
-import type { ApplicationCommands } from "../structures/ApplicationCommand";
-import type { AutoCompleteInteraction } from "../structures/AutoCompleteInteraction";
 import type { RESTClientOptions } from "./REST";
-import type { ComponentInteraction } from "../structures/ComponentInteraction";
-import { isNode } from "./helpers";
-import type { APIInteractionResponse } from "discord-api-types/v10";
-
-export enum DiscordVerificationHeaders {
-	Signature = "x-signature-ed25519",
-	TimeStamp = "x-signature-timestamp",
-}
+import type { BaseInteraction } from "../structures";
 
 /**
  * @link https://discord.com/developers/docs/reference#image-formatting
@@ -27,46 +17,18 @@ export type DiscordImageSize =
 
 export const DiscordEpoch = 14200704e5;
 
-// Common type for interactions
-export type InteractionContext =
-	| ApplicationCommands
-	| AutoCompleteInteraction
-	| ComponentInteraction;
-
-export interface IHandlerOptions {
-	/**
-	 * A debug callback function that can be used for debugging
-	 */
-	debug?: (msg: string) => void;
-	/**
-	 * Verification stratergy used for validating incoming requests,
-	 * do no specify for default and specify null for allow all requests
-	 * specify a string (your public key) for default stratergy will use that instead of process.env.PUBLIC_KEY
-	 */
-	verificationStrategy: verificationStrategy | null | string;
+export interface HandlerOptions {
 	/**
 	 * Options for built in rest client
 	 */
 	rest: RESTClientOptions;
 }
 
-export const defaultOptions: IHandlerOptions = {
-	verificationStrategy: (isNode && process.env.PUBLIC_KEY) || "",
+export const defaultOptions: HandlerOptions = {
 	rest: {
-		token: (isNode && process.env.TOKEN) || "",
+		token: (typeof process !== "undefined" && process.env.TOKEN) || "",
 	},
 };
-
-/**
- * Error Messages Returned in HttpErrors
- * @private
- */
-export enum EResponseErrorMessages {
-	Unauthorized = "Unable to Authorize. Check your headers",
-	NotSupported = "This Feature is not yet supported",
-	TimedOut = "Response Timed Out",
-	InternalError = "Internal Server Error occurred.",
-}
 
 /** @private */
 export enum URLS {
@@ -77,42 +39,10 @@ export enum URLS {
 /**
  * Events fired by the handler
  */
-export interface IClientEvents {
+export interface ClientEvents {
 	/**
 	 * Fired when a interaction is received
-	 * @param interaction - Interaction contact
+	 * @param interaction - Respective interaction class
 	 */
-	interactionCreate: (interaction: InteractionContext) => void;
-	/**
-	 * Fired when there is a error
-	 * @param err
-	 * @returns
-	 */
-	error: (err: unknown) => void;
-}
-
-/**
- * Common Request type containing required parts for our scripts
- */
-export interface IRequest {
-	/**
-	 * Body of the Request
-	 */
-	body: string;
-	/**
-	 * Headers of the Request
-	 * Used for validation
-	 * @readonly
-	 */
-	headers: Record<string, string>;
-}
-
-/**
- * Data returned by handleRequest
- */
-export interface IResponse {
-	/**
-	 * Response to the request
-	 */
-	responseData: APIInteractionResponse | { data: string };
+	interactionCreate: (interaction: BaseInteraction) => unknown;
 }

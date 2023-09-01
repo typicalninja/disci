@@ -1,0 +1,139 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import Admonition from '@theme/Admonition';
+
+# Serverless hosting (cloudflare)
+
+## Platforms available
+
+Here some of the platforms you can use to host a serverless application,
+
+1. [Cloudflare workers](https://workers.cloudflare.com/)
+
+:::info
+
+For this guide we will use [Cloudflare workers](https://workers.cloudflare.com/)
+
+:::
+
+## Quick start
+
+<Admonition type="caution" icon="🚧" title="Work in progress.">
+  <p>
+  Quick start guide is still wip, we suggest you to use the manual setup
+  </p>
+</Admonition>
+
+### Creating a project
+
+To start you can either use our cli tool `create-disci` or generate one on your own using wrangler (by cloudflare). This guide will explore on how to create a new bot using our cli tool `create-disci`
+
+First open a commands prompt and cd into the directory you want to create the project in and then run following command
+
+<Tabs groupId="cliCommands">
+  <TabItem value="npm" label="npm" default>
+
+  ```bash
+  npm create disci cf-worker-ts
+  ```
+
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm">
+
+  ```bash
+  pnpm create disci cf-worker-ts
+  ```
+  </TabItem>
+  <TabItem value="yarn" label="yarn">
+
+  ```bash
+  yarn create disci cf-worker-ts
+  ```
+  </TabItem>
+</Tabs>
+
+
+This should quickly scaffold a new application for you
+
+
+
+## Manual setup
+
+We suggest you to read the manual setup guide even with "quick setup" to get an idea on how the 
+project works.
+
+Note: Each file structure may differ depending on your [hosting provider](#platforms-available) 
+how ever the base file structure used in any DisciJS project should be (suggested) as follows
+
+### Project structure
+
+```js
+src/        // your source code for the bot
+  index.ts // main file
+package.json
+wrangler.toml // platform specific configuration
+```
+
+
+
+### Install packages
+
+:::info
+ 
+ Since this guide is written to be used with [Cloudflare workers](https://workers.cloudflare.com/) we will Install
+ tools specific to them. make sure to **install the tooling for the platform you choose to use**
+
+:::
+
+
+<Tabs groupId="cliCommands">
+  <TabItem value="npm" label="npm" default>
+
+  ```bash
+  # main deps (main pkg & verifier)
+  npm i disci discord-verify itty-router
+  # Dev deps (tooling etc)
+  npm i -D wrangler @cloudflare/workers-types
+  ```
+
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm">
+
+  ```bash
+  # main deps (main pkg & verifier)
+  pnpm add disci discord-verify itty-router
+  # Dev deps (tooling etc)
+  pnpm add -D wrangler @cloudflare/workers-types
+  ```
+  </TabItem>
+  <TabItem value="yarn" label="yarn">
+
+  ```bash
+  # main deps (main pkg & verifier)
+  yarn add disci discord-verify itty-router
+  # Dev deps (tooling etc)
+  yarn add -D wrangler @cloudflare/workers-types
+  ```
+  </TabItem>
+</Tabs>
+
+
+:::tip Additional packages
+
+You can also add additional the following dependencies to make your development easier.
+
+* [@discordjs/builders](https://www.npmjs.com/package/@discordjs/builders) - Simple utilities to build API objects
+* [discord-api-types](https://github.com/discordjs/discord-api-types) - Simple typings useful in development (use v10 of api typings with this version of disci)
+
+:::
+
+
+### Main file
+
+This section covers what should go in the `index.ts` file.
+we suggest you keep the index file for the handler and the http router.
+
+```ts
+
+
+```
