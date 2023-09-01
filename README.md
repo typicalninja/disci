@@ -1,52 +1,30 @@
-# 🎨 DisciJs
+# 🎨 Disci Project
 
-Easy to use library for creating discord applications via interaction webhooks.
+![NPM version badge](https://img.shields.io/npm/v/disci)
+![NPM bundle size](https://img.shields.io/bundlephobia/minzip/disci)
+![NPM license](https://img.shields.io/npm/l/disci)
+![GitHub issues](https://img.shields.io/github/issues/typicalninja/disci)
+
+Disci is a project designed for interacting with Discord's new interaction webhook system, enabling the creation of Discord applications without the need for a websocket connection. It's an ideal choice for serverless and small to medium-sized bots (*Size as in code size, not servers*)
 
 # 📦 Monorepo
 
-This is the monorepo for disci.js, you can find the disci package readme [here](./packages/disci/readme.md)
+This is the monorepo for Disci.js. The Disci package readme is available [here](./packages/disci/readme.md).
 
-All packages are in ./packages directory 
+All packages are in the ./packages directory, while Examples and Documentation are in the ./apps directory.
+## 💻 Development
 
-while Examples and Documentation is in ./apps directory
+The current latest published version of the main package (![npm version badge](https://img.shields.io/npm/v/disci)) is a pre-release version
 
-# 🚀 Install
+All versions within the range of **0.xx.xx** are considered pre-release and may contain breaking changes within minor and patch releases.
 
-Use any of the following commands, belonging to your package manager
-
-> We suggest you use [pnpm](https://pnpm.io/) however the choice is yours
-
-```bash
-
-# Install the base package
-
-# if npm
-
-npm install disci
-
-# yarn
-
-yarn add disci
-
-# pnpm
-
-pnpm add disci
-
-```
-
-# 💻 Development
-
-* Development is done in `dev`` branch.
-
-* dev snapshot releases will be published to @dev tag to npm.
-
-# 🔗 Links
+## 🔗 Links
 
 * [Documentation & Guide](https://dev--disci.netlify.app/)
 * [Npm](https://www.npmjs.com/package/disci)
 * [Github](https://github.com/typicalninja493/disci)
-* [Discord Server](https://discord.gg/9s52pz6nWX)
+* [Discord Server](https://discord.gg/ynwckXS9T2)
 
-# License
+## License
 
 This repository and the code inside it is licensed under the Apache-2.0 License. Read [LICENSE](https://github.com/typicalninja493/disci/blob/master/LICENSE) for more information.
