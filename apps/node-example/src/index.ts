@@ -6,14 +6,13 @@ import handler from "./handler.js";
 
 const { TOKEN, PUBLIC_KEY } = process.env as { TOKEN: string; PUBLIC_KEY: string };
 
+ if(handler.api.authToken === '') handler.api.setToken(TOKEN)
+
 const app = new Hono();
 
 app.get("/", (c) => c.text("Server is running 🚀"));
 
 app.post("/interactions", async (c) => {
-
-    /** Important: Since we do not have access to env vars we can add the api var here */
-    if(handler.api.authToken === '') handler.api.setToken(TOKEN)
 
     // headers for validation
 	const signature = c.req.headers.get("x-signature-ed25519");
