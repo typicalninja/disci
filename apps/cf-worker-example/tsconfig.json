@@ -1,17 +1,15 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "esModuleInterop": true,
-    "strict": true,
     "lib": [
       "esnext"
     ],
     "types": [
       "@cloudflare/workers-types"
     ],
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
   },
 }

@@ -1,8 +1,7 @@
 import { Hono } from "hono";
 import { verify } from "discord-verify";
 import { env } from "hono/adapter";
-import handler from "./handler";
-
+import handler from "./handler.js";
 const app = new Hono();
 
 app.get("/", (c) => c.text("Worker is working 🚀"));
@@ -37,10 +36,10 @@ app.post("/interactions", async (c) => {
 
 	
     try {
-    /*    const response = await handler.processRequest(
+       const response = await handler.processRequest(
             rawBody,
         );
-        return c.json(response);*/
+        return c.json(response);
     } catch (err) {
         console.log("error", err);
         c.status(500)

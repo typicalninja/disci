@@ -6,11 +6,10 @@
   },
   "type": "module",
   "dependencies": {
-    "hono": "^3.5.4",
-    "@discordjs/builders": "^1.6.1",
-    "disci": "workspace:^",
+    "disci": "workspace:*",
     "discord-api-types": "^0.37.50",
-    "discord-verify": "^1.2.0"
+    "discord-verify": "^1.2.0",
+    "hono": "^3.5.4"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230821.0",
