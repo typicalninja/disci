@@ -46,7 +46,7 @@ export class WebhookPartial implements IBase {
 	}
 }
 
-export default class Webhook extends WebhookPartial {
+export class Webhook extends WebhookPartial {
 	/**
 	 *The type of the webhook
 	 *
@@ -67,7 +67,7 @@ export default class Webhook extends WebhookPartial {
 		this.type = data.type;
 
 		this.owner = data.user ? new User(this.handler, data.user) : null;
-		this.applicationId = data.application_id ?? null;
+		this.applicationId = data.application_id;
 	}
 	/**
 	 * Gets a message that was sent by this webhook.
@@ -105,5 +105,27 @@ export default class Webhook extends WebhookPartial {
 		);
 
 		return new Message(this.handler, edited);
+	}
+	/**
+	 * Sends a message with this webhook.
+	 */
+	async send(
+		messageData: CreateMessageParams,
+		{ threadId }: { threadId?: string } = {},
+	) {
+		if (!this.token) throw new Error(`This webhook does not contain a Token`);
+		const resolvedParams = Message.resolveMessageParams(messageData);
+		const createdMessage = await this.handler.api.post<APIMessage>(
+			Routes.webhookMessage(this.id, this.token),
+			{
+				body: resolvedParams,
+				query: {
+					wait: true,
+					thread_id: threadId,
+				},
+			},
+		);
+
+		return new Message(this.handler, createdMessage);
 	}
 }

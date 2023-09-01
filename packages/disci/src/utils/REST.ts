@@ -26,7 +26,7 @@ export interface RESTClientOptions {
 export interface RESTCommonOptions {
 	headers?: Record<string, string>;
 	body?: unknown;
-	query?: Record<string, string>;
+	query?: Record<string, unknown>;
 }
 
 /**
@@ -108,7 +108,7 @@ export class Rest implements RestClient {
 	delete<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
 		return this.makeRequest<T>("DELETE", path, opts);
 	}
-	private getUrl(path: string, queryParams?: Record<string, string>) {
+	private getUrl(path: string, queryParams?: Record<string, unknown>) {
 		let url: string;
 		if (path.startsWith("/")) {
 			url = `${this.rootUrl}${path}`;
@@ -120,7 +120,9 @@ export class Rest implements RestClient {
 		}
 
 		if (queryParams) {
-			url = `${url}?${new URLSearchParams(queryParams).toString()}`;
+			url = `${url}?${new URLSearchParams(
+				queryParams as Record<string, string>,
+			).toString()}`;
 		}
 		return url;
 	}

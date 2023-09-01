@@ -24,7 +24,7 @@ import Member from "./primitives/Member";
 // Types for different interaction context's
 import type { ApplicationCommand } from "./ApplicationCommand";
 import type { AutoCompleteInteraction } from "./AutoCompleteInteraction";
-import Webhook from "./primitives/Webhook";
+import { Webhook } from "./primitives/Webhook";
 import type { ComponentInteraction } from "./ComponentInteraction";
 import { CreateMessageParams, default as Message } from "./primitives/Message";
 import { PartialGuild } from "./primitives/Guild";
