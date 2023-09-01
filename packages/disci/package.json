@@ -46,7 +46,7 @@
   "bugs": {
     "url": "https://github.com/typicalninja/disci/issues"
   },
-  "homepage": "https://github.com/typicalninja/disci",
+  "homepage": "https://github.com/typicalninja/disci#readme",
   "lint-staged": {
     "*.{js,ts}": [
       "pnpm prettier:write",
