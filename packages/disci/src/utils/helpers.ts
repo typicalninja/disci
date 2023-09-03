@@ -13,7 +13,9 @@ export const convertSnowflakeToTimeStamp = (id: Snowflake): number => {
 };
 
 /** encapsulates a fn in try catch block and return value/null */
-export function tryAndValue<ReturnType>(fn: () => ReturnType): ReturnType | null {
+export function tryAndValue<ReturnType>(
+	fn: () => ReturnType,
+): ReturnType | null {
 	try {
 		return fn();
 	} catch {
@@ -26,3 +28,19 @@ export function tryAndValue<ReturnType>(fn: () => ReturnType): ReturnType | null
  */
 export const isObject = (value: unknown) =>
 	value !== null && typeof value === "object" && !Array.isArray(value);
+
+//! impl: discord.js (https://github.com/discordjs/discord.js/blob/main/packages/rest/src/lib/utils/utils.ts#L140)
+/**
+ * Verifies that a value is a buffer-like object.
+ *
+ * @param value - The value to check
+ */
+export function isBufferLike(
+	value: unknown,
+): value is ArrayBuffer | Buffer | Uint8Array | Uint8ClampedArray {
+	return (
+		value instanceof ArrayBuffer ||
+		value instanceof Uint8Array ||
+		value instanceof Uint8ClampedArray
+	);
+}

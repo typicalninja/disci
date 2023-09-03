@@ -100,7 +100,8 @@ export class Webhook extends WebhookPartial {
 		const edited = await this.handler.api.patch<APIMessage>(
 			Routes.webhookMessage(this.id, this.token, messageId),
 			{
-				body: resolvedParams,
+				body: resolvedParams.body,
+				files: resolvedParams.files,
 			},
 		);
 
@@ -118,7 +119,8 @@ export class Webhook extends WebhookPartial {
 		const createdMessage = await this.handler.api.post<APIMessage>(
 			Routes.webhookMessage(this.id, this.token),
 			{
-				body: resolvedParams,
+				body: resolvedParams.body,
+				files: resolvedParams.files,
 				query: {
 					wait: true,
 					thread_id: threadId,

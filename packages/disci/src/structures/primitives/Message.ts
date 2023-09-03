@@ -14,6 +14,7 @@ import User from "./User";
 import { convertSnowflakeToTimeStamp } from "../../utils/helpers";
 import { BitFieldResolvable, MessageFlagsBitField } from "../Bitfield";
 import { WebhookPartial } from "./Webhook";
+import type { RESTFile } from "../../utils/REST";
 
 export type EmojiResolvable = string | { name: string; id: string };
 
@@ -61,9 +62,9 @@ export interface CreateMessageParams {
 	messageReference?: MessageReference;
 	/**
 	 * The components belonging to this message
-	 * Typed as unknown to support builders from packages like @discordjs/builders
 	 */
 	components?: APIActionRowComponent<APIMessageActionRowComponent>[];
+	files?: RESTFile[];
 	/**
 	 * Message flags to be used
 	 */
@@ -76,6 +77,9 @@ export default class Message implements IBase {
 	 * Id of this message
 	 */
 	id: Snowflake;
+	/**
+	 * Embeds for this message
+	 */
 	embeds: APIEmbed[];
 	content?: string;
 	timestamp: number;
@@ -87,7 +91,7 @@ export default class Message implements IBase {
 	/**
 	 * Webhook that created this message (if created by webhook)
 	 */
-	webhook?: WebhookPartial
+	webhook?: WebhookPartial;
 	channelId: string;
 	constructor(handler: InteractionHandler, apiData: APIMessage) {
 		Object.defineProperty(this, "handler", { value: handler });
@@ -109,7 +113,7 @@ export default class Message implements IBase {
 			this.author = new User(this.handler, apiData.author);
 		} else {
 			// from webhook
-			this.webhook = new WebhookPartial(handler, { id: apiData.webhook_id })
+			this.webhook = new WebhookPartial(handler, { id: apiData.webhook_id });
 		}
 	}
 	/**
@@ -181,9 +185,12 @@ export default class Message implements IBase {
 	 * Internal method to resolve data for message Create
 	 * @private
 	 */
-	static resolveMessageParams(params: CreateMessageParams) {
+	static resolveMessageParams(params: CreateMessageParams): {
+		body: APIMessage;
+		files: RESTFile[];
+	} {
 		const msg = {} as APIMessage;
-
+		const files: RESTFile[] = [];
 		// if message content is present
 		if (params.content) {
 			if (typeof params.content !== "string")
@@ -194,22 +201,31 @@ export default class Message implements IBase {
 		// resolve embeds
 		if (params.embeds) {
 			if (!Array.isArray(params.embeds))
-				throw new TypeError(`Expected a array for embeds`);
+				throw new TypeError(`Expected an array for embeds`);
 			msg.embeds = params.embeds;
 		}
 
 		// resolve components
 		if (params.components) {
-			if (!Array.isArray(params.embeds))
-				throw new TypeError(`Expected a array for Component Action rows`);
+			if (!Array.isArray(params.components))
+				throw new TypeError(`Expected an array for Component Action rows`);
 			msg.components = params.components;
 		}
 
+		if (params.files) {
+			if (!Array.isArray(params.files))
+				throw new TypeError(`Expected an array for Files`);
+			files.push(...params.files);
+		}
+
 		if (params.flags) {
-			const bitfield = MessageFlagsBitField.resolve(params.flags)
+			const bitfield = MessageFlagsBitField.resolve(params.flags);
 			msg.flags = bitfield.toString() as unknown as MessageFlags;
 		}
 
-		return msg;
+		return {
+			body: msg,
+			files,
+		};
 	}
 }

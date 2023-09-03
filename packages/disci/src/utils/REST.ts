@@ -1,5 +1,5 @@
 import { URLS } from "./constants";
-import { tryAndValue } from "./helpers";
+import { isBufferLike, tryAndValue } from "./helpers";
 
 // userAgent used in requests
 const UserAgent =
@@ -11,7 +11,7 @@ export interface RestClient {
 		path: string,
 		opts: RESTCommonOptions,
 	) => Promise<T>;
-	authToken: string;
+	authToken: string | null;
 	rootUrl: string;
 }
 
@@ -23,10 +23,49 @@ export interface RESTClientOptions {
 	authPrefix?: "bot";
 	rootUrl?: string;
 }
+
+export interface RESTFile {
+	/**
+	 * Content-Type of the file
+	 */
+	contentType?: string;
+	/**
+	 * The actual data for the file
+	 */
+	data: Buffer | Uint8Array | boolean | number | string;
+	/**
+	 * An explicit key to use for key of the formdata field for this file.
+	 * When not provided, the index of the file in the files array is used in the form `files[${index}]`.
+	 * If you wish to alter the placeholder snowflake, you must provide this property in the same form (`files[${placeholder}]`)
+	 */
+	key?: string;
+	/**
+	 * The name of the file
+	 */
+	name: string;
+}
+
 export interface RESTCommonOptions {
 	headers?: Record<string, string>;
 	body?: unknown;
-	query?: Record<string, unknown>;
+	query?: Record<string, unknown> | URLSearchParams;
+	/**
+	 * Files to be attached to this request
+	 */
+	files?: RESTFile[];
+	/**
+	 * Whether to append JSON data to form data instead of `payload_json` when sending files
+	 */
+	appendBodyToForm?: boolean;
+	/**
+	 * If this request needs the `Authorization` header
+	 */
+	auth?: boolean;
+	/**
+	 * Reason to show in the audit logs
+	 *
+	 */
+	reason?: string;
 }
 
 /**
@@ -34,14 +73,14 @@ export interface RESTCommonOptions {
  */
 export class Rest implements RestClient {
 	authPrefix: string;
-	authToken: string;
+	authToken: string | null;
 	rootUrl: string;
 	/**
 	 * for support of serverless and other platforms
 	 */
 	constructor(_opts: RESTClientOptions) {
 		this.authPrefix = _opts.authPrefix || "Bot";
-		this.authToken = _opts.token || "";
+		this.authToken = _opts.token || null;
 		this.rootUrl = _opts.rootUrl
 			? _opts.rootUrl.endsWith("/")
 				? _opts.rootUrl.slice(0, _opts.rootUrl.length - 1)
@@ -61,21 +100,15 @@ export class Rest implements RestClient {
 		this.authToken = token;
 		return this;
 	}
+
 	async makeRequest<T>(
 		method: string,
 		path: string,
 		opts?: RESTCommonOptions,
 	): Promise<T> {
-		const req = await fetch(this.getUrl(path, opts?.query), {
-			method,
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: this.authHeader,
-				"User-Agent": UserAgent,
-				...opts?.headers,
-			},
-			body: JSON.stringify(opts?.body),
-		});
+		const request = this.getRequest(path, method, opts);
+
+		const req = await fetch(this.getUrl(path, opts?.query), request.init);
 
 		if (!req.ok) {
 			const errors = await tryAndValue(() => req.json());
@@ -108,7 +141,10 @@ export class Rest implements RestClient {
 	delete<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
 		return this.makeRequest<T>("DELETE", path, opts);
 	}
-	private getUrl(path: string, queryParams?: Record<string, unknown>) {
+	private getUrl(
+		path: string,
+		queryParams?: Record<string, unknown> | URLSearchParams,
+	) {
 		let url: string;
 		if (path.startsWith("/")) {
 			url = `${this.rootUrl}${path}`;
@@ -128,5 +164,92 @@ export class Rest implements RestClient {
 	}
 	get authHeader() {
 		return `${this.authPrefix} ${this.authToken}`;
+	}
+
+	getRequest(
+		path: string,
+		method: string,
+		options?: RESTCommonOptions,
+	): { init: RequestInit; url: string } {
+		const baseHeaders = {
+			"User-Agent": UserAgent,
+		} as Record<string, string>;
+
+		// check if adding the auth header is necessary for this request
+		if (options?.auth !== false) {
+			if (!this.authToken)
+				throw new Error(`Auth token was expected for request but was not set`);
+			baseHeaders.Authorization = this.authHeader;
+		}
+
+		// if reason is present, attach the header
+		if (options?.reason && options.reason.length) {
+			baseHeaders["X-Audit-Log-Reason"] = encodeURIComponent(options.reason);
+		}
+
+		if (options?.headers) {
+			Object.assign(baseHeaders, options.headers);
+		}
+
+		let fBody: RequestInit["body"];
+
+		//! impl: from d.js
+		if (options?.files?.length) {
+			const formData = new FormData();
+
+			// add files to formData
+			for (const [index, file] of options.files.entries()) {
+				const fileKey = file.key ?? `files[${index}]`;
+				if (isBufferLike(file.data)) {
+					const contentType = file.contentType;
+					if (!contentType)
+						throw new Error(
+							`Expected content type for file (${fileKey}) to be a string`,
+						);
+					formData.append(
+						fileKey,
+						new Blob([file.data], { type: contentType }),
+						file.name,
+					);
+				} else
+					formData.append(
+						fileKey,
+						new Blob([`${file.data}`], { type: file.contentType }),
+						file.name,
+					);
+			}
+
+			// if body is available with files
+			if (options.body) {
+				// if should append directly to formData
+				if (options.appendBodyToForm) {
+					for (const [key, value] of Object.entries(
+						options.body as Record<string, string>,
+					)) {
+						formData.append(key, value);
+					}
+				}
+				// else append a stringified body to payload_json key
+				else formData.append("payload_json", JSON.stringify(options.body));
+			}
+
+			fBody = formData;
+		}
+		// if body is present but files are not present
+		else if (options?.body) {
+			fBody = JSON.stringify(options.body);
+			baseHeaders["Content-Type"] = "application/json";
+		}
+
+		const request: RequestInit = {
+			method: method.toUpperCase(),
+			headers: baseHeaders,
+			body: fBody,
+		};
+
+		return {
+			init: request,
+			url: this.getUrl(path, options?.query),
+		};
 	}
 }

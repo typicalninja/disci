@@ -258,10 +258,14 @@ export class BaseReplyInteraction extends BaseInteraction {
 	 * @param opts
 	 * @returns this interaction instance or the message instance after responding if fetchReply is true
 	 */
-	reply(opts: CreateMessageParams & { fetchReply?: false }): Promise<this>;
-	reply(opts: CreateMessageParams & { fetchReply: true }): Promise<Message>;
 	reply(
-		opts: CreateMessageParams & { fetchReply?: boolean },
+		opts: Omit<CreateMessageParams, "files"> & { fetchReply?: false },
+	): Promise<this>;
+	reply(
+		opts: Omit<CreateMessageParams, "files"> & { fetchReply: true },
+	): Promise<Message>;
+	reply(
+		opts: Omit<CreateMessageParams, "files"> & { fetchReply?: boolean },
 	): Promise<this> | Promise<Message> {
 		if (this.responded)
 			throw new Error(
@@ -273,7 +277,7 @@ export class BaseReplyInteraction extends BaseInteraction {
 		} as APIInteractionResponseChannelMessageWithSource;
 
 		if (opts) {
-			APIResponse.data = Message.resolveMessageParams(opts);
+			APIResponse.data = Message.resolveMessageParams(opts).body;
 		} else throw new TypeError(`CreateMessage Options are required`);
 
 		this._respond(APIResponse);
