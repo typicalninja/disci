@@ -28,6 +28,7 @@ import { Webhook } from "./primitives/Webhook";
 import type { ComponentInteraction } from "./ComponentInteraction";
 import { CreateMessageParams, default as Message } from "./primitives/Message";
 import { PartialGuild } from "./primitives/Guild";
+import { GenericPartialChannel } from "./primitives/Channel";
 
 type CallbackFunction = (data: APIInteractionResponse) => void;
 
@@ -60,9 +61,13 @@ export abstract class BaseInteraction implements IBase {
 	 */
 	guild?: PartialGuild;
 	/**
-	 * Channel that the interaction was sent from
+	 * Id of the Channel that the interaction was sent from
 	 */
 	channelId?: string;
+	/**
+	 * Channel the interactions was send from
+	 */
+	channel?: GenericPartialChannel;
 	/**
 	 * Readonly Property, as per the Discord docs always 1
 	 * https://discord.com/developers/docs/interactions/receiving-and-responding
@@ -124,8 +129,12 @@ export abstract class BaseInteraction implements IBase {
 			this.user = new User(this.handler, RawInteractionData.user);
 		}
 
-		if (RawInteractionData.channel_id)
+		if (RawInteractionData.channel_id) {
 			this.channelId = RawInteractionData.channel_id;
+			this.channel = new GenericPartialChannel(this.handler, {
+				id: this.channelId,
+			});
+		}
 
 		const permissions = RawInteractionData.app_permissions;
 		if (permissions) {

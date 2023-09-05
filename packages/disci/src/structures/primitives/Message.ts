@@ -11,10 +11,10 @@ import {
 import type { InteractionHandler } from "../../InteractionHandler";
 import type { IBase } from "../Base";
 import User from "./User";
-import { convertSnowflakeToTimeStamp } from "../../utils/helpers";
 import { BitFieldResolvable, MessageFlagsBitField } from "../Bitfield";
 import { WebhookPartial } from "./Webhook";
 import type { RESTFile } from "../../utils/REST";
+import { GenericPartialChannel } from "./Channel";
 
 export type EmojiResolvable = string | { name: string; id: string };
 
@@ -81,8 +81,17 @@ export default class Message implements IBase {
 	 * Embeds for this message
 	 */
 	embeds: APIEmbed[];
+	/**
+	 * Content of this message
+	 */
 	content?: string;
-	timestamp: number;
+	/**
+	 * Timestamp of the message was sent at
+	 */
+	createdTimestamp: number;
+	/**
+	 * TImestamp of when this message was last edited (if applicable)
+	 */
 	editedTimestamp: number | null;
 	/**
 	 * The user who created this message (if created by a user)
@@ -92,59 +101,64 @@ export default class Message implements IBase {
 	 * Webhook that created this message (if created by webhook)
 	 */
 	webhook?: WebhookPartial;
+	/**
+	 * Channel this message was created in
+	 */
 	channelId: string;
+	channel: GenericPartialChannel;
+	/**
+	 * Flags for this message
+	 */
+	flags: MessageFlagsBitField;
 	constructor(handler: InteractionHandler, apiData: APIMessage) {
 		Object.defineProperty(this, "handler", { value: handler });
 
 		this.id = apiData.id;
 		this.embeds = apiData.embeds ?? [];
-		this.timestamp = Date.parse(apiData.timestamp);
+		// timestamps
+		this.createdTimestamp = Date.parse(apiData.timestamp);
 		this.editedTimestamp = apiData.edited_timestamp
 			? Date.parse(apiData.edited_timestamp)
 			: null;
-		this.channelId = apiData.channel_id;
 
-		if (apiData.content) {
+		this.channelId = apiData.channel_id;
+		this.channel = new GenericPartialChannel(this.handler, {
+			id: this.channelId,
+		});
+
+		if ("flags" in apiData) {
+			this.flags = new MessageFlagsBitField(apiData.flags);
+		} else this.flags = new MessageFlagsBitField();
+
+		if ("content" in apiData) {
 			this.content = apiData.content;
 		}
 
-		// if the message is not from a webhook, its has a author
-		if (!apiData.webhook_id) {
-			this.author = new User(this.handler, apiData.author);
-		} else {
+		if (apiData.webhook_id) {
 			// from webhook
 			this.webhook = new WebhookPartial(handler, { id: apiData.webhook_id });
+		} else {
+			// if the message is not from a webhook, its has a author
+			this.author = new User(this.handler, apiData.author);
 		}
 	}
 	/**
-	 * TimeStamp of when this message was created
-	 */
-	get createdTimestamp(): number {
-		return convertSnowflakeToTimeStamp(this.id);
-	}
-	/**
-	 * The time this message was sent
+	 * The time the message was sent at
 	 */
 	get createdAt(): Date {
 		return new Date(this.createdTimestamp);
 	}
 	/**
-	 * The time this message was sent as per the api
-	 */
-	get timeStampAt() {
-		return new Date(this.timestamp);
-	}
-	/**
-	 * If this message was edited, when
+	 * The time the message was last edited at (if applicable)
 	 */
 	get editedAt() {
 		return this.editedTimestamp ? new Date(this.editedTimestamp) : undefined;
 	}
 	/**
-	 * Weather this message has been edited
+	 * Whether this message has a thread associated with it
 	 */
-	get edited() {
-		return this.editedTimestamp ? true : false;
+	get hasThread() {
+		return this.flags.has(MessageFlags.HasThread);
 	}
 
 	/**
@@ -182,11 +196,41 @@ export default class Message implements IBase {
 	}
 
 	/**
+	 * Creates a new thread from an existing message.
+	 * @param threadOptions Options for this thread
+	 * @returns
+	 */
+	async startThread(threadOptions: {
+		name: string;
+		rateLimitPerUser?: number;
+		autoArchiveDuration?: number;
+	}) {
+		if (this.hasThread)
+			throw new Error(`This message already contains a thread`);
+		if (!this.channel)
+			throw new Error(`Channel for message could not be resolved`);
+
+		const data = await this.handler.api.post(
+			Routes.threads(this.channel.id, this.id),
+			{
+				body: {
+					name: threadOptions.name,
+					auto_archive_duration: threadOptions.autoArchiveDuration,
+					rate_limit_per_user: threadOptions.rateLimitPerUser,
+				},
+			},
+		);
+		return data;
+	}
+
+	/**
 	 * Internal method to resolve data for message Create
 	 * @private
 	 */
-	static resolveMessageParams(params: CreateMessageParams): {
-		body: APIMessage;
+	static resolveMessageParams<T extends Record<string, unknown>>(
+		params: CreateMessageParams,
+	): {
+		body: T;
 		files: RESTFile[];
 	} {
 		const msg = {} as APIMessage;
@@ -224,7 +268,7 @@ export default class Message implements IBase {
 		}
 
 		return {
-			body: msg,
+			body: msg as unknown as T,
 			files,
 		};
 	}

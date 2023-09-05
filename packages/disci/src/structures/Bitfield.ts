@@ -1,10 +1,17 @@
 import {
+	ChannelFlags,
 	MessageFlags,
 	PermissionFlagsBits,
 	UserFlags,
 } from "discord-api-types/v10";
 
-export type BitFieldResolvable = bigint | bigint[] | number | number[] | BitField | BitField[];
+export type BitFieldResolvable =
+	| bigint
+	| bigint[]
+	| number
+	| number[]
+	| BitField
+	| BitField[];
 
 /**
  * Utility structure to help with bitfield creation and manipulation
@@ -75,10 +82,9 @@ export abstract class BitField {
 					return bit
 						.map((b) => BitField.resolve(b))
 						.reduce((prev, cur) => prev | cur, BitField.None);
-				} else if(bit instanceof BitField) {
-					return bit.bitfield
-				}
-				else throw new TypeError(`Expected a bitfieldResolvable`);
+				} else if (bit instanceof BitField) {
+					return bit.bitfield;
+				} else throw new TypeError(`Expected a bitfieldResolvable`);
 		}
 	}
 }
@@ -103,4 +109,8 @@ export class UserFlagsBitField extends BitField {
 
 export class MessageFlagsBitField extends BitField {
 	static override Flags = MessageFlags;
+}
+
+export class ChannelFlagsBitField extends BitField {
+	static override Flags = ChannelFlags;
 }

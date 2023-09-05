@@ -1,5 +1,5 @@
 import { URLS } from "./constants";
-import { isBufferLike, tryAndValue } from "./helpers";
+import { isBufferLike, serializeObject, tryAndValue } from "./helpers";
 
 // userAgent used in requests
 const UserAgent =
@@ -47,7 +47,7 @@ export interface RESTFile {
 
 export interface RESTCommonOptions {
 	headers?: Record<string, string>;
-	body?: unknown;
+	body?: Record<string, unknown>;
 	query?: Record<string, unknown> | URLSearchParams;
 	/**
 	 * Files to be attached to this request
@@ -221,6 +221,7 @@ export class Rest implements RestClient {
 
 			// if body is available with files
 			if (options.body) {
+				options.body = serializeObject(options.body);
 				// if should append directly to formData
 				if (options.appendBodyToForm) {
 					for (const [key, value] of Object.entries(
@@ -237,7 +238,7 @@ export class Rest implements RestClient {
 		}
 		// if body is present but files are not present
 		else if (options?.body) {
-			fBody = JSON.stringify(options.body);
+			fBody = JSON.stringify(serializeObject(options.body));
 			baseHeaders["Content-Type"] = "application/json";
 		}
 
