@@ -3,11 +3,9 @@ import {
 	ChannelType,
 	type Snowflake,
 	APIChannel,
-	APIGuildChannel,
-	APITextBasedChannel,
 	APIDMChannel,
-	APIPartialChannel,
 	APIThreadChannel,
+	APITextChannel,
 } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
 import type { IBase } from "../Base";
@@ -62,21 +60,30 @@ export class BaseChannel extends GenericPartialChannel {
 	 * Name of this channel
 	 */
 	name?: string | null;
+	flags: ChannelFlagsBitField;
 	/**
 	 *
 	 * @param handler
 	 * @param apiChannel
 	 */
-	constructor(handler: InteractionHandler, apiChannel: APIPartialChannel) {
+	constructor(handler: InteractionHandler, apiChannel: APIChannel) {
 		super(handler, apiChannel);
 		this.type = apiChannel.type;
 		this.name = apiChannel.name;
+		this.flags = new ChannelFlagsBitField(apiChannel.flags);
 	}
 	isGuildChannel(): this is GuildTextChannel {
 		return "guildId" in this;
 	}
 	isTextBased(): this is BaseTextChannel {
 		return [ChannelType.GuildText, ChannelType.DM].includes(this.type);
+	}
+	isThreadChannel(): this is ThreadChannel {
+		return [
+			ChannelType.PrivateThread,
+			ChannelType.PublicThread,
+			ChannelType.AnnouncementThread,
+		].includes(this.type);
 	}
 }
 
@@ -86,16 +93,11 @@ export class CategoryChannel extends BaseChannel {}
  * Base for all text channels
  */
 export class BaseTextChannel extends BaseChannel {
-	flags: ChannelFlagsBitField;
 	constructor(
 		handler: InteractionHandler,
-		apiChannel: APITextBasedChannel<
-			ChannelType.DM | ChannelType.GroupDM | ChannelType.GuildText
-		>,
+		apiChannel: APITextChannel | APIDMChannel,
 	) {
 		super(handler, apiChannel);
-		this.type = apiChannel.type;
-		this.flags = new ChannelFlagsBitField(apiChannel.flags);
 	}
 }
 
@@ -103,10 +105,7 @@ export class GuildTextChannel extends BaseTextChannel {
 	override type = ChannelType.GuildText;
 	guildId: string;
 	nsfw: boolean;
-	constructor(
-		handler: InteractionHandler,
-		apiChannel: APIGuildChannel<ChannelType.GuildText>,
-	) {
+	constructor(handler: InteractionHandler, apiChannel: APITextChannel) {
 		super(handler, apiChannel);
 		// guildId (typed as nullable in d api types, however should always be present here)
 		this.guildId = apiChannel.guild_id as string;
@@ -121,11 +120,17 @@ export class DMTextChannel extends BaseTextChannel {
 	}
 }
 
-export class BaseThreadChannel extends BaseChannel {
+export class ThreadChannel extends BaseChannel {
 	parentId: string | null;
+	parent?: GenericPartialChannel;
 	constructor(handler: InteractionHandler, apiThread: APIThreadChannel) {
 		super(handler, apiThread);
+		this.type = apiThread.type;
+		this.id = apiThread.id;
+		this.name = apiThread.name;
 		this.parentId = apiThread.parent_id ?? null;
-		if (this.parentId) this.parent;
+
+		if (this.parentId)
+			this.parent = new GenericPartialChannel(handler, { id: this.parentId });
 	}
 }
