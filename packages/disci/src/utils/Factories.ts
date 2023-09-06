@@ -26,6 +26,7 @@ import {
 	BaseChannel,
 	DMTextChannel,
 	GuildTextChannel,
+	ThreadChannel,
 } from "../structures/primitives/Channel";
 
 /**
@@ -74,6 +75,10 @@ export class ChannelFactory {
 				return new GuildTextChannel(handler, apiChannel);
 			case ChannelType.DM:
 				return new DMTextChannel(handler, apiChannel);
+			case ChannelType.PrivateThread:
+			case ChannelType.AnnouncementThread:
+			case ChannelType.PublicThread:
+				return new ThreadChannel(handler, apiChannel);
 			default:
 				return null;
 		}

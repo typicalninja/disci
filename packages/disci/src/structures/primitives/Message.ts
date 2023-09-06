@@ -3,6 +3,7 @@ import {
 	APIEmbed,
 	APIMessage,
 	APIMessageActionRowComponent,
+	APIThreadChannel,
 	AllowedMentionsTypes,
 	MessageFlags,
 	Routes,
@@ -14,7 +15,7 @@ import User from "./User";
 import { BitFieldResolvable, MessageFlagsBitField } from "../Bitfield";
 import { WebhookPartial } from "./Webhook";
 import type { RESTFile } from "../../utils/REST";
-import { GenericPartialChannel } from "./Channel";
+import { GenericPartialChannel, ThreadChannel } from "./Channel";
 
 export type EmojiResolvable = string | { name: string; id: string };
 
@@ -210,7 +211,7 @@ export default class Message implements IBase {
 		if (!this.channel)
 			throw new Error(`Channel for message could not be resolved`);
 
-		const data = await this.handler.api.post(
+		const data = await this.handler.api.post<APIThreadChannel>(
 			Routes.threads(this.channel.id, this.id),
 			{
 				body: {
@@ -220,7 +221,8 @@ export default class Message implements IBase {
 				},
 			},
 		);
-		return data;
+
+		return new ThreadChannel(this.handler, data);
 	}
 
 	/**
