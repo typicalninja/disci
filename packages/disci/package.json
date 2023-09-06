@@ -1,6 +1,6 @@
 {
   "name": "disci",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A HTTP Request handler for discord interactions",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
