@@ -18,11 +18,10 @@ build
 .dev.vars
 
 # docs
-.docusaurus
 .cache-loader
 test
 .temp
-.cache
+cache
 #apps/docsNew/docs/api
 apps/website/docs/api
 
@@ -34,5 +33,5 @@ yarn-error.log*
 
 # beta packages ... later
 node-verify
-
 fastify-handler
+docs

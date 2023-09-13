@@ -1,9 +1,9 @@
 # 🎨 Disci Project
 
-![NPM version badge](https://img.shields.io/npm/v/disci)
-![NPM bundle size](https://img.shields.io/bundlephobia/minzip/disci)
-![NPM license](https://img.shields.io/npm/l/disci)
-![GitHub issues](https://img.shields.io/github/issues/typicalninja/disci)
+[![NPM version badge](https://img.shields.io/npm/v/disci)](https://www.npmjs.com/package/disci)
+[![NPM bundle size](hhttps://deno.bundlejs.com/badge?q=disci)](https://bundlejs.com/?q=disci)
+[![NPM license](https://img.shields.io/npm/l/disci)](https://www.npmjs.com/package/disci)
+[![GitHub issues](https://img.shields.io/github/issues/typicalninja/disci)](https://github.com/typicalninja/disci/issues)
 
 Disci is a project designed for interacting with Discord's new interaction webhook system, enabling the creation of Discord applications without the need for a websocket connection. It's an ideal choice for serverless and small to medium-sized bots (*Size as in code size, not servers*)
 
