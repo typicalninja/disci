@@ -36,6 +36,7 @@ function getGuideSidebar(): DefaultTheme.SidebarItem[] {
       items: [
         { text: 'What is Disci?', link: 'intro' },
         { text: 'Limitations', link: 'limits' },
+        { text: 'Getting started', link: 'getting-started' },
       ]
     }
   ]
