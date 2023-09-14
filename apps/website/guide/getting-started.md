@@ -62,3 +62,16 @@ You can install the extra package as below,
 ```
 
 :::
+
+
+## Choosing a platform
+
+Here this guide will split into 2 groups for guiding you through the hosting process.
+
+We've got you covered with two hosting guides for 2 services covering different environments.
+
+2. [replit](./hosting/replit.md) - nodejs server environment
+1. [cloudflare workers](./hosting/workers.md) - server-less environment
+
+If you have already chosen a hosting type, go ahead and click on your preferred type,
+if not visit the [**Limitations**](./limits.md) guide to decide.

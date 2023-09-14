@@ -6,6 +6,7 @@ export default defineConfig({
   description: "Supercharged by http",
   cleanUrls: true,
   themeConfig: {
+    
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
@@ -23,6 +24,9 @@ export default defineConfig({
       message: 'Released under the <a href="https://github.com/typicalninja/disci/blob/main/LICENSE">Apache 2.0 License</a>.',
       copyright: 'Copyright © 2023 <a href="https://typical.gq/">Typicalninja</a>'
     }
+  },
+  markdown: {
+    theme: 'github-dark'
   },
   lastUpdated: true
 })
