@@ -1,0 +1,60 @@
+{
+  "name": "disci-beta",
+  "private": true,
+  "version": "0.0.5",
+  "description": "A HTTP Request handler for discord interactions",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "require": "./dist/index.js",
+    "import": "./dist/index.mjs"
+  },
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "prettier:check": "prettier --parser=typescript --check",
+    "prettier:write": "prettier --parser=typescript --write",
+    "lint:check": "eslint",
+    "lint": "eslint",
+    "lint-staged": "lint-staged"
+  },
+  "dependencies": {
+    "discord-api-types": "^0.37.22",
+    "discord-verify": "^1.2.0",
+    "tslib": "^2.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.15",
+    "eslint": "^8.34.0",
+    "tsup": "^7.2.0"
+  },
+  "keywords": [
+    "discord",
+    "interactions",
+    "discordapp",
+    "slash-commands",
+    "slash-command",
+    "api",
+    "discord-interactions"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/typicalninja/disci.git"
+  },
+  "bugs": {
+    "url": "https://github.com/typicalninja/disci/issues"
+  },
+  "homepage": "https://disci.vercel.app/",
+  "lint-staged": {
+    "*.{js,ts}": [
+      "pnpm prettier:write",
+      "pnpm lint:check"
+    ]
+  },
+  "engines": {
+    "node": ">=16.6.0"
+  }
+}
