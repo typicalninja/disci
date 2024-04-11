@@ -1,50 +1,61 @@
 import 'dotenv/config'
+//import crypto from 'node:crypto';
 import { serve } from '@hono/node-server'
 import { Hono } from "hono";
-import { verify } from "discord-verify/node";
-import handler from "./handler.js";
-
-const { TOKEN, PUBLIC_KEY } = process.env as { TOKEN: string; PUBLIC_KEY: string };
-
- if(handler.api.authToken === '') handler.api.setToken(TOKEN)
+import { InteractionHandler, EventNames } from "disci-beta";
+import { createRequestHandler } from '@disci/adapter-hono';
+import { ButtonStyle, ComponentType, InteractionType } from 'discord-api-types/v10';
 
 const app = new Hono();
+const handler = new InteractionHandler({
+    publicKey: process.env.PK,
+    cryptoEngine: crypto.subtle,
+})
+
+handler.on(EventNames.interactionCreate, (i) => {
+    console.log("InteractionCreate", i.id, i.type, i.isRepliable())
+    
+    if(i.isAutoCompleteInteraction()) {
+        i.respond([])
+    }
+    else if(i.isRepliable() && i.type !== InteractionType.MessageComponent) {
+        console.log("Non componet")
+        
+        i.reply({
+            content: 'Hey',
+            components: [{
+                type: 1,
+                components: [
+                    {
+                        type: ComponentType.RoleSelect,
+                        placeholder: 'Select role',
+                        custom_id: 'select_menu'
+                    },
+                ]
+            },
+            {
+                type: 1,
+                components: [
+                    {
+                        type: ComponentType.Button,
+                        custom_id: 'button',
+                        style: ButtonStyle.Danger,
+                        label: 'DAAN'
+                    }
+                ]
+            }]
+        })
+    }
+    else if(i.isRepliable()) {
+        console.log("Component")
+        i.reply({ content: 'received',  })
+    }
+})
+
 
 app.get("/", (c) => c.text("Server is running 🚀"));
 
-app.post("/interactions", async (c) => {
-
-    // headers for validation
-	const signature = c.req.headers.get("x-signature-ed25519");
-	const timestamp = c.req.headers.get("x-signature-timestamp");
-	const rawBody = await c.req.json();
-
-	const isValid = await verify(
-		JSON.stringify(rawBody),
-		signature,
-		timestamp,
-		PUBLIC_KEY,
-		crypto.subtle,
-	);
-
-    // check if validation was ok
-    if(!isValid) {
-        c.status(401)
-        return c.json({ error: 'Validation failed' })
-    }
-
-	
-    try {
-       const response = await handler.processRequest(
-            rawBody,
-        );
-        return c.json(response);
-    } catch (err) {
-        console.log("error", err);
-        c.status(500)
-        return c.json({ error: 'Server Error '});
-    }
-});
+app.post("/interactions", createRequestHandler(handler));
 
 serve({
     fetch: app.fetch,
