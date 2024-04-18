@@ -1,23 +1,9 @@
-import {
-	APIActionRowComponent,
-	APIEmbed,
-	APIMessage,
-	APIMessageActionRowComponent,
-	APIThreadChannel,
-	AllowedMentionsTypes,
-	MessageFlags,
-	Routes,
-	Snowflake,
-} from "discord-api-types/v10";
+import type { APIActionRowComponent, APIEmbed, APIMessage, APIMessageActionRowComponent,  AllowedMentionsTypes, MessageFlags, Snowflake } from "discord-api-types/v10";
+import { Base } from "../Base";
 import type { InteractionHandler } from "../../InteractionHandler";
-import type { IBase } from "../Base";
-import User from "./User";
-import { BitFieldResolvable, MessageFlagsBitField } from "../Bitfield";
-import { WebhookPartial } from "./Webhook";
 import type { RESTFile } from "../../utils/REST";
-import { GenericPartialChannel, ThreadChannel } from "./Channel";
+import { MessageFlagsBitField, type BitFieldResolvable } from "../Bitfield";
 
-export type EmojiResolvable = string | { name: string; id: string };
 
 /**
  * @link https://discord.com/developers/docs/resources/channel#allowed-mentions-object
@@ -72,164 +58,18 @@ export interface CreateMessageParams {
 	flags?: MessageFlagsBitField | BitFieldResolvable;
 }
 
-export default class Message implements IBase {
-	readonly handler!: InteractionHandler;
-	/**
-	 * Id of this message
-	 */
+export class MessagePartial extends Base<{ id: Snowflake }> {
 	id: Snowflake;
-	/**
-	 * Embeds for this message
-	 */
-	embeds: APIEmbed[];
-	/**
-	 * Content of this message
-	 */
-	content?: string;
-	/**
-	 * Timestamp of the message was sent at
-	 */
-	createdTimestamp: number;
-	/**
-	 * TImestamp of when this message was last edited (if applicable)
-	 */
-	editedTimestamp: number | null;
-	/**
-	 * The user who created this message (if created by a user)
-	 */
-	author?: User;
-	/**
-	 * Webhook that created this message (if created by webhook)
-	 */
-	webhook?: WebhookPartial;
-	/**
-	 * Channel this message was created in
-	 */
-	channelId: string;
-	channel: GenericPartialChannel;
-	/**
-	 * Flags for this message
-	 */
-	flags: MessageFlagsBitField;
-	constructor(handler: InteractionHandler, apiData: APIMessage) {
-		Object.defineProperty(this, "handler", { value: handler });
+    constructor(raw: { id: Snowflake }, handler: InteractionHandler) {
+        super(raw, handler);
+		this.id = raw.id;
+    }
 
-		this.id = apiData.id;
-		this.embeds = apiData.embeds ?? [];
-		// timestamps
-		this.createdTimestamp = Date.parse(apiData.timestamp);
-		this.editedTimestamp = apiData.edited_timestamp
-			? Date.parse(apiData.edited_timestamp)
-			: null;
-
-		this.channelId = apiData.channel_id;
-		this.channel = new GenericPartialChannel(this.handler, {
-			id: this.channelId,
-		});
-
-		if ("flags" in apiData) {
-			this.flags = new MessageFlagsBitField(apiData.flags);
-		} else this.flags = new MessageFlagsBitField();
-
-		if ("content" in apiData) {
-			this.content = apiData.content;
-		}
-
-		if (apiData.webhook_id) {
-			// from webhook
-			this.webhook = new WebhookPartial(handler, { id: apiData.webhook_id });
-		} else {
-			// if the message is not from a webhook, its has a author
-			this.author = new User(this.handler, apiData.author);
-		}
-	}
-	/**
-	 * The time the message was sent at
-	 */
-	get createdAt(): Date {
-		return new Date(this.createdTimestamp);
-	}
-	/**
-	 * The time the message was last edited at (if applicable)
-	 */
-	get editedAt() {
-		return this.editedTimestamp ? new Date(this.editedTimestamp) : undefined;
-	}
-	/**
-	 * Whether this message has a thread associated with it
-	 */
-	get hasThread() {
-		return this.flags.has(MessageFlags.HasThread);
-	}
-
-	/**
-	 * Delete this Message
-	 */
-	async delete() {
-		await this.handler.api.delete(
-			Routes.channelMessage(this.channelId, this.id),
-		);
-
-		return this;
-	}
-
-	async addReaction(emoji: EmojiResolvable) {
-		const e = typeof emoji === "string" ? emoji : `${emoji.name}:${emoji.id}`;
-		await this.handler.api.put<void>(
-			Routes.channelMessageOwnReaction(this.channelId, this.id, e),
-		);
-	}
-	/**
-	 * Pins this message
-	 */
-	async pin(): Promise<void> {
-		await this.handler.api.put<void>(
-			Routes.channelPin(this.channelId, this.id),
-		);
-	}
-	/**
-	 * Unpin this message
-	 */
-	async unpin(): Promise<void> {
-		await this.handler.api.delete<void>(
-			Routes.channelPin(this.channelId, this.id),
-		);
-	}
-
-	/**
-	 * Creates a new thread from an existing message.
-	 * @param threadOptions Options for this thread
-	 * @returns
-	 */
-	async startThread(threadOptions: {
-		name: string;
-		rateLimitPerUser?: number;
-		autoArchiveDuration?: number;
-	}) {
-		if (this.hasThread)
-			throw new Error(`This message already contains a thread`);
-		if (!this.channel)
-			throw new Error(`Channel for message could not be resolved`);
-
-		const data = await this.handler.api.post<APIThreadChannel>(
-			Routes.threads(this.channel.id, this.id),
-			{
-				body: {
-					name: threadOptions.name,
-					auto_archive_duration: threadOptions.autoArchiveDuration,
-					rate_limit_per_user: threadOptions.rateLimitPerUser,
-				},
-			},
-		);
-
-		return new ThreadChannel(this.handler, data);
-	}
-
-	/**
+    /**
 	 * Internal method to resolve data for message Create
 	 * @private
 	 */
-	static resolveMessageParams<T extends Record<string, unknown>>(
+	static resolveMessageBody<T extends Record<string, unknown>>(
 		params: CreateMessageParams,
 	): {
 		body: T;
@@ -273,5 +113,12 @@ export default class Message implements IBase {
 			body: msg as unknown as T,
 			files,
 		};
+	}
+}
+
+export class Message extends MessagePartial {
+	constructor(raw: APIMessage, handler: InteractionHandler) {
+		super(raw, handler);
+
 	}
 }

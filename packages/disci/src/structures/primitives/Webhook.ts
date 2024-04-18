@@ -1,75 +1,29 @@
-import type { Snowflake } from "discord-api-types/globals";
-import {
-	APIMessage,
-	APIWebhook,
-	Routes,
-	WebhookType,
-} from "discord-api-types/v10";
+import { Routes, type APIWebhook, type Snowflake, APIMessage } from "discord-api-types/v10";
+import { Base } from "../Base";
 import type { InteractionHandler } from "../../InteractionHandler";
-import type { IBase } from "../Base";
-import Message, { CreateMessageParams } from "./Message";
-import User from "./User";
+import { CreateMessageParams, Message } from "./Message";
 
-export class WebhookPartial implements IBase {
-	/**
-	 * The handler than initiated this class
-	 */
-	handler: InteractionHandler;
+export class WebhookPartial extends Base<Pick<APIWebhook, 'id' | 'token'>> {
 	/**
 	 * The id of the webhook
 	 */
 	id: Snowflake;
 	/**
-	 * The secure token of the webhook
+	 * The authorization token of the webhook
 	 */
 	token?: string;
 	constructor(
+        raw: { id: string; token?: string },
 		handler: InteractionHandler,
-		data: { id: string; token?: string },
 	) {
-		// assign the handler
-		this.handler = handler;
+		super(raw, handler)
 
 		// assign base data
-		this.id = data.id;
-		this.token = data.token;
+		this.id = raw.id;
+		this.token = raw.token;
 	}
-	/**
-	 * Fetch the webhook this id belongs to
-	 */
-	async fetch(): Promise<Webhook> {
-		const webhook = await this.handler.api.get<APIWebhook>(
-			// * takes token of undefined as optional parameter
-			Routes.webhook(this.id, this.token),
-		);
-		return new Webhook(this.handler, webhook);
-	}
-}
 
-export class Webhook extends WebhookPartial {
-	/**
-	 *The type of the webhook
-	 *
-	 *See https://discord.com/developers/docs/resources/webhook#webhook-object-webhook-types
-	 */
-	type: WebhookType;
-
-	/**
-	 * Owner of this webhook
-	 */
-	owner: User | null;
-	/**
-	 *  The application that created this werbhook
-	 */
-	applicationId: string | null;
-	constructor(handler: InteractionHandler, data: APIWebhook) {
-		super(handler, { id: data.id, token: data.token });
-		this.type = data.type;
-
-		this.owner = data.user ? new User(this.handler, data.user) : null;
-		this.applicationId = data.application_id;
-	}
-	/**
+    /**
 	 * Gets a message that was sent by this webhook.
 	 */
 	async fetchMessage(
@@ -77,27 +31,28 @@ export class Webhook extends WebhookPartial {
 		{ threadId }: { threadId?: string } = {},
 	): Promise<Message> {
 		if (!this.token)
-			throw new TypeError(`This webhook does not contain a Token`);
+			throw new TypeError(`Webhook does not have a token`);
 		const query: { threadId?: string } = {};
 		if (threadId) query.threadId = threadId;
-		const message = await this.handler.api.get<APIMessage>(
+		const message = await this.handler.rest.get<APIMessage>(
 			Routes.webhookMessage(this.id, this.token, messageId),
 			{
 				query,
 			},
 		);
 
-		return new Message(this.handler, message);
+		return new Message(message, this.handler);
 	}
+
 	/**
-	 *
+	 * Edit a message sent with this webhook
 	 * @param messageId id of the message to edit
 	 * @param newMessage new data to edit
 	 */
-	async editReply(messageId: string, newMessage: CreateMessageParams) {
+	async editMessage(messageId: string, newMessage: CreateMessageParams) {
 		if (!this.token) throw new Error(`This webhook does not contain a Token`);
-		const resolvedParams = Message.resolveMessageParams(newMessage);
-		const edited = await this.handler.api.patch<APIMessage>(
+		const resolvedParams = Message.resolveMessageBody(newMessage);
+		const edited = await this.handler.rest.patch<APIMessage>(
 			Routes.webhookMessage(this.id, this.token, messageId),
 			{
 				body: resolvedParams.body,
@@ -105,18 +60,19 @@ export class Webhook extends WebhookPartial {
 			},
 		);
 
-		return new Message(this.handler, edited);
+		return new Message(edited, this.handler);
 	}
+
 	/**
 	 * Sends a message with this webhook.
 	 */
-	async send(
+	async sendMessage(
 		messageData: CreateMessageParams,
-		{ threadId }: { threadId?: string } = {},
+		threadId?: Snowflake
 	) {
 		if (!this.token) throw new Error(`This webhook does not contain a Token`);
-		const resolvedParams = Message.resolveMessageParams(messageData);
-		const createdMessage = await this.handler.api.post<APIMessage>(
+		const resolvedParams = Message.resolveMessageBody(messageData);
+		const createdMessage = await this.handler.rest.post<APIMessage>(
 			Routes.webhookMessage(this.id, this.token),
 			{
 				body: resolvedParams.body,
@@ -128,6 +84,19 @@ export class Webhook extends WebhookPartial {
 			},
 		);
 
-		return new Message(this.handler, createdMessage);
+		return new Message(createdMessage, this.handler);
+	}
+
+	async deleteMessage(messageId: string | "@original", threadId?: Snowflake) {
+		if (!this.token) throw new Error(`This webhook does not contain a Token`);
+		await this.handler.rest.delete<APIMessage>(
+			Routes.webhookMessage(this.id, this.token, messageId),
+			{
+				query: {
+					thread_id: threadId,
+				},
+				auth: false
+			}
+		);
 	}
 }

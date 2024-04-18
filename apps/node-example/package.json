@@ -8,7 +8,7 @@
     "@disci/adapter-hono": "workspace:*",
     "@discordjs/builders": "^1.6.1",
     "@hono/node-server": "^1.9.1",
-    "disci-beta": "workspace:*",
+    "disci": "workspace:*",
     "discord-api-types": "^0.37.78",
     "discord-verify": "^1.2.0",
     "dotenv": "^16.0.3",

@@ -1,10 +1,6 @@
-// main
-export * from "./InteractionHandler";
+export * from './InteractionHandler'
+export * from './structures/interactions/BaseInteraction'
 
-// constants/types
-export { HandlerOptions, ClientEvents } from "./utils/constants";
+export * from './utils/constants'
 
-// Structures
-export * from "./structures";
-// Rest module typings and etc
-export * from "./utils/REST";
+export * as Factories from "./utils/Factories";

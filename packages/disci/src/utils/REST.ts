@@ -1,5 +1,5 @@
 import { URLS } from "./constants";
-import { isBufferLike, serializeObject, tryAndValue } from "./helpers";
+import { isBufferLike, serializeObject, tryAndValue } from "./common";
 
 // userAgent used in requests
 const UserAgent =
@@ -69,7 +69,9 @@ export interface RESTCommonOptions {
 }
 
 /**
- * Default rest handler, built for serverLess Environments without any rate limit checks
+ * Minimal and simple REST Implementation
+ * Built for newer nodejs with built in fetch and server less environments
+ * Does not check ratelimits
  */
 export class Rest implements RestClient {
 	authPrefix: string;
@@ -78,13 +80,13 @@ export class Rest implements RestClient {
 	/**
 	 * for support of serverless and other platforms
 	 */
-	constructor(_opts: RESTClientOptions) {
-		this.authPrefix = _opts.authPrefix || "Bot";
-		this.authToken = _opts.token || null;
-		this.rootUrl = _opts.rootUrl
-			? _opts.rootUrl.endsWith("/")
-				? _opts.rootUrl.slice(0, _opts.rootUrl.length - 1)
-				: _opts.rootUrl
+	constructor(opts?: RESTClientOptions) {
+		this.authPrefix = opts?.authPrefix || "Bot";
+		this.authToken = opts?.token || null;
+		this.rootUrl = opts?.rootUrl
+			? opts.rootUrl.endsWith("/")
+				? opts.rootUrl.slice(0, opts.rootUrl.length - 1)
+				: opts.rootUrl
 			: URLS.DiscordApi;
 	}
 	/**
@@ -156,9 +158,7 @@ export class Rest implements RestClient {
 		}
 
 		if (queryParams) {
-			url = `${url}?${new URLSearchParams(
-				queryParams as Record<string, string>,
-			).toString()}`;
+			url = `${url}?${Rest.makeQueryParams(queryParams).toString()}`;
 		}
 		return url;
 	}
@@ -252,5 +252,19 @@ export class Rest implements RestClient {
 			init: request,
 			url: this.getUrl(path, options?.query),
 		};
+	}
+
+	static makeQueryParams(queryParams?: Record<string, unknown> | URLSearchParams) {
+		const searchParams = new URLSearchParams()
+		if(!queryParams) return searchParams;
+		const queryKeys = queryParams instanceof URLSearchParams ? queryParams.entries() : Object.entries(queryParams)
+		for(const [key, value] of queryKeys) {
+			// value can be null or undefined in both string and non string version
+			// queryparams.entries() return strings for all values
+			if(value !== null && value !== undefined && value !== 'null' && value !== 'undefined') {
+				searchParams.set(key, String(value))
+			}
+		}
+		return searchParams;
 	}
 }

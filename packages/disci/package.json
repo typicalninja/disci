@@ -1,6 +1,7 @@
 {
   "name": "disci",
-  "version": "0.0.5",
+  "private": true,
+  "version": "0.0.6-alpha",
   "description": "A HTTP Request handler for discord interactions",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -21,7 +22,9 @@
     "lint-staged": "lint-staged"
   },
   "dependencies": {
-    "discord-api-types": "^0.37.22",
+    "debug": "^4.3.4",
+    "discord-api-types": "^0.37.78",
+    "discord-verify": "^1.2.0",
     "eventemitter3": "^5.0.1",
     "tslib": "^2.4.1"
   },
@@ -54,6 +57,6 @@
     ]
   },
   "engines": {
-		"node": ">=16.6.0"
-	}
+    "node": ">=16.6.0"
+  }
 }

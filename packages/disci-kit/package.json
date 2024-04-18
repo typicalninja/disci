@@ -1,0 +1,35 @@
+{
+  "name": "@disci/kit",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "exports": "./dist/lib/index.js",
+  "bin": {
+    "discik": "./dist/cli/cli.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "prettier:check": "prettier --parser=typescript --check",
+    "prettier:write": "prettier --parser=typescript --write",
+    "lint:check": "eslint",
+    "lint": "eslint",
+    "lint-staged": "lint-staged"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "handlebars": "^4.7.8",
+    "picocolors": "^1.0.0",
+    "tslib": "^2.4.1",
+    "which-pm": "^2.1.1",
+    "yargs": "^17.7.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "@types/yargs": "^17.0.32"
+  }
+}

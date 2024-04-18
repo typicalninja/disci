@@ -1,12 +1,12 @@
-# 🎨 DisciJs
+# 🎨 Disci-Kit
 
-![NPM version badge](https://img.shields.io/npm/v/disci)
-![NPM bundle size](https://img.shields.io/bundlephobia/minzip/disci)
-![NPM license](https://img.shields.io/npm/l/disci)
+![NPM version badge](https://img.shields.io/npm/v/@disci/kit)
+![NPM bundle size](https://img.shields.io/bundlephobia/minzip/@disci/kit)
+![NPM license](https://img.shields.io/npm/l/disci-kit)
 ![GitHub issues](https://img.shields.io/github/issues/typicalninja/disci)
 
 
-An user-friendly library for handling Discord interactions via interaction webhooks, suitable for both Node.js and Cloudflare Workers, (with **untested** support for additional platforms).
+A framework for disci.
 
 ## 🚀 Install
 

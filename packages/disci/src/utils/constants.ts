@@ -1,34 +1,49 @@
+import type { BaseInteraction } from "../structures/interactions/BaseInteraction";
 import type { RESTClientOptions } from "./REST";
-import type { BaseInteraction } from "../structures";
-
-/**
- * @link https://discord.com/developers/docs/reference#image-formatting
- */
-export type DiscordImageSize =
-	| 16
-	| 32
-	| 64
-	| 128
-	| 256
-	| 512
-	| 1024
-	| 2048
-	| 4096;
 
 export const DiscordEpoch = 14200704e5;
 
-export interface HandlerOptions {
+export const DiscordVerifyHeaders = {
+    signature: 'x-signature-ed25519',
+    timestamp: 'x-signature-timestamp'
+} as const;
+
+
+/**
+ * Events fired by the handler
+ */
+export interface HandlerEvents {
 	/**
-	 * Options for built in rest client
+	 * Fired when a interaction is received
+	 * @param interaction - Respective interaction class
 	 */
-	rest: RESTClientOptions;
+	interactionCreate: (interaction: BaseInteraction) => unknown;
 }
 
-export const defaultOptions: HandlerOptions = {
-	rest: {
-		token: (typeof process !== "undefined" && process.env.TOKEN) || "",
-	},
-};
+export const EventNames = {
+    interactionCreate: 'interactionCreate',
+} as const; 
+
+export const InternalEventNames = {
+    interactionResponse: 'inte_interactionresponse_'
+} as const;
+
+export interface HandlerConfig {
+    publicKey: string;
+    cryptoEngine: SubtleCrypto;
+    waitForResponse: number;
+    restConfig: RESTClientOptions
+}
+
+export const DefaultConfig: HandlerConfig = {
+    cryptoEngine: crypto.subtle,
+    publicKey: '',
+    // we use 3000 sinces thats the maximum allowed time by discord, no use allowing more than that
+    waitForResponse: 3000,
+    restConfig: {
+        
+    }
+}
 
 /** @private */
 export enum URLS {
@@ -37,12 +52,20 @@ export enum URLS {
 }
 
 /**
- * Events fired by the handler
+ * HTTP request typed as InteractionHandler expects
+ * Non standard
  */
-export interface ClientEvents {
-	/**
-	 * Fired when a interaction is received
-	 * @param interaction - Respective interaction class
-	 */
-	interactionCreate: (interaction: BaseInteraction) => unknown;
+export interface GenericRequest {
+    body: string
+    /** 
+     * Most Request types from regular http frameworks does not offer headers like this 
+     * However we let adapters fix this for us
+     * */
+    headers: Record<string, string>
 }
+
+export interface GenericErrorResponse {
+    status: number;
+    error: string;
+} 
+

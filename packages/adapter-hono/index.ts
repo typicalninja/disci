@@ -31,7 +31,7 @@ export function createRequestHandler(handler: InteractionHandler): any {
 			c.status(200);
 			return c.json(r);
 		} catch (e) {
-			// handle could not verify message with a 401 and discord expects the error code
+			// handle could not verify message with a 401 as discord expects the error code
 			if (e instanceof Error && e.message.includes("Could not verify")) {
 				c.status(401);
 				return c.json({ error: "Could not validate request headers" });
