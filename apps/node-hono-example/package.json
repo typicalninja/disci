@@ -1,7 +1,8 @@
 {
   "name": "server-example",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts"
   },
   "type": "module",
   "dependencies": {
