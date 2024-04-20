@@ -1,9 +1,22 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "target": "ES2022",
     "module": "Node16",
     "moduleResolution": "node16",
     "esModuleInterop": true,
     "strict": true,
+    "outDir": "dist",
+    "importHelpers": true,
+    "noImplicitAny": true,
+    "allowUnreachableCode": false,
+    "useUnknownInCatchVariables": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
+    "noImplicitThis": true,
   },
 }
