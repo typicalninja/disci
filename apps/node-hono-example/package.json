@@ -7,15 +7,15 @@
   "dependencies": {
     "@disci/adapter-hono": "workspace:*",
     "@discordjs/builders": "^1.6.1",
-    "@hono/node-server": "^1.9.1",
+    "@hono/node-server": "^1.11.0",
     "disci": "workspace:*",
     "discord-api-types": "^0.37.78",
     "discord-verify": "^1.2.0",
     "dotenv": "^16.0.3",
-    "hono": "^4.2.1"
+    "hono": "^4.2.5"
   },
   "devDependencies": {
     "@types/node": "^20.12.3",
-    "tsx": "^4.7.1"
+    "tsx": "^4.7.2"
   }
 }

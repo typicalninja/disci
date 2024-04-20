@@ -1,31 +1,42 @@
-import { InteractionResponseType, type APIApplicationCommandAutocompleteInteraction, type APIApplicationCommandInteraction, type APIApplicationCommandOptionChoice } from "discord-api-types/v10";
+import {
+	InteractionResponseType,
+	type APIApplicationCommandAutocompleteInteraction,
+	type APIApplicationCommandInteraction,
+	type APIApplicationCommandOptionChoice,
+} from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
-import { BaseInteraction, BaseRepliableInteraction, InteractionOptions } from "./BaseInteraction";
+import {
+	BaseInteraction,
+	BaseRepliableInteraction,
+	InteractionOptions,
+} from "./BaseInteraction";
 
-export class BaseCommandInteraction extends BaseRepliableInteraction {
-    constructor(raw: APIApplicationCommandInteraction, handler: InteractionHandler) {
-        super(raw, handler);
-
-    }
-
+export class BaseCommandInteraction extends BaseRepliableInteraction<APIApplicationCommandInteraction> {
+	constructor(
+		raw: APIApplicationCommandInteraction,
+		handler: InteractionHandler,
+	) {
+		super(raw, handler);
+	}
 }
-
 
 /**
  * Autocomplete interaction for ChatInput interactions
  */
 export class AutoCompleteInteraction extends BaseInteraction {
-    options: InteractionOptions;
-    constructor(raw: APIApplicationCommandAutocompleteInteraction, handler: InteractionHandler) {
-        super(raw, handler);
-        const data = raw.data;
-		
+	options: InteractionOptions;
+	constructor(
+		raw: APIApplicationCommandAutocompleteInteraction,
+		handler: InteractionHandler,
+	) {
+		super(raw, handler);
+		const data = raw.data;
 
-        this.options = new InteractionOptions(data.options)
-    }
-    /**
+		this.options = new InteractionOptions(data.options);
+	}
+	/**
 	 * Respond to a autocomplete interaction
-	 * 
+	 *
 	 * @example
 	 * ```ts
 	 * interaction.respond([
@@ -44,5 +55,4 @@ export class AutoCompleteInteraction extends BaseInteraction {
 		});
 		return this;
 	}
-
 }

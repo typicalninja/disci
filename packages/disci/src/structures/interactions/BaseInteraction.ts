@@ -7,6 +7,9 @@ import {
 	InteractionType,
 	type Snowflake,
 	InteractionResponseType,
+	APIMessageComponentInteraction,
+	APIApplicationCommandInteraction,
+	APIModalSubmitInteraction,
 } from "discord-api-types/v10";
 import { Base } from "../Base";
 import type { InteractionHandler } from "../../InteractionHandler";
@@ -23,8 +26,9 @@ import {
 	Message,
 } from "../primitives/Message";
 import { WebhookPartial } from "../primitives/Webhook";
+import type { BaseComponentInteraction } from "./ComponentInteraction";
 
-export class BaseInteraction extends Base<APIInteraction> {
+export class BaseInteraction<T extends APIInteraction = APIInteraction> extends Base<T> {
 	/**
 	 * ID of the interaction
 	 */
@@ -42,10 +46,6 @@ export class BaseInteraction extends Base<APIInteraction> {
 	 */
 	type: InteractionType;
 	/**
-	 * Id of the Guild that the interaction was sent from (if the interaction is from a guild)
-	 */
-	guildId?: string;
-	/**
 	 * The guild as a partial (if the interaction is from a guild)
 	 */
 	guild?: PartialGuild;
@@ -59,7 +59,7 @@ export class BaseInteraction extends Base<APIInteraction> {
 	 * The corresponding webhook for this interaction
 	 */
 	webhook: WebhookPartial;
-	constructor(raw: APIInteraction, handler: InteractionHandler) {
+	constructor(raw: T, handler: InteractionHandler) {
 		super(raw, handler);
 
 		this.id = raw.id;
@@ -73,7 +73,6 @@ export class BaseInteraction extends Base<APIInteraction> {
 		);
 
 		if (raw.guild_id) {
-			this.guildId = raw.guild_id;
 			this.guild = new PartialGuild({ id: raw.guild_id }, handler);
 		}
 
@@ -91,15 +90,21 @@ export class BaseInteraction extends Base<APIInteraction> {
 		return this.type === InteractionType.ApplicationCommand;
 	}
 
-	isComponentInteraction() {
+	isComponentInteraction(): this is BaseComponentInteraction {
 		return this.type === InteractionType.MessageComponent;
 	}
 
+	/**
+	 * Type guard to verify if this interaction can be replied to
+	 * NOTE: Reply here means replying via a message and does not include replying to Autocomplete interactions
+	 * @returns 
+	 */
 	isRepliable(): this is BaseRepliableInteraction {
 		return this.isCommandInteraction() || this.isComponentInteraction();
 	}
 	/**
-	 * Respond to this interaction, forwards it to request handler
+	 * Respond to this interaction, forwards it to request handler.
+	 * Internal raw method
 	 * @param response
 	 */
 	respondRaw(response: APIInteractionResponse) {
@@ -108,7 +113,9 @@ export class BaseInteraction extends Base<APIInteraction> {
 	}
 }
 
-export class BaseRepliableInteraction extends BaseInteraction {
+export type APIRepliableInteractions = APIApplicationCommandInteraction | APIMessageComponentInteraction | APIModalSubmitInteraction
+
+export class BaseRepliableInteraction<T extends APIRepliableInteractions = APIRepliableInteractions> extends BaseInteraction<T> {
 	/**
 	 * Reply to this interaction
 	 * @param options
