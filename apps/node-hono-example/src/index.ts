@@ -11,7 +11,7 @@ import {
 // create a hono webserver
 const app = new Hono();
 const handler = new InteractionHandler({
-	publicKey: process.env.PK,
+	publicKey: process.env.PRIMARY_KEY,
 	cryptoEngine: crypto.subtle,
 });
 
