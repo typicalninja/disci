@@ -31,13 +31,13 @@ npm i
 
 # Add authentication credentials
 
-First rename the included `.env.example` file to .env
+First, rename the included `.env.example` file to `.env`.
 
-then go to the discord developer portal and copy the public key and the bot token and place them in the renamed .env file under the correct fields
+Next, navigate to your application on the Discord Developer Portal and copy both the public key and the bot token. Paste them into the renamed `.env` file under the appropriate fields.
 
 # Development life cycle
 
-For the purpose of this guide we are using [ngrok](https://ngrok.com/). However, you free to use other tunnel tools such as [cloudflared](https://github.com/cloudflare/cloudflared#installing-cloudflared).
+For the purpose of this guide we are using [ngrok](https://ngrok.com/). However, you're free to use other tunnel tools such as [cloudflared](https://github.com/cloudflare/cloudflared#installing-cloudflared).
 
 If ngrok isn't installed on your system yet, you can easily get it by following the instructions on the [ngrok download page](https://ngrok.com/download).
 
@@ -65,4 +65,21 @@ Navigate to the Discord Developer Portal and access your application. Then, on t
 # make sure to attach the /interactions path to the url you get from ngrok
 
 https://random-stuff.ngrok-free.app/interactions
+                                    ^^^^^^^^^^^^
 ```
+
+# Deploying
+
+We won't delve deeply into how to deploy a Discord application here. You can refer to hosting Node.js web server guides for information on that.
+
+To test a production build without manually building the TypeScript, run the following commands in a terminal:
+
+```bash
+npm run start
+# or pnpm run start
+
+
+ngrok http 8787
+```
+
+and then follow the steps in [Development life cycle](#development-life-cycle) to add the link to discord portal.

@@ -2,7 +2,10 @@
   "name": "server-example",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "start": "tsx src/index.ts"
+    "start": "tsx src/index.ts",
+    "type-check": "tsc --noEmit",
+    "build": "tsc",
+    "start:node": "node dist/index.js"
   },
   "type": "module",
   "dependencies": {
