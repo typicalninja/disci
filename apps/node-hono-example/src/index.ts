@@ -6,7 +6,6 @@ import { createRequestHandler } from "@disci/adapter-hono";
 import {
 	ButtonStyle,
 	ComponentType,
-	InteractionType,
 } from "discord-api-types/v10";
 
 // create a hono webserver
@@ -17,7 +16,7 @@ const handler = new InteractionHandler({
 });
 
 handler.on(EventNames.interactionCreate, (i) => {
-	console.log(`Event: InteractionCreate, InteractionId: ${i.id}, guildId: ${i.raw.guild_id}`);
+	console.log(`Event: InteractionCreate, InteractionId: ${i.id}, guildId: ${i.raw.guild_id}, interactionType: ${i.type}`);
 
 	// autocomplete interactions must be handled sperately 
 	// they are not detected by i.repliable()
@@ -76,4 +75,4 @@ serve({
 	port: 8787,
 });
 
-console.log("Server is running 🚀");
+console.log("Server is running on port 8787 🚀");
