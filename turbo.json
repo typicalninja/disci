@@ -1,9 +1,14 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
+  "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", "build/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        "build/**"
+      ]
     },
     "dev": {
       "cache": false,
@@ -13,7 +18,9 @@
       "cache": false
     },
     "prettier:write": {
-      "outputs": ["src/**"]
+      "outputs": [
+        "src/**"
+      ]
     },
     "lint:check": {},
     "lint": {},
