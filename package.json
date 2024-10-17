@@ -3,12 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build --no-daemon",
-    "dev": "turbo run dev --parallel --no-daemon",
-    "prettier:check": "turbo run prettier:check",
-    "prettier:write": "turbo run prettier:write",
-    "lint:check": "turbo run lint:check",
-    "lint": "turbo run lint",
-    "lint-staged": "echo 0"
+    "dev": "turbo run dev --parallel --no-daemon"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.0",
