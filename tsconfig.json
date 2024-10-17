@@ -9,7 +9,6 @@
     "outDir": "dist",
     "removeComments": false,
     "importHelpers": true,
-    "importsNotUsedAsValues": "error",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -24,6 +23,5 @@
     "noUnusedLocals": true,
     "skipLibCheck": true,
     "noImplicitThis": true,
-    "ignoreDeprecations": "5.0"
   }
 }
