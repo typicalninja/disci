@@ -29,9 +29,6 @@ importers:
       lint-staged:
         specifier: ^13.2.2
         version: 13.2.2(enquirer@2.3.6)
-      prettier:
-        specifier: ^2.8.7
-        version: 2.8.7
       tsup:
         specifier: ^7.2.0
         version: 7.2.0(postcss@8.4.29)(ts-node@10.9.2(typescript@5.0.4))(typescript@5.0.4)
@@ -6814,7 +6811,7 @@ snapshots:
   postcss@8.4.29:
     dependencies:
       nanoid: 3.3.6
-      picocolors: 1.0.0
+      picocolors: 1.1.1
       source-map-js: 1.0.2
 
   preact@10.16.0: {}
