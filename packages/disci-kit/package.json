@@ -9,12 +9,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch",
-    "prettier:check": "prettier --parser=typescript --check",
-    "prettier:write": "prettier --parser=typescript --write",
-    "lint:check": "eslint",
-    "lint": "eslint",
-    "lint-staged": "lint-staged"
+    "dev": "tsup --watch"
   },
   "keywords": [],
   "author": "",

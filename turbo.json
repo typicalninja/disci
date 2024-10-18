@@ -13,17 +13,6 @@
     "dev": {
       "cache": false,
       "persistent": true
-    },
-    "prettier:check": {
-      "cache": false
-    },
-    "prettier:write": {
-      "outputs": [
-        "src/**"
-      ]
-    },
-    "lint:check": {},
-    "lint": {},
-    "lint-staged": {}
+    }
   }
 }
