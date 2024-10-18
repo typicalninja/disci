@@ -6,6 +6,7 @@
     "dev": "turbo run dev --parallel --no-daemon"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@changesets/cli": "^2.27.9",
     "tsup": "^8.3.0",
     "turbo": "^2.1.3",
