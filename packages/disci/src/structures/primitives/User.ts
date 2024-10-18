@@ -1,9 +1,9 @@
-import { Routes, type APIUser, type Snowflake } from "discord-api-types/v10";
-import { Base } from "../Base";
+import { type APIUser, Routes, type Snowflake } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
+import { Base } from "../Base";
 
 export class PartialUser extends Base<{ id: Snowflake }> {
-    /**
+	/**
 	 * Fetch the user this partial belongs to
 	 */
 	async fetch(): Promise<User> {
@@ -12,9 +12,4 @@ export class PartialUser extends Base<{ id: Snowflake }> {
 	}
 }
 
-
-export class User extends PartialUser {
-    constructor(raw: APIUser, handler: InteractionHandler) {
-        super(raw, handler)
-    }
-}
+export class User extends PartialUser {}

@@ -1,9 +1,11 @@
-import { Routes, type APIChannel, type Snowflake } from "discord-api-types/v10";
-import { Base } from "../Base";
+import { type APIChannel, Routes, type Snowflake } from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
+import { Base } from "../Base";
 
-export class GenericPartialChannel<T extends { id: Snowflake}> extends Base<T> {
-    /**
+export class GenericPartialChannel<
+	T extends { id: Snowflake },
+> extends Base<T> {
+	/**
 	 * Fetch the channel represented by the partial
 	 */
 	async fetch() {
@@ -14,9 +16,4 @@ export class GenericPartialChannel<T extends { id: Snowflake}> extends Base<T> {
 	}
 }
 
-
-export class GenericChannel extends GenericPartialChannel<APIChannel> {
-    constructor(raw: APIChannel, handler: InteractionHandler) {
-        super(raw, handler);
-    }
-}
+export class GenericChannel extends GenericPartialChannel<APIChannel> {}

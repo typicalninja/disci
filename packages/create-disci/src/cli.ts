@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-import { create } from 'create-create-app';
-import { resolve } from 'path';
+import { resolve } from "node:path";
+import { create } from "create-create-app";
 
-const templateRoot = resolve(__dirname, '..', 'templates');
+const templateRoot = resolve(__dirname, "..", "templates");
 
 // See https://github.com/uetchy/create-create-app/blob/master/README.md for other options.
 
-create('create-disci', {
-  templateRoot,
-  skipGitInit: true,
-  caveat: ({ packageDir }) => {
-    console.log(`
+create("create-disci", {
+	templateRoot,
+	skipGitInit: true,
+	caveat: ({ packageDir }) => {
+		console.log(`
     View Our guide and api docs at: https://disci.typical.gq
 
     
@@ -19,18 +19,18 @@ create('create-disci', {
       cd ${packageDir}
       npm start
     `);
-  },
-  extra: {
-    	name: {
+	},
+	extra: {
+		name: {
 			type: "input",
 			describe: "Name of the Project",
 			prompt: "always",
 		},
-  },
-  promptForTemplate: true,
-  promptForLicense: false,
-  promptForEmail: false,
-  promptForAuthor: false,
-  promptForDescription: false,
-  defaultTemplate: 'fastify-js'
+	},
+	promptForTemplate: true,
+	promptForLicense: false,
+	promptForEmail: false,
+	promptForAuthor: false,
+	promptForDescription: false,
+	defaultTemplate: "fastify-js",
 });

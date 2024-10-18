@@ -5,7 +5,7 @@ import { runInitCommand } from "./commands/init";
 
 yargs(hideBin(process.argv))
 	.scriptName("discik")
-    // handles creation of new discik projects
+	// handles creation of new discik projects
 	.command(
 		"init [directory]",
 		"Creates a starter discik project",
@@ -18,11 +18,12 @@ yargs(hideBin(process.argv))
 				.option("noInstall", {
 					alias: "ni",
 					type: "boolean",
-					describe: "Skip installing required packages and adapters. (Will have to manually install)",
+					describe:
+						"Skip installing required packages and adapters. (Will have to manually install)",
 				})
-				.positional('directory', {
-					default: '.'
-				})
+				.positional("directory", {
+					default: ".",
+				});
 		},
 		(argv) => runInitCommand(argv),
 	)

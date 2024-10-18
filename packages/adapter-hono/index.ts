@@ -1,13 +1,12 @@
+import { DiscordVerifyHeaders, type InteractionHandler } from "disci";
 import type { Context } from "hono";
-import { InteractionHandler, DiscordVerifyHeaders } from "disci";
 
-// disable eslint for this line since i have no idea what hono type to use here
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// disable biome for this line since i have no idea what hono type to use here
+// @biome-disable-next-line
 export function createRequestHandler(handler: InteractionHandler): any {
 	return async (c: Context) => {
 		const signature = c.req.header(DiscordVerifyHeaders.signature) ?? "";
 		const timestamp = c.req.header(DiscordVerifyHeaders.timestamp) ?? "";
-
 
 		// verify these headers exist
 		if (!signature || !timestamp) {

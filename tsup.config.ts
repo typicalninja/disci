@@ -1,13 +1,12 @@
-
-import { defineConfig, Options } from 'tsup';
+import { type Options, defineConfig } from "tsup";
 
 export function createTsupConfig({
-	entry = ['src/index.ts'],
+	entry = ["src/index.ts"],
 	external = [],
 	noExternal = [],
-	platform = 'node',
-	format = ['cjs', 'esm'],
-	target = 'esnext',
+	platform = "node",
+	format = ["cjs", "esm"],
+	target = "esnext",
 	skipNodeModulesBundle = true,
 	clean = true,
 	shims = false,
@@ -17,8 +16,7 @@ export function createTsupConfig({
 	dts = true,
 	sourcemap = false,
 	esbuildPlugins = [],
-	outDir = 'dist',
-	
+	outDir = "dist",
 }: Options = {}) {
 	return defineConfig({
 		entry,

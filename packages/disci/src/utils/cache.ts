@@ -1,3 +1,1 @@
-export class StructureResolver {
-
-}
+export class StructureResolver {}

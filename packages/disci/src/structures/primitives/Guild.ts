@@ -1,8 +1,15 @@
-import { type APIGuild, Routes, type Snowflake, type GuildFeature } from "discord-api-types/v10";
+import {
+	type APIGuild,
+	type GuildFeature,
+	Routes,
+	type Snowflake,
+} from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
 import { Base } from "../Base";
 
-export class PartialGuild<T extends { id: Snowflake } = { id: Snowflake }> extends Base<T> {
+export class PartialGuild<
+	T extends { id: Snowflake } = { id: Snowflake },
+> extends Base<T> {
 	/**
 	 * Id of this guild
 	 */
@@ -21,40 +28,39 @@ export class PartialGuild<T extends { id: Snowflake } = { id: Snowflake }> exten
 			query: withCounts
 				? {
 						with_counts: "true",
-				  }
+					}
 				: {},
 		});
-		
+
 		return new Guild(guild, this.handler);
 	}
 }
 
 export class Guild extends PartialGuild<APIGuild> {
-    /**
+	/**
 	 * Name of this guild
 	 */
 	name: string;
-    /**
-     * Id of the owner of this server
-     */
-    ownerId: Snowflake;
-    /**
+	/**
+	 * Id of the owner of this server
+	 */
+	ownerId: Snowflake;
+	/**
 	 * Approximate Member count not always present (use Guild.fetch() with "withCounts" enabled)
 	 */
 	approximateMemberCount?: number;
-    /**
+	/**
 	 * Approximate Presence count not always present (use Guild.fetch() with "withCounts" enabled)
 	 */
 	approximatePresenceCount?: number;
-    features: GuildFeature[];
-    constructor(raw: APIGuild, handler: InteractionHandler) {
-        super(raw, handler);
+	features: GuildFeature[];
+	constructor(raw: APIGuild, handler: InteractionHandler) {
+		super(raw, handler);
 
-        this.name = raw.name;
-        this.ownerId = raw.owner_id;
-        this.approximateMemberCount = raw.approximate_member_count;
-        this.approximatePresenceCount = raw.approximate_presence_count;
-        this.features = raw.features
-    }
-
+		this.name = raw.name;
+		this.ownerId = raw.owner_id;
+		this.approximateMemberCount = raw.approximate_member_count;
+		this.approximatePresenceCount = raw.approximate_presence_count;
+		this.features = raw.features;
+	}
 }

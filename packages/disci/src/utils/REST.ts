@@ -1,9 +1,9 @@
-import { URLS } from "./constants";
 import { isBufferLike, serializeObject, tryAndValue } from "./common";
+import { URLS } from "./constants";
 
 // userAgent used in requests
 const UserAgent =
-	`DiscordBot (https://github.com/typicalninja/disci, 0.0.1)`.trim();
+	"DiscordBot (https://github.com/typicalninja/disci, 0.0.1)".trim();
 
 export interface RestClient {
 	makeRequest: <T>(
@@ -124,9 +124,9 @@ export class Rest implements RestClient {
 		// get the returned content type
 		const contentType = req.headers.get("content-type");
 		// if a json response returned
-		if (contentType && contentType.includes("application/json"))
+		if (contentType?.includes("application/json"))
 			return (await req.json()) as T;
-		else return (await req.arrayBuffer()) as T;
+		return (await req.arrayBuffer()) as T;
 	}
 	get<T>(path: string, opts?: RESTCommonOptions): Promise<T> {
 		return this.makeRequest<T>("GET", path, opts);
@@ -178,12 +178,12 @@ export class Rest implements RestClient {
 		// check if adding the auth header is necessary for this request
 		if (options?.auth !== false) {
 			if (!this.authToken)
-				throw new Error(`Auth token was expected for request but was not set`);
+				throw new Error("Auth token was expected for request but was not set");
 			baseHeaders.Authorization = this.authHeader;
 		}
 
 		// if reason is present, attach the header
-		if (options?.reason && options.reason.length) {
+		if (options?.reason?.length) {
 			baseHeaders["X-Audit-Log-Reason"] = encodeURIComponent(options.reason);
 		}
 
@@ -254,15 +254,25 @@ export class Rest implements RestClient {
 		};
 	}
 
-	static makeQueryParams(queryParams?: Record<string, unknown> | URLSearchParams) {
-		const searchParams = new URLSearchParams()
-		if(!queryParams) return searchParams;
-		const queryKeys = queryParams instanceof URLSearchParams ? queryParams.entries() : Object.entries(queryParams)
-		for(const [key, value] of queryKeys) {
+	static makeQueryParams(
+		queryParams?: Record<string, unknown> | URLSearchParams,
+	) {
+		const searchParams = new URLSearchParams();
+		if (!queryParams) return searchParams;
+		const queryKeys =
+			queryParams instanceof URLSearchParams
+				? queryParams.entries()
+				: Object.entries(queryParams);
+		for (const [key, value] of queryKeys) {
 			// value can be null or undefined in both string and non string version
 			// queryparams.entries() return strings for all values
-			if(value !== null && value !== undefined && value !== 'null' && value !== 'undefined') {
-				searchParams.set(key, String(value))
+			if (
+				value !== null &&
+				value !== undefined &&
+				value !== "null" &&
+				value !== "undefined"
+			) {
+				searchParams.set(key, String(value));
 			}
 		}
 		return searchParams;

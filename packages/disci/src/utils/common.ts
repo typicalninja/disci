@@ -12,7 +12,6 @@ export const convertSnowflakeToTimeStamp = (id: Snowflake): number => {
 	return Number(milliseconds) + DiscordEpoch;
 };
 
-
 /** encapsulates a fn in try catch block and return value/null */
 export function tryAndValue<ReturnType>(
 	fn: () => ReturnType,
@@ -37,17 +36,21 @@ export const isObject = (value: unknown) =>
  */
 export const serializeObject = <T extends Record<string, unknown>>(
 	obj: T,
-	checkStrings?: boolean
+	checkStrings?: boolean,
 ): T => {
 	const newObj = {} as T;
 	for (const [key, value] of Object.entries(obj)) {
 		if (key === null || key === undefined) continue;
 		if (value === null || value === undefined) continue;
-		if(checkStrings) {
-			if (key === 'null' || key === 'undefined') continue;
-			if (value === 'null' || value === 'undefined') continue;
+		if (checkStrings) {
+			if (key === "null" || key === "undefined") continue;
+			if (value === "null" || value === "undefined") continue;
 		}
-		Object.defineProperty(newObj, key, { value, enumerable: true, writable: true });
+		Object.defineProperty(newObj, key, {
+			value,
+			enumerable: true,
+			writable: true,
+		});
 	}
 
 	return newObj;

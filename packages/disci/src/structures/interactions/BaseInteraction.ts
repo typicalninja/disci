@@ -1,34 +1,36 @@
 import {
-	APIInteractionResponse,
-	APIApplicationCommandInteractionDataBasicOption,
-	APIApplicationCommandInteractionDataOption,
-	ApplicationCommandOptionType,
+	type APIApplicationCommandInteraction,
+	type APIApplicationCommandInteractionDataBasicOption,
+	type APIApplicationCommandInteractionDataOption,
 	type APIInteraction,
+	type APIInteractionResponse,
+	type APIMessageComponentInteraction,
+	type APIModalSubmitInteraction,
+	ApplicationCommandOptionType,
+	InteractionResponseType,
 	InteractionType,
 	type Snowflake,
-	InteractionResponseType,
-	APIMessageComponentInteraction,
-	APIApplicationCommandInteraction,
-	APIModalSubmitInteraction,
 } from "discord-api-types/v10";
-import { Base } from "../Base";
 import type { InteractionHandler } from "../../InteractionHandler";
+import { InternalEventNames } from "../../utils/constants";
+import { Base } from "../Base";
 import { PermissionsBitField } from "../Bitfield";
 import { PartialGuild } from "../primitives/Guild";
-import { InternalEventNames } from "../../utils/constants";
+import {
+	type CreateMessageParams,
+	type Message,
+	MessagePartial,
+} from "../primitives/Message";
+import { WebhookPartial } from "../primitives/Webhook";
 import type {
 	AutoCompleteInteraction,
 	BaseCommandInteraction,
 } from "./CommandInteractions";
-import {
-	MessagePartial,
-	type CreateMessageParams,
-	Message,
-} from "../primitives/Message";
-import { WebhookPartial } from "../primitives/Webhook";
 import type { BaseComponentInteraction } from "./ComponentInteraction";
 
-export class BaseInteraction<T extends APIInteraction = APIInteraction> extends Base<T> {
+export class BaseInteraction<
+	T extends APIInteraction = APIInteraction,
+> extends Base<T> {
 	/**
 	 * ID of the interaction
 	 */
@@ -97,7 +99,7 @@ export class BaseInteraction<T extends APIInteraction = APIInteraction> extends 
 	/**
 	 * Type guard to verify if this interaction can be replied to
 	 * NOTE: Reply here means replying via a message and does not include replying to Autocomplete interactions
-	 * @returns 
+	 * @returns
 	 */
 	isRepliable(): this is BaseRepliableInteraction {
 		return this.isCommandInteraction() || this.isComponentInteraction();
@@ -113,9 +115,14 @@ export class BaseInteraction<T extends APIInteraction = APIInteraction> extends 
 	}
 }
 
-export type APIRepliableInteractions = APIApplicationCommandInteraction | APIMessageComponentInteraction | APIModalSubmitInteraction
+export type APIRepliableInteractions =
+	| APIApplicationCommandInteraction
+	| APIMessageComponentInteraction
+	| APIModalSubmitInteraction;
 
-export class BaseRepliableInteraction<T extends APIRepliableInteractions = APIRepliableInteractions> extends BaseInteraction<T> {
+export class BaseRepliableInteraction<
+	T extends APIRepliableInteractions = APIRepliableInteractions,
+> extends BaseInteraction<T> {
 	/**
 	 * Reply to this interaction
 	 * @param options
@@ -133,7 +140,7 @@ export class BaseRepliableInteraction<T extends APIRepliableInteractions = APIRe
 		});
 
 		if (options.fetchReply) return this.webhook.fetchMessage("@original");
-		else return Promise.resolve(this);
+		return Promise.resolve(this);
 	}
 
 	/**
@@ -148,7 +155,7 @@ export class BaseRepliableInteraction<T extends APIRepliableInteractions = APIRe
 		});
 
 		if (options.fetchReply) return this.webhook.fetchMessage("@original");
-		else return Promise.resolve(this);
+		return Promise.resolve(this);
 	}
 
 	/**
@@ -190,7 +197,7 @@ export class InteractionOptions {
 	getSubCommand(required: true): string;
 	getSubCommand(required = false): string | null {
 		if (required && !this.subCommand)
-			throw new TypeError(`Required option Subcommand Not found`);
+			throw new TypeError("Required option Subcommand Not found");
 		return this.subCommand ?? null;
 	}
 	/**
@@ -201,7 +208,7 @@ export class InteractionOptions {
 	getSubCommandGroup(required: true): string;
 	getSubCommandGroup(required = false): string | null {
 		if (required && !this.group)
-			throw new TypeError(`Required option SubcommandGroup Not found`);
+			throw new TypeError("Required option SubcommandGroup Not found");
 		return this.group ?? null;
 	}
 	/**
@@ -245,7 +252,7 @@ export class InteractionOptions {
 		if (
 			required &&
 			properties.every(
-				(prop) => option[prop] == null || typeof option[prop] == "undefined",
+				(prop) => option[prop] == null || typeof option[prop] === "undefined",
 			)
 		)
 			throw new TypeError(`Required atrribute in option ${name} not found`);
@@ -379,7 +386,7 @@ export class InteractionOptions {
 		const focusedOption = this.options.find(
 			(option) => (option as { focused?: boolean }).focused,
 		) as APIApplicationCommandInteractionDataBasicOption;
-		if (!focusedOption) throw new Error(`No Focused option found`);
+		if (!focusedOption) throw new Error("No Focused option found");
 		return full ? focusedOption : focusedOption.value;
 	}
 }

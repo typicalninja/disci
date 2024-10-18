@@ -82,9 +82,11 @@ export abstract class BitField {
 					return bit
 						.map((b) => BitField.resolve(b))
 						.reduce((prev, cur) => prev | cur, BitField.None);
-				} else if (bit instanceof BitField) {
+				}
+				if (bit instanceof BitField) {
 					return bit.bitfield;
-				} else throw new TypeError(`Expected a bitfieldResolvable`);
+				}
+				throw new TypeError("Expected a bitfieldResolvable");
 		}
 	}
 }

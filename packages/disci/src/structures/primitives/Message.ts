@@ -1,9 +1,16 @@
-import type { APIActionRowComponent, APIEmbed, APIMessage, APIMessageActionRowComponent,  AllowedMentionsTypes, MessageFlags, Snowflake } from "discord-api-types/v10";
-import { Base } from "../Base";
+import type {
+	APIActionRowComponent,
+	APIEmbed,
+	APIMessage,
+	APIMessageActionRowComponent,
+	AllowedMentionsTypes,
+	MessageFlags,
+	Snowflake,
+} from "discord-api-types/v10";
 import type { InteractionHandler } from "../../InteractionHandler";
 import type { RESTFile } from "../../utils/REST";
-import { MessageFlagsBitField, type BitFieldResolvable } from "../Bitfield";
-
+import { Base } from "../Base";
+import { type BitFieldResolvable, MessageFlagsBitField } from "../Bitfield";
 
 /**
  * @link https://discord.com/developers/docs/resources/channel#allowed-mentions-object
@@ -60,12 +67,12 @@ export interface CreateMessageParams {
 
 export class MessagePartial extends Base<{ id: Snowflake }> {
 	id: Snowflake;
-    constructor(raw: { id: Snowflake }, handler: InteractionHandler) {
-        super(raw, handler);
+	constructor(raw: { id: Snowflake }, handler: InteractionHandler) {
+		super(raw, handler);
 		this.id = raw.id;
-    }
+	}
 
-    /**
+	/**
 	 * Internal method to resolve data for message Create
 	 * @private
 	 */
@@ -80,27 +87,27 @@ export class MessagePartial extends Base<{ id: Snowflake }> {
 		// if message content is present
 		if (params.content) {
 			if (typeof params.content !== "string")
-				throw new TypeError(`Expected a string for message content`);
+				throw new TypeError("Expected a string for message content");
 			msg.content = params.content;
 		}
 
 		// resolve embeds
 		if (params.embeds) {
 			if (!Array.isArray(params.embeds))
-				throw new TypeError(`Expected an array for embeds`);
+				throw new TypeError("Expected an array for embeds");
 			msg.embeds = params.embeds;
 		}
 
 		// resolve components
 		if (params.components) {
 			if (!Array.isArray(params.components))
-				throw new TypeError(`Expected an array for Component Action rows`);
+				throw new TypeError("Expected an array for Component Action rows");
 			msg.components = params.components;
 		}
 
 		if (params.files) {
 			if (!Array.isArray(params.files))
-				throw new TypeError(`Expected an array for Files`);
+				throw new TypeError("Expected an array for Files");
 			files.push(...params.files);
 		}
 
@@ -116,9 +123,4 @@ export class MessagePartial extends Base<{ id: Snowflake }> {
 	}
 }
 
-export class Message extends MessagePartial {
-	constructor(raw: APIMessage, handler: InteractionHandler) {
-		super(raw, handler);
-
-	}
-}
+export class Message extends MessagePartial {}

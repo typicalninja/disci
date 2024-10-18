@@ -1,27 +1,24 @@
-import { directoryEmpty, ignoreUndefined } from "../../lib/utils/helpers";
 import path from "node:path";
-import pc from "picocolors";
-import * as p from "@clack/prompts";
-import whichpm from "which-pm";
 import { cwd } from "node:process";
+import * as p from "@clack/prompts";
+import pc from "picocolors";
+import whichpm from "which-pm";
+import { directoryEmpty, ignoreUndefined } from "../../lib/utils/helpers";
 
 export interface InitCommandOptions {
 	force?: boolean;
 	directory: string;
 }
 
-
 const adaptersAndPackagesToInstall = {
-	"hono-node": ["@disci/adapter-hono"]
-}
+	"hono-node": ["@disci/adapter-hono"],
+};
 
-function installPackages(pm: string, directory: string, adapter) {
-
-}
+function installPackages(pm: string, directory: string, adapter) {}
 
 export async function runInitCommand(options: InitCommandOptions) {
-	p.intro(`disci-kit-init`);
-	const packageManager = (await whichpm(cwd())) || { name: 'npm' };
+	p.intro("disci-kit-init");
+	const packageManager = (await whichpm(cwd())) || { name: "npm" };
 	const initialQuestions = await p.group(
 		{
 			directory: () =>
@@ -29,7 +26,7 @@ export async function runInitCommand(options: InitCommandOptions) {
 					message: "Where should we create the new project?",
 					initialValue: options.directory,
 					validate(value) {
-						if (value.length === 0) return `Directory is required!`;
+						if (value.length === 0) return "Directory is required!";
 						return;
 					},
 				}),
@@ -74,9 +71,10 @@ export async function runInitCommand(options: InitCommandOptions) {
 						},
 					]),
 				}),
-			installPackages: () => p.confirm({
-				message: `Do you want to install required packages via ${packageManager.name}`
-			})
+			installPackages: () =>
+				p.confirm({
+					message: `Do you want to install required packages via ${packageManager.name}`,
+				}),
 		},
 		{
 			// On Cancel callback that wraps the group
@@ -93,12 +91,11 @@ export async function runInitCommand(options: InitCommandOptions) {
 	// if it is not empty and force is not enabled, print a continue or not prompt
 	if (!(await directoryEmpty(resolvedDirectory)) && !options.force) {
 		const shouldContinue = await p.confirm({
-			message: `Destionation directory is not empty, do you want to continue?`,
+			message: "Destionation directory is not empty, do you want to continue?",
 		});
 		if (!shouldContinue || p.isCancel(shouldContinue))
-			return p.cancel(`Operation cancelled.`);
+			return p.cancel("Operation cancelled.");
 	}
-
 
 	console.log(initialQuestions);
 }

@@ -1,1 +1,1 @@
-export * as InitProject from './init'
+export * as InitProject from "./init";
