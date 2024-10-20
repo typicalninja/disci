@@ -7,7 +7,9 @@
     "lint": "biome lint --write",
     "format": "biome format --write",
     "check": "biome check --write",
-    "prepare": "is-ci || lefthook install"
+    "prepare": "is-ci || lefthook install",
+    "ci:publish": "pnpm publish -r --no-git-checks",
+    "ci:version": "changesets version"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
