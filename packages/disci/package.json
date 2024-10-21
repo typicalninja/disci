@@ -1,7 +1,7 @@
 {
   "name": "disci",
   "private": true,
-  "version": "0.0.6-alpha",
+  "version": "0.1.0",
   "description": "A HTTP Request handler for discord interactions",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
