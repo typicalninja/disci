@@ -15,13 +15,5 @@
   "license": "ISC",
   "devDependencies": {
     "vitepress": "1.0.0-rc.13"
-  },
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "@algolia/client-search",
-        "search-insights"
-      ]
-    }
   }
 }
