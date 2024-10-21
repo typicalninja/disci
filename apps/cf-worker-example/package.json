@@ -1,5 +1,6 @@
 {
-  "name": "serverless-example",
+  "name": "@example/serverless-example",
+  "private": true,
   "scripts": {
     "dev": "wrangler dev src/index.ts",
     "deploy": "wrangler deploy --minify src/index.ts"
