@@ -144,8 +144,8 @@ importers:
         specifier: workspace:*
         version: link:../disci
       hono:
-        specifier: ^3.5.4
-        version: 3.5.4
+        specifier: ^4.2.5
+        version: 4.2.5
 
   packages/create-disci:
     dependencies:
@@ -234,12 +234,18 @@ packages:
     peerDependencies:
       '@algolia/client-search': '>= 4.9.1 < 6'
       algoliasearch: '>= 4.9.1 < 6'
+    peerDependenciesMeta:
+      '@algolia/client-search':
+        optional: true
 
   '@algolia/autocomplete-shared@1.9.3':
     resolution: {integrity: sha512-Wnm9E4Ye6Rl6sTTqjoymD+l8DjSTHsHboVRYrKgEt8Q7UHm9nYbqhN/i0fhUYA3OAEH7WA8x3jfpnmJm3rKvaQ==}
     peerDependencies:
       '@algolia/client-search': '>= 4.9.1 < 6'
       algoliasearch: '>= 4.9.1 < 6'
+    peerDependenciesMeta:
+      '@algolia/client-search':
+        optional: true
 
   '@algolia/cache-browser-local-storage@4.19.1':
     resolution: {integrity: sha512-FYAZWcGsFTTaSAwj9Std8UML3Bu8dyWDncM7Ls8g+58UOe4XYdlgzXWbrIgjaguP63pCCbMoExKr61B+ztK3tw==}
@@ -3840,13 +3846,15 @@ snapshots:
   '@algolia/autocomplete-preset-algolia@1.9.3(@algolia/client-search@4.23.2)(algoliasearch@4.19.1)':
     dependencies:
       '@algolia/autocomplete-shared': 1.9.3(@algolia/client-search@4.23.2)(algoliasearch@4.19.1)
-      '@algolia/client-search': 4.23.2
       algoliasearch: 4.19.1
+    optionalDependencies:
+      '@algolia/client-search': 4.23.2
 
   '@algolia/autocomplete-shared@1.9.3(@algolia/client-search@4.23.2)(algoliasearch@4.19.1)':
     dependencies:
-      '@algolia/client-search': 4.23.2
       algoliasearch: 4.19.1
+    optionalDependencies:
+      '@algolia/client-search': 4.23.2
 
   '@algolia/cache-browser-local-storage@4.19.1':
     dependencies:
@@ -3854,7 +3862,8 @@ snapshots:
 
   '@algolia/cache-common@4.19.1': {}
 
-  '@algolia/cache-common@4.23.2': {}
+  '@algolia/cache-common@4.23.2':
+    optional: true
 
   '@algolia/cache-in-memory@4.19.1':
     dependencies:
@@ -3882,6 +3891,7 @@ snapshots:
     dependencies:
       '@algolia/requester-common': 4.23.2
       '@algolia/transporter': 4.23.2
+    optional: true
 
   '@algolia/client-personalization@4.19.1':
     dependencies:
@@ -3900,10 +3910,12 @@ snapshots:
       '@algolia/client-common': 4.23.2
       '@algolia/requester-common': 4.23.2
       '@algolia/transporter': 4.23.2
+    optional: true
 
   '@algolia/logger-common@4.19.1': {}
 
-  '@algolia/logger-common@4.23.2': {}
+  '@algolia/logger-common@4.23.2':
+    optional: true
 
   '@algolia/logger-console@4.19.1':
     dependencies:
@@ -3915,7 +3927,8 @@ snapshots:
 
   '@algolia/requester-common@4.19.1': {}
 
-  '@algolia/requester-common@4.23.2': {}
+  '@algolia/requester-common@4.23.2':
+    optional: true
 
   '@algolia/requester-node-http@4.19.1':
     dependencies:
@@ -3932,6 +3945,7 @@ snapshots:
       '@algolia/cache-common': 4.23.2
       '@algolia/logger-common': 4.23.2
       '@algolia/requester-common': 4.23.2
+    optional: true
 
   '@babel/code-frame@7.25.7':
     dependencies:

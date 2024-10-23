@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "hono": "^3.5.4",
-    "disci": "workspace:*"
+    "disci": "workspace:*",
+    "hono": "^4.2.5"
   }
 }
