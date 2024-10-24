@@ -1,6 +1,6 @@
 # disci/adapter-hono
 
-Adapter to use [disci](https://github.com/typicalninja/disci) with [hono](https://hono.dev/) webserver.
+Adapter to use [disci](https://github.com/typicalninja/disci) with [hono](https://hono.dev/) framework.
 
 # Installation
 
