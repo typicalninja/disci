@@ -1,10 +1,10 @@
 import { DiscordVerifyHeaders, type InteractionHandler } from "disci";
-import type { Context } from "hono";
+import { createFactory } from "hono/factory";
 
-// disable biome for this line since i have no idea what hono type to use here
-// @biome-disable-next-line
-export function createRequestHandler(handler: InteractionHandler): any {
-	return async (c: Context) => {
+export function createRequestHandler(handler: InteractionHandler) {
+	const factory = createFactory();
+
+	return factory.createHandlers(async (c) => {
 		const signature = c.req.header(DiscordVerifyHeaders.signature) ?? "";
 		const timestamp = c.req.header(DiscordVerifyHeaders.timestamp) ?? "";
 
@@ -19,8 +19,7 @@ export function createRequestHandler(handler: InteractionHandler): any {
 
 		try {
 			const r = await handler.handleRequest({
-				// disci will convert this to json when needed
-				body: await c.req.text(),
+				body: await c.req.json(),
 				headers: {
 					[DiscordVerifyHeaders.signature]: signature,
 					[DiscordVerifyHeaders.timestamp]: timestamp,
@@ -28,9 +27,11 @@ export function createRequestHandler(handler: InteractionHandler): any {
 			});
 
 			c.status(200);
-			return c.json(r);
+			// needs to type as unknown to prevent typescript from
+			// getting types from discord-api-types which is not part of this package
+			return c.json(r as unknown);
 		} catch (e) {
-			// handle could not verify message with a 401 as discord expects the error code
+			// handler could not verify the request
 			if (e instanceof Error && e.message.includes("Could not verify")) {
 				c.status(401);
 				return c.json({ error: "Could not validate request headers" });
@@ -38,5 +39,6 @@ export function createRequestHandler(handler: InteractionHandler): any {
 			c.status(500);
 			return c.json({ e: "Internal server error occurred" });
 		}
-	};
+	})[// the user will be able to do: createRequestHandler(handler) instead of ...createRequestHandler(handler); // return the first handler
+	0];
 }
