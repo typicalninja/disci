@@ -15,40 +15,42 @@ import { createFactory } from "hono/factory";
  *
  * app.post("/interactions", async (c) => handler.handleRequest(await toGenericRequest(c)));
  * ```
+ *
  * @param c - The Hono context
- * @returns
+ * @returns The generic request object
  */
 export async function toGenericRequest(c: Context): Promise<GenericRequest> {
-	const signature = c.req.header(DiscordVerifyHeaders.signature) ?? "";
-
-	const timestamp = c.req.header(DiscordVerifyHeaders.timestamp) ?? "";
+	const signature = c.req.header(DiscordVerifyHeaders.signature);
+	const timestamp = c.req.header(DiscordVerifyHeaders.timestamp);
 
 	return {
 		body: await c.req.text(),
-
 		headers: {
 			[DiscordVerifyHeaders.signature]: signature,
-
 			[DiscordVerifyHeaders.timestamp]: timestamp,
 		},
 	};
 }
 
+/**
+ * Create a request handler for Hono using the provided interaction handler
+ * @example
+ * ```ts
+ * const handler = new InteractionHandler(...);
+ * const app = new Hono();
+ *
+ * app.post("/interactions", createRequestHandler(handler));
+ * ```
+ *
+ * @param handler - The disci interaction handler
+ * @returns The Hono request handler
+ */
 export function createRequestHandler(handler: InteractionHandler) {
 	const factory = createFactory();
 
 	return factory.createHandlers(async (c) => {
-		const signature = c.req.header(DiscordVerifyHeaders.signature) ?? "";
-		const timestamp = c.req.header(DiscordVerifyHeaders.timestamp) ?? "";
-
-		// verify these headers exist
-		if (!signature || !timestamp) {
-			c.status(400);
-			return c.json({
-				error:
-					'Missing required headers ("x-signature-ed25519", "x-signature-timestamp")',
-			});
-		}
+		const signature = c.req.header(DiscordVerifyHeaders.signature);
+		const timestamp = c.req.header(DiscordVerifyHeaders.timestamp);
 
 		try {
 			const r = await handler.handleRequest({
@@ -70,7 +72,7 @@ export function createRequestHandler(handler: InteractionHandler) {
 				return c.json({ error: "Could not validate request headers" });
 			}
 			c.status(500);
-			return c.json({ e: "Internal server error occurred" });
+			return c.json({ error: "Internal server error occurred" });
 		}
-	})[0]; // the user will be able to do: createRequestHandler(handler) instead of ...createRequestHandler(handler); // return the first handler
+	})[0]; // the user will be able to do: createRequestHandler(handler) instead of ...createRequestHandler(handler);
 }
