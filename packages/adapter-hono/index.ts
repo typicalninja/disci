@@ -3,33 +3,40 @@ import {
 	type GenericRequest,
 	type InteractionHandler,
 } from "disci";
-import type { Context } from "hono";
 import { createFactory } from "hono/factory";
+
+// Custom type instead of Hono context to extract the info we need
+// its impossible (currently) to properly type the Hono context, this is the best we can do
+type Ctx = {
+	req: {
+		header: (
+			key: (typeof DiscordVerifyHeaders)["signature" | "timestamp"],
+		) => string | undefined;
+		text: () => Promise<string>;
+	};
+};
 
 /**
  * Converts a Hono context to a generic request object
  * @example
  * ```ts
  * const handler = new InteractionHandler(...);
- * const app = new Hono();
- *
  * app.post("/interactions", async (c) => c.json(await handler.handleRequest(await toGenericRequest(c))));
  * ```
- *
  * @param context - The Hono context
- * @returns The generic request object
  */
-export async function toGenericRequest<C>(c: C): Promise<GenericRequest> {
+export async function toGenericRequest<C extends Ctx>(
+	c: C,
+): Promise<GenericRequest> {
 	// For some reason its hard to properly type Hono.Context
-	const context = c as Context;
-	const signature = context.req.header(DiscordVerifyHeaders.signature);
-	const timestamp = context.req.header(DiscordVerifyHeaders.timestamp);
+	const signature = c.req.header(DiscordVerifyHeaders.signature);
+	const timestamp = c.req.header(DiscordVerifyHeaders.timestamp);
 
 	if (!signature || !timestamp)
 		throw new Error("Could not verify request headers");
 
 	return {
-		body: await context.req.text(),
+		body: await c.req.text(),
 		headers: {
 			[DiscordVerifyHeaders.signature]: signature,
 			[DiscordVerifyHeaders.timestamp]: timestamp,
@@ -42,13 +49,9 @@ export async function toGenericRequest<C>(c: C): Promise<GenericRequest> {
  * @example
  * ```ts
  * const handler = new InteractionHandler(...);
- * const app = new Hono();
- *
  * app.post("/interactions", createRequestHandler(handler));
  * ```
- *
  * @param handler - The disci interaction handler
- * @returns The Hono request handler
  */
 export function createRequestHandler(handler: InteractionHandler) {
 	const factory = createFactory();
