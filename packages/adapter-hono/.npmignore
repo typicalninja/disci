@@ -2,3 +2,8 @@ index.ts
 
 tsup.config.ts
 tsconfig.json
+# Ignore changeset changelogs
+CHANGELOG.md
+
+# tools
+.turbo
