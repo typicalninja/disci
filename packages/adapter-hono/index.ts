@@ -16,18 +16,20 @@ import { createFactory } from "hono/factory";
  * app.post("/interactions", async (c) => c.json(await handler.handleRequest(await toGenericRequest(c))));
  * ```
  *
- * @param c - The Hono context
+ * @param context - The Hono context
  * @returns The generic request object
  */
-export async function toGenericRequest(c: Context): Promise<GenericRequest> {
-	const signature = c.req.header(DiscordVerifyHeaders.signature);
-	const timestamp = c.req.header(DiscordVerifyHeaders.timestamp);
+export async function toGenericRequest<C>(c: C): Promise<GenericRequest> {
+	// For some reason its hard to properly type Hono.Context
+	const context = c as Context;
+	const signature = context.req.header(DiscordVerifyHeaders.signature);
+	const timestamp = context.req.header(DiscordVerifyHeaders.timestamp);
 
 	if (!signature || !timestamp)
 		throw new Error("Could not verify request headers");
 
 	return {
-		body: await c.req.text(),
+		body: await context.req.text(),
 		headers: {
 			[DiscordVerifyHeaders.signature]: signature,
 			[DiscordVerifyHeaders.timestamp]: timestamp,
@@ -58,7 +60,7 @@ export function createRequestHandler(handler: InteractionHandler) {
 			c.status(200);
 			// needs to type as unknown to prevent typescript from
 			// getting types from discord-api-types which is not part of this package
-			return c.json(r as unknown);
+			return c.json(JSON.stringify(r));
 		} catch (e) {
 			// handler/toGenricRequest could not verify the request
 			if (e instanceof Error && e.message.includes("Could not verify")) {
@@ -68,5 +70,5 @@ export function createRequestHandler(handler: InteractionHandler) {
 			c.status(500);
 			return c.json({ error: "Internal server error occurred" });
 		}
-	})[0]; // the user will be able to do: createRequestHandler(handler) instead of ...createRequestHandler(handler);
+	});
 }
