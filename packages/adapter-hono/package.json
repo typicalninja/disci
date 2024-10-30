@@ -9,11 +9,15 @@
     "build": "tsup",
     "dev": "tsup --watch"
   },
-  "keywords": ["disci", "hono", "disci-adapter"],
+  "keywords": [
+    "disci",
+    "hono",
+    "disci-adapter"
+  ],
   "author": "typicalninja",
   "license": "Apache-2.0",
   "dependencies": {
     "disci": "workspace:^",
-    "hono": "^4.2.5"
+    "hono": "^4.6.6"
   }
 }
