@@ -49,7 +49,7 @@ export async function toGenericRequest<C extends Ctx>(
  * @example
  * ```ts
  * const handler = new InteractionHandler(...);
- * app.post("/interactions", createRequestHandler(handler));
+ * app.post("/interactions", ...createRequestHandler(handler));
  * ```
  * @param handler - The disci interaction handler
  */

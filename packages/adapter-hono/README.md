@@ -27,7 +27,7 @@ const handler = new InteractionHandler({
 
 const app = new Hono();
 
-app.post("/interactions", createRequestHandler(handler));
+app.post("/interactions", ...createRequestHandler(handler));
 
 // please refer to hono documentation for your platform
 // on how to serve the app
@@ -54,9 +54,9 @@ export default app;
 
 # Hono version compatibility
 
-| Adapter version | Hono version | Disci version |
-| --------------- | ------------ | ------------- |
-| 1.x.x           | 4.x.x        | 1.x.x         |
+| Adapter version |      Hono version     | Disci version |
+| --------------- | --------------------- | ------------- |
+| 1.x.x           | 4.x.x (uses: 4.6.6)   | 1.x.x         |
 
 
 # License
