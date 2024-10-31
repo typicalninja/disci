@@ -2,7 +2,7 @@
   "name": "disci",
   "private": true,
   "version": "0.0.6-alpha",
-  "description": "A HTTP Request handler for discord interactions",
+  "description": "Create HTTP webserver powered discord bots",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
