@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { createRequestHandler } from "@disci/adapter-hono";
+import { createInteractionRequestHandler } from "@disci/adapter-hono";
 import { serve } from "@hono/node-server";
 import { EventNames, InteractionHandler } from "disci";
 import { ButtonStyle, ComponentType } from "discord-api-types/v10";
@@ -67,7 +67,7 @@ app.get("/", (c) => c.text("Server is running 🚀"));
 // we are adding it to /interactions path instead of root
 // ensure that when you enter the url into discord dev portal
 // to append "/interactions" to the url
-app.post("/interactions", createRequestHandler(handler));
+app.post("/interactions", ...createInteractionRequestHandler(handler));
 
 serve({
 	fetch: app.fetch,

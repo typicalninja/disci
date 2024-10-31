@@ -1,7 +1,7 @@
 {
   "name": "@disci/adapter-hono",
-  "version": "1.0.0-alpha",
-  "description": "DisciJS adapter for hono http library",
+  "version": "0.0.0",
+  "description": "DisciJS adapter for hono framework",
   "type": "module",
   "exports": "./dist/index.js",
   "types": "./dist/index.d.js",
@@ -9,11 +9,15 @@
     "build": "tsup",
     "dev": "tsup --watch"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "disci",
+    "hono",
+    "disci-adapter"
+  ],
+  "author": "typicalninja",
+  "license": "Apache-2.0",
   "dependencies": {
-    "hono": "^3.5.4",
-    "disci": "workspace:*"
+    "disci": "workspace:^",
+    "hono": "^4.6.6"
   }
 }
