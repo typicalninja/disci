@@ -21,7 +21,9 @@ type Ctx = {
  * @example
  * ```ts
  * const handler = new InteractionHandler(...);
- * app.post("/interactions", async (c) => c.json(await handler.handleRequest(await toGenericRequest(c))));
+ * app.post("/interactions", async (c) =>
+ * 	c.json(await handler.handleRequest(await toGenericRequest(c)))
+ * );
  * ```
  * @param context - The Hono context
  */
@@ -45,15 +47,16 @@ export async function toGenericRequest<C extends Ctx>(
 }
 
 /**
- * Create a request handler for Hono using the provided interaction handler
+ * Create a request handler for a HTTPInteractionHandler instance
+ * Used to handle incoming requests from hono server
  * @example
  * ```ts
  * const handler = new InteractionHandler(...);
- * app.post("/interactions", ...createRequestHandler(handler));
+ * app.post("/interactions", ...createInteractionRequestHandler(handler));
  * ```
  * @param handler - The disci interaction handler
  */
-export function createRequestHandler(handler: InteractionHandler) {
+export function createInteractionRequestHandler(handler: InteractionHandler) {
 	const factory = createFactory();
 
 	return factory.createHandlers(async (c) => {

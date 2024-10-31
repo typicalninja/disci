@@ -15,7 +15,7 @@ bun add @disci/adapter-hono
 # Usage
 
 ```typescript
-import { createRequestHandler } from "@disci/adapter-hono";
+import { createInteractionRequestHandler } from "@disci/adapter-hono";
 import { InteractionHandler } from "disci";
 import { Hono } from "hono";
 
@@ -27,7 +27,7 @@ const handler = new InteractionHandler({
 
 const app = new Hono();
 
-app.post("/interactions", ...createRequestHandler(handler));
+app.post("/interactions", ...createInteractionRequestHandler(handler));
 
 // please refer to hono documentation for your platform
 // on how to serve the app
