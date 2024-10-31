@@ -82,8 +82,8 @@ importers:
         specifier: ^16.0.3
         version: 16.0.3
       hono:
-        specifier: ^4.2.5
-        version: 4.2.5
+        specifier: ^4.6.8
+        version: 4.6.8
     devDependencies:
       '@types/node':
         specifier: ^20.12.3
@@ -1496,8 +1496,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  acorn@8.13.0:
-    resolution: {integrity: sha512-8zSiw54Oxrdym50NlZ9sUusyO1Z1ZchgRLWRaK6c86XJFClyCgFKetdowBg5bKxyp/u+CDBJG4Mpp0m3HLZl9w==}
+  acorn@8.14.0:
+    resolution: {integrity: sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
@@ -2358,12 +2358,12 @@ packages:
     resolution: {integrity: sha512-GrRBIJhZ+tG+8RtoyPQjvqPGwppERmayyTiPKano4egmpkJf1XiptESUYK5vKHICNaJksAKB9jzy1CmOdQENPA==}
     engines: {node: '>=16.0.0'}
 
-  hono@4.2.5:
-    resolution: {integrity: sha512-uonJD3i/yy005kQ7bPZRVfG3rejYJwyPqBmPoUGijS4UB/qM+YlrZ7xzSWy+ByDu9buGHUG+f+SKzz03Y6V1Kw==}
-    engines: {node: '>=16.0.0'}
-
   hono@4.6.6:
     resolution: {integrity: sha512-euUj5qwvtkG+p38GFs0LYacwaoS2hYRAGn9ysAggiwT2QBcPnT1XYUCW3hatW4C1KzAXTYuQ08BlVDJtAGuhlg==}
+    engines: {node: '>=16.9.0'}
+
+  hono@4.6.8:
+    resolution: {integrity: sha512-f+2Ec9JAzabT61pglDiLJcF/DjiSefZkjCn9bzm1cYLGkD5ExJ3Jnv93ax9h0bn7UPLHF81KktoyjdQfWI2n1Q==}
     engines: {node: '>=16.9.0'}
 
   http-cache-semantics@4.1.1:
@@ -4894,12 +4894,12 @@ snapshots:
 
   acorn-walk@8.3.4:
     dependencies:
-      acorn: 8.13.0
+      acorn: 8.14.0
     optional: true
 
   acorn@8.10.0: {}
 
-  acorn@8.13.0:
+  acorn@8.14.0:
     optional: true
 
   ajv-formats@2.1.1(ajv@8.17.1):
@@ -5849,9 +5849,9 @@ snapshots:
 
   hono@3.5.4: {}
 
-  hono@4.2.5: {}
-
   hono@4.6.6: {}
+
+  hono@4.6.8: {}
 
   http-cache-semantics@4.1.1: {}
 
@@ -6806,7 +6806,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
       '@types/node': 17.0.45
-      acorn: 8.13.0
+      acorn: 8.14.0
       acorn-walk: 8.3.4
       arg: 4.1.3
       create-require: 1.1.1
@@ -6825,7 +6825,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
       '@types/node': 18.14.2
-      acorn: 8.13.0
+      acorn: 8.14.0
       acorn-walk: 8.3.4
       arg: 4.1.3
       create-require: 1.1.1
