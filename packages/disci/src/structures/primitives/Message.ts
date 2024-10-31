@@ -7,10 +7,10 @@ import type {
 	MessageFlags,
 	Snowflake,
 } from "discord-api-types/v10";
-import type { InteractionHandler } from "../../InteractionHandler";
-import type { RESTFile } from "../../utils/REST";
-import { Base } from "../Base";
-import { type BitFieldResolvable, MessageFlagsBitField } from "../Bitfield";
+import type { InteractionHandler } from "../../InteractionHandler.js";
+import type { RESTFile } from "../../utils/REST.js";
+import { Base } from "../Base.js";
+import { type BitFieldResolvable, MessageFlagsBitField } from "../Bitfield.js";
 
 /**
  * @link https://discord.com/developers/docs/resources/channel#allowed-mentions-object

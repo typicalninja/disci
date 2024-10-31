@@ -1,14 +1,15 @@
 import { type APIInteraction, InteractionType } from "discord-api-types/v10";
-import type { InteractionHandler } from "../InteractionHandler";
+import type { InteractionHandler } from "../InteractionHandler.js";
 import {
 	BaseInteraction,
 	BaseRepliableInteraction,
-} from "../structures/interactions/BaseInteraction";
+} from "../structures/interactions/BaseInteraction.js";
 import {
 	AutoCompleteInteraction,
 	BaseCommandInteraction,
-} from "../structures/interactions/CommandInteractions";
+} from "../structures/interactions/CommandInteractions.js";
 
+// biome-ignore lint/complexity/noStaticOnlyClass: factories are meant to be static (for now)
 export class InteractionFactory {
 	static from(raw: APIInteraction, handler: InteractionHandler) {
 		switch (raw.type) {

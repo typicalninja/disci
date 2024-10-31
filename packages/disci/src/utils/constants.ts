@@ -1,5 +1,5 @@
-import type { BaseInteraction } from "../structures/interactions/BaseInteraction";
-import type { RESTClientOptions } from "./REST";
+import type { BaseInteraction } from "../structures/interactions/BaseInteraction.js";
+import type { RESTClientOptions } from "./REST.js";
 
 export const DiscordEpoch = 14200704e5;
 
