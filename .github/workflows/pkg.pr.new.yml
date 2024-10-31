@@ -36,4 +36,4 @@ jobs:
         run: pnpm run build:packages
 
       - name: Release commit-release
-        run: pnpm dlx pkg-pr-new publish --compact --pnpm './packages/*' --no-template
+        run: pnpm dlx pkg-pr-new publish --pnpm './packages/*' --no-template
