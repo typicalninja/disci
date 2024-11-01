@@ -8,7 +8,6 @@
     "discik": "./dist/cli/cli.js"
   },
   "scripts": {
-    "build": "tsup",
     "dev": "tsup --watch"
   },
   "keywords": [],
