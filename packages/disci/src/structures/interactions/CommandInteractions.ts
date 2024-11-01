@@ -4,12 +4,12 @@ import {
 	type APIApplicationCommandOptionChoice,
 	InteractionResponseType,
 } from "discord-api-types/v10";
-import type { InteractionHandler } from "../../InteractionHandler";
+import type { InteractionHandler } from "../../InteractionHandler.js";
 import {
 	BaseInteraction,
 	BaseRepliableInteraction,
 	InteractionOptions,
-} from "./BaseInteraction";
+} from "./BaseInteraction.js";
 
 export class BaseCommandInteraction extends BaseRepliableInteraction<APIApplicationCommandInteraction> {}
 

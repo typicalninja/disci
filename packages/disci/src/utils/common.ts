@@ -1,5 +1,5 @@
 import type { Snowflake } from "discord-api-types/globals";
-import { DiscordEpoch } from "./constants";
+import { DiscordEpoch } from "./constants.js";
 
 /**
  * Converts a discord id to a timestamp

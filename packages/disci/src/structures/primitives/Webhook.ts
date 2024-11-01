@@ -4,9 +4,9 @@ import {
 	Routes,
 	type Snowflake,
 } from "discord-api-types/v10";
-import type { InteractionHandler } from "../../InteractionHandler";
-import { Base } from "../Base";
-import { type CreateMessageParams, Message } from "./Message";
+import type { InteractionHandler } from "../../InteractionHandler.js";
+import { Base } from "../Base.js";
+import { type CreateMessageParams, Message } from "./Message.js";
 
 export class WebhookPartial extends Base<Pick<APIWebhook, "id" | "token">> {
 	/**

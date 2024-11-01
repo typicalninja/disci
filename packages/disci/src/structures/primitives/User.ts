@@ -1,6 +1,5 @@
 import { type APIUser, Routes, type Snowflake } from "discord-api-types/v10";
-import type { InteractionHandler } from "../../InteractionHandler";
-import { Base } from "../Base";
+import { Base } from "../Base.js";
 
 export class PartialUser extends Base<{ id: Snowflake }> {
 	/**

@@ -11,22 +11,22 @@ import {
 	InteractionType,
 	type Snowflake,
 } from "discord-api-types/v10";
-import type { InteractionHandler } from "../../InteractionHandler";
-import { InternalEventNames } from "../../utils/constants";
-import { Base } from "../Base";
-import { PermissionsBitField } from "../Bitfield";
-import { PartialGuild } from "../primitives/Guild";
+import type { InteractionHandler } from "../../InteractionHandler.js";
+import { InternalEventNames } from "../../utils/constants.js";
+import { Base } from "../Base.js";
+import { PermissionsBitField } from "../Bitfield.js";
+import { PartialGuild } from "../primitives/Guild.js";
 import {
 	type CreateMessageParams,
 	type Message,
 	MessagePartial,
-} from "../primitives/Message";
-import { WebhookPartial } from "../primitives/Webhook";
+} from "../primitives/Message.js";
+import { WebhookPartial } from "../primitives/Webhook.js";
 import type {
 	AutoCompleteInteraction,
 	BaseCommandInteraction,
-} from "./CommandInteractions";
-import type { BaseComponentInteraction } from "./ComponentInteraction";
+} from "./CommandInteractions.js";
+import type { BaseComponentInteraction } from "./ComponentInteraction.js";
 
 export class BaseInteraction<
 	T extends APIInteraction = APIInteraction,

@@ -1,6 +1,5 @@
 import { type APIChannel, Routes, type Snowflake } from "discord-api-types/v10";
-import type { InteractionHandler } from "../../InteractionHandler";
-import { Base } from "../Base";
+import { Base } from "../Base.js";
 
 export class GenericPartialChannel<
 	T extends { id: Snowflake },

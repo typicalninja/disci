@@ -6,8 +6,8 @@ import {
 } from "discord-api-types/v10";
 import { verify } from "discord-verify";
 import { EventEmitter } from "eventemitter3";
-import { InteractionFactory } from "./utils/Factories";
-import { Rest } from "./utils/REST";
+import { InteractionFactory } from "./utils/Factories.js";
+import { Rest } from "./utils/REST.js";
 import {
 	DefaultConfig,
 	DiscordVerifyHeaders,
@@ -16,7 +16,7 @@ import {
 	type HandlerConfig,
 	type HandlerEvents,
 	InternalEventNames,
-} from "./utils/constants";
+} from "./utils/constants.js";
 
 export class InteractionHandler extends EventEmitter<
 	HandlerEvents & { [key: string]: unknown }

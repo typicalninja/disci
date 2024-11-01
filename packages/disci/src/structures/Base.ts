@@ -1,4 +1,4 @@
-import type { InteractionHandler } from "../InteractionHandler";
+import type { InteractionHandler } from "../InteractionHandler.js";
 
 export abstract class Base<T> {
 	/**

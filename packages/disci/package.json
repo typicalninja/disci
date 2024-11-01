@@ -2,15 +2,10 @@
   "name": "disci",
   "private": true,
   "version": "0.0.6-alpha",
-  "description": "A HTTP Request handler for discord interactions",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
+  "description": "Create HTTP webserver powered discord bots",
+  "type": "module",
+  "exports": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": {
-    "types": "./dist/index.d.ts",
-    "require": "./dist/index.js",
-    "import": "./dist/index.mjs"
-  },
   "license": "Apache-2.0",
   "scripts": {
     "build": "tsup",
@@ -44,12 +39,6 @@
     "url": "https://github.com/typicalninja/disci/issues"
   },
   "homepage": "https://disci.vercel.app/",
-  "lint-staged": {
-    "*.{js,ts}": [
-      "pnpm prettier:write",
-      "pnpm lint:check"
-    ]
-  },
   "engines": {
     "node": ">=16.6.0"
   }

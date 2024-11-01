@@ -1,5 +1,5 @@
-import { isBufferLike, serializeObject, tryAndValue } from "./common";
-import { URLS } from "./constants";
+import { isBufferLike, serializeObject, tryAndValue } from "./common.js";
+import { URLS } from "./constants.js";
 
 // userAgent used in requests
 const UserAgent =
